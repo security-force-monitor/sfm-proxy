@@ -42,6 +42,7 @@ GEM
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
+    rake (10.4.2)
     sequel (4.10.0)
     sinatra (1.4.6)
       rack (~> 1.4)
@@ -57,5 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  pupa (~> 0.1.10)
+  json-schema
+  pupa
+  rake
   sinatra
