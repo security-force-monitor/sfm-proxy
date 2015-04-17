@@ -4,8 +4,8 @@ HEADERS_MAP = {
 
     'Headquarters (Barracks, Base, Physical Asset)' => :name__value,
 
-    'Headquarters GPS Latitude' => :coordinates__value__1,
-    'Headquarters GPS Longitude' => :coordinates__value__0,
+    'Headquarters GPS Latitude' => :coordinates__value__1__f,
+    'Headquarters GPS Longitude' => :coordinates__value__0__f,
     'Source: Headquarters GPS' => :coordinates__sources__n,
     'Confidence: Headquarters GPS' => :coordinates__confidence,
 
@@ -18,12 +18,12 @@ HEADERS_MAP = {
     'Confidence: ADMIN 2' => :admin_level_2__confidence,
 
     'Geoname' => :geonames_name__value,
-    'GeonameID' => :geonames_id__value,
+    'GeonameID' => :geonames_id__value__i,
   },
   areas: {
     'Area of Responsibility (Area of Operations, Jurisdiction)' => :name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :geonames_name__value,
-    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value,
+    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value__i,
   },
   organizations: {
     'ID' => :id,
@@ -36,11 +36,11 @@ HEADERS_MAP = {
     'Source: Organization/Administrative, Command, or Informal parent relationship' => :parents__0__classification__sources__n,
     'Confidence: Organization/Administrative, Command, or Informal parent relationship' => :parents__0__classification__confidence,
 
-    'Date of first citation for parent organization' => :parents__0__date_first_cited__value,
+    'Date of first citation for parent organization' => :parents__0__date_first_cited__value__d,
     'Source: Date of first citation for parent organization' => :parents__0__date_first_cited__sources__n,
     'Confidence: Date of first citation for parent organization' => :parents__0__date_first_cited__confidence,
 
-    'Date of last citation for parent organization' => :parents__0__date_last_cited__value,
+    'Date of last citation for parent organization' => :parents__0__date_last_cited__value__d,
     'Source: Date of last citation for parent organization' => :parents__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for parent organization' => :parents__0__date_last_cited__confidence,
 
@@ -78,11 +78,11 @@ HEADERS_MAP = {
     'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => nil, # Area
     'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => nil, # Area
 
-    'Date of first citation for area of responsibility' => :areas__0__date_first_cited__value,
+    'Date of first citation for area of responsibility' => :areas__0__date_first_cited__value__d,
     'Source: Date of first citation for area of responsibility' => :areas__0__date_first_cited__sources__n,
     'Confidence: Date of first citation for area of responsibility' => :areas__0__date_first_cited__confidence,
 
-    'Date of last citation for area of responsibility' => :areas__0__date_last_cited__value,
+    'Date of last citation for area of responsibility' => :areas__0__date_last_cited__value__d,
     'Source: Date of last citation for area of responsibility' => :areas__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for area of responsibility' => :areas__0__date_last_cited__confidence,
 
@@ -90,11 +90,11 @@ HEADERS_MAP = {
     'Source: Other affiliation (like joint task force)' => :memberships__0__id__sources__n,
     'Confidence: Other affiliation (like joint task force)' => :memberships__0__id__confidence,
 
-    'Date of first citation for affiliation' => :memberships__0__date_first_cited__value,
+    'Date of first citation for affiliation' => :memberships__0__date_first_cited__value__d,
     'Source: Date of first citation for affiliation' => :memberships__0__date_first_cited__sources__n,
     'Confidence: Date of first citation for affiliation' => :memberships__0__date_first_cited__confidence,
 
-    'Date of last citation for affiliation' => :memberships__0__date_last_cited__value,
+    'Date of last citation for affiliation' => :memberships__0__date_last_cited__value__d,
     'Source: Date of last citation for affiliation' => :memberships__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for affiliation' => :memberships__0__date_last_cited__confidence,
 
@@ -102,26 +102,26 @@ HEADERS_MAP = {
     'Source: International affiliation (like UN peacekeeping)' => :memberships__1__id__sources__n,
     'Confidence: International affiliation (like UN peacekeeping)' => :memberships__1__id__confidence,
 
-    'Date of first citation for international affiliation' => :memberships__1__date_first_cited__value,
+    'Date of first citation for international affiliation' => :memberships__1__date_first_cited__value__d,
     'Source: Date of first citation for international affiliation' => :memberships__1__date_first_cited__sources__n,
     'Confidence: Date of first citation for international affiliation' => :memberships__1__date_first_cited__confidence,
 
-    'Date of last citation for international affiliation' => :memberships__1__date_last_cited__value,
+    'Date of last citation for international affiliation' => :memberships__1__date_last_cited__value__d,
     'Source: Date of last citation for international affiliation' => :memberships__1__date_last_cited__sources__n,
     'Confidence: Date of last citation for international affiliation' => :memberships__1__date_last_cited__confidence,
 
-    'Date of first citation' => :sites__0__date_first_cited__value,
+    'Date of first citation' => :sites__0__date_first_cited__value__d,
     'Source: Date of first citation' => :sites__0__date_first_cited__sources__n,
     'Confidence: Date of first citation' => :sites__0__date_first_cited__confidence,
     'Is this the founding date? (Y/N)' => nil,
 
-    'Date of last citation' => :sites__0__date_last_cited__value,
+    'Date of last citation' => :sites__0__date_last_cited__value__d,
     'Source: Date of last citation' => :sites__0__date_last_cited__sources__n,
     'Confidence: Date of last citation' => :sites__0__date_last_cited__confidence,
     'Is this the dissolution date? (Y/N)' => nil,
 
-    'Notes' => :notes_value,
-    'Source: Notes' => :notes_source,
+    'Notes' => :notes__value,
+    'Source: Notes' => :notes__source,
     'Corrections' => nil,
   },
   people: {
@@ -135,9 +135,9 @@ HEADERS_MAP = {
     'Source: Aliases or alternative spellings' => :other_names__sources__n,
     'Confidence: Aliases or alternative spellings' => :other_names__confidence,
 
-    'Organization' => :memberships__0__organization__name__value,
-    'Source: Organization' => :memberships__0__organization__name__sources__n,
-    'Confidence: Organization' => :memberships__0__organization__name__confidence,
+    'Organization' => :memberships__0__organization__id__value, # membership belongs_to organization
+    'Source: Organization' => :memberships__0__organization__id__sources__n,
+    'Confidence: Organization' => :memberships__0__organization__id__confidence,
 
     'Role' => :memberships__0__role__value,
     'Source: Role' => :memberships__0__role__sources__n,
@@ -151,7 +151,7 @@ HEADERS_MAP = {
     'Source: Rank' => :memberships__0__rank__sources__n,
     'Confidence: Rank' => :memberships__0__rank__confidence,
 
-    'First citation' => :memberships__0__date_first_cited__value,
+    'First citation' => :memberships__0__date_first_cited__value__d,
     'Source: First citation' => :memberships__0__date_first_cited__sources__n,
     'Confidence: First citation' => :memberships__0__date_first_cited__confidence,
     'Start date? (Y/N)' => nil, # @todo add
@@ -160,7 +160,7 @@ HEADERS_MAP = {
     'Source: Context for start date' => :memberships__0__start_date_description__sources__n,
     'Confidence: Context for start date' => :memberships__0__start_date_description__confidence,
 
-    'Last citation' => :memberships__0__date_last_cited__value,
+    'Last citation' => :memberships__0__date_last_cited__value__d,
     'Source: Last citation' => :memberships__0__date_last_cited__sources__n,
     'Confidence: Last citation' => :memberships__0__date_last_cited__confidence,
     'End date? (Y/N)' => nil, # @todo add
@@ -169,26 +169,27 @@ HEADERS_MAP = {
     'Source: Context for end date' => :memberships__0__end_date_description__sources__n,
     'Confidence: Context for end date' => :memberships__0__end_date_description__confidence,
 
-    "Location (if different from organization's location)" => :memberships__0__site__name__value, # @todo site is foreign key
-    'Source: Location' => :memberships__0__site__name__sources__n,
-    'Confidence: Location' => :memberships__0__site__name__confidence,
+    "Location (if different from organization's location)" => :memberships__0__site__id__value, # membership belongs_to site
+    'Source: Location' => :memberships__0__site__id__sources__n,
+    'Confidence: Location' => :memberships__0__site__id__confidence,
 
     'Notes' => :notes__value,
+    'Corrections' => nil,
   },
   events: {
     'ID' => :id,
-    'Date' => :date__value,
+    'Date' => :date__value__d,
     'Location' => :location_name__value,
     'ADMIN 1 (City or smallest administrative unit)' => :location_admin_level_1__value,
     'ADMIN 2 (state, province, governorate, or other largest subnational administrative unit' => :location_admin_level_2__value,
     'Geoname' => :location_geonames_name__value,
-    'GeonameID' => :location_geonames_id__value,
-    'Latitude' => :location_coordinates__value__1,
-    'Longitude' => :location_coordinates__value__0,
-    'Violation type' => :classification__value,
+    'GeonameID' => :location_geonames_id__value__i,
+    'Latitude' => :location_coordinates__value__1__f,
+    'Longitude' => :location_coordinates__value__0__f,
+    'Violation type' => :classification__value__n,
     'Description' => :description__value,
     'Perpetrator name' => :perpretrator_name__value,
-    'Perpetrator organization' => :perpetrator_organization___id__value,
+    'Perpetrator organization' => :perpetrator_organization__id__value, # event belongs_to organization
     'Source: Violator organization' => :perpetrator_organization__id__sources__n,
   }
 }
