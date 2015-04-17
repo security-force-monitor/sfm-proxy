@@ -1,5 +1,5 @@
 HEADERS_MAP = {
-  sites: {
+  site: {
     'Name' => :__name,
 
     'Headquarters (Barracks, Base, Physical Asset)' => :name__value,
@@ -20,12 +20,12 @@ HEADERS_MAP = {
     'Geoname' => :geonames_name__value,
     'GeonameID' => :geonames_id__value__i,
   },
-  areas: {
+  area: {
     'Area of Responsibility (Area of Operations, Jurisdiction)' => :name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :geonames_name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value__i,
   },
-  organizations: {
+  organization: {
     'ID' => :id,
 
     'Parent organization' => :parents__0__id__value,
@@ -86,9 +86,9 @@ HEADERS_MAP = {
     'Source: Date of last citation for area of responsibility' => :areas__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for area of responsibility' => :areas__0__date_last_cited__confidence,
 
-    'Other affiliation (like joint task force)' => :memberships__0__id__value,
-    'Source: Other affiliation (like joint task force)' => :memberships__0__id__sources__n,
-    'Confidence: Other affiliation (like joint task force)' => :memberships__0__id__confidence,
+    'Other affiliation (like joint task force)' => :memberships__0__organization_id__value,
+    'Source: Other affiliation (like joint task force)' => :memberships__0__organization_id__sources__n,
+    'Confidence: Other affiliation (like joint task force)' => :memberships__0__organization_id__confidence,
 
     'Date of first citation for affiliation' => :memberships__0__date_first_cited__value__d,
     'Source: Date of first citation for affiliation' => :memberships__0__date_first_cited__sources__n,
@@ -98,9 +98,9 @@ HEADERS_MAP = {
     'Source: Date of last citation for affiliation' => :memberships__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for affiliation' => :memberships__0__date_last_cited__confidence,
 
-    'International affiliation (like UN peacekeeping)' => :memberships__1__id__value,
-    'Source: International affiliation (like UN peacekeeping)' => :memberships__1__id__sources__n,
-    'Confidence: International affiliation (like UN peacekeeping)' => :memberships__1__id__confidence,
+    'International affiliation (like UN peacekeeping)' => :memberships__1__organization_id__value,
+    'Source: International affiliation (like UN peacekeeping)' => :memberships__1__organization_id__sources__n,
+    'Confidence: International affiliation (like UN peacekeeping)' => :memberships__1__organization_id__confidence,
 
     'Date of first citation for international affiliation' => :memberships__1__date_first_cited__value__d,
     'Source: Date of first citation for international affiliation' => :memberships__1__date_first_cited__sources__n,
@@ -124,7 +124,7 @@ HEADERS_MAP = {
     'Source: Notes' => :notes__source,
     'Corrections' => nil,
   },
-  people: {
+  person: {
     'ID' => :id,
 
     'Name' => :name__value,
@@ -135,9 +135,9 @@ HEADERS_MAP = {
     'Source: Aliases or alternative spellings' => :other_names__sources__n,
     'Confidence: Aliases or alternative spellings' => :other_names__confidence,
 
-    'Organization' => :memberships__0__organization__id__value, # membership belongs_to organization
-    'Source: Organization' => :memberships__0__organization__id__sources__n,
-    'Confidence: Organization' => :memberships__0__organization__id__confidence,
+    'Organization' => :memberships__0__organization_id__value, # membership belongs_to organization
+    'Source: Organization' => :memberships__0__organization_id__sources__n,
+    'Confidence: Organization' => :memberships__0__organization_id__confidence,
 
     'Role' => :memberships__0__role__value,
     'Source: Role' => :memberships__0__role__sources__n,
@@ -169,14 +169,14 @@ HEADERS_MAP = {
     'Source: Context for end date' => :memberships__0__end_date_description__sources__n,
     'Confidence: Context for end date' => :memberships__0__end_date_description__confidence,
 
-    "Location (if different from organization's location)" => :memberships__0__site__id__value, # membership belongs_to site
-    'Source: Location' => :memberships__0__site__id__sources__n,
-    'Confidence: Location' => :memberships__0__site__id__confidence,
+    "Location (if different from organization's location)" => :memberships__0__site_id__value, # membership belongs_to site
+    'Source: Location' => :memberships__0__site_id__sources__n,
+    'Confidence: Location' => :memberships__0__site_id__confidence,
 
     'Notes' => :notes__value,
     'Corrections' => nil,
   },
-  events: {
+  event: {
     'ID' => :id,
     'Date' => :date__value__d,
     'Location' => :location_name__value,
@@ -189,7 +189,7 @@ HEADERS_MAP = {
     'Violation type' => :classification__value__n,
     'Description' => :description__value,
     'Perpetrator name' => :perpretrator_name__value,
-    'Perpetrator organization' => :perpetrator_organization__id__value, # event belongs_to organization
-    'Source: Violator organization' => :perpetrator_organization__id__sources__n,
+    'Perpetrator organization' => :perpetrator_organization_id__value, # event belongs_to organization
+    'Source: Violator organization' => :perpetrator_organization_id__sources__n,
   }
 }

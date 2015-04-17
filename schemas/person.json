@@ -4,6 +4,10 @@
   "title": "Person",
   "type": "object",
   "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["person"]
+    },
     "gid": {
       "type": "integer"
     },
@@ -42,16 +46,8 @@
       "items": {
         "type": "object",
         "properties": {
-          "organization": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "$ref": "#/definitions/complex_string"
-              }
-            },
-
-            "additionalProperties": false,
-            "required": ["id"]
+          "organization_id": {
+            "$ref": "#/definitions/complex_string"
           },
           "role": {
             "$ref": "#/definitions/complex_string"
@@ -74,20 +70,12 @@
           "end_date_description": {
             "$ref": "#/definitions/complex_string"
           },
-          "site": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "$ref": "#/definitions/complex_string"
-              }
-            },
-
-            "additionalProperties": false,
-            "required": ["id"]
+          "site_id": {
+            "$ref": "#/definitions/complex_string"
           }
         },
         "additionalProperties": false,
-        "required": ["organization"]
+        "required": ["organization_id"]
       }
     },
     "notes": {
@@ -105,6 +93,7 @@
 
   "additionalProperties": false,
   "required": [
+    "type",
     "gid",
     "row",
     "id",

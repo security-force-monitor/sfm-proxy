@@ -26,13 +26,21 @@ task :import do
       'High',
   ]
 
-  class DependencyGraph < Hash # @todo
+  uri = URI.parse(ENV['MONGOLAB_URI'] || 'mongodb://localhost:27017/sfm')
+  CONNECTION = Moped::Session.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
+  CONNECTION.login(uri.user, uri.password) if uri.user && uri.password
+
+  class DependencyGraph < Hash
     include TSort
 
     alias tsort_each_node each_key
 
     def tsort_each_child(node, &block)
-      fetch(node).each(&block)
+      if key?(node)
+        fetch(node).each(&block)
+      else
+        LOGGER.warn("can't resolve #{node}")
+      end
     end
   end
 
@@ -181,27 +189,25 @@ task :import do
 
   objects = {}
   names = {}
-  ids = {}
   body = {}
 
-  { sites: gids,
-    areas: gids,
-    organizations: gids,
-    people: [510712342, 394650791],
-    events: [939834263],
+  { site: gids,
+    area: gids,
+    organization: gids,
+    person: [510712342, 394650791],
+    event: [939834263],
     # @todo add posts
   }.each do |type,gids|
     gids.each do |gid|
       objects[type] = {}
       names[gid] ||= {}
-      ids[gid] ||= {}
 
       # Memoize the response body.
       body[gid] ||= Faraday.get(source_url % gid).body
 
       converter = ->(header) do
         # The mappings for sites and areas are incomplete, so don't raise errors for missing keys.
-        if [:sites, :areas].include?(type)
+        if [:site, :area].include?(type)
           HEADERS_MAP[type][header]
         else
           HEADERS_MAP[type].fetch(header)
@@ -215,12 +221,11 @@ task :import do
 
         object = {}
 
-        # Map a flat CSV to a nested Hash.
-        # @seealso https://github.com/OpenDataServices/flatten-tool
+        # Map a flat CSV to a nested hash.
         row.each do |key,value|
           if key # ignore unmapped headers
             # A site may not have a name.
-            if type == :sites && key == :name__value && value.nil?
+            if type == :site && key == :name__value && value.nil?
               admin_levels = []
               if row[:admin_level_2__value]
                 admin_levels << row[:admin_level_2__value]
@@ -250,63 +255,213 @@ task :import do
         # Skip blank rows.
         if !object.empty?
           # Non-events must have names.
-          if type == :events || object.key?('name')
+          if type == :event || object.key?('name')
             # @note If new rows for an existing record are not added with IDs, the
             #   new rows will not be merged into the record.
             key = if object['id']
               object['id']
-            elsif type == :events
-              row_number
+            elsif type == :event
+              row_number.to_s
             else
               object['name'].fetch('value')
             end
 
             # Parenthesized numbers just disambiguate records with the same name.
-            unless type == :events
+            unless type == :event
               object['name']['value'].sub(/\s*\(\d+\)\z/, '')
             end
 
             # If it's a row for a new object, add it to the list of objects.
             if !objects[type].key?(key)
+              object['type'] = type.to_s
               object['gid'] = gid
               object['row'] = row_number
               unless object['id']
-                object['id'] = ids[gid][row_number] ||= SecureRandom.uuid
+                object['id'] = SecureRandom.uuid
               end
               objects[type][key] = object
             # If it's a row for an existing object, merge it into the existing object.
             elsif objects[type][key] != object
               begin
-                differences = objects[type][key].diff_and_merge(object).except('gid', 'row')
+                differences = objects[type][key].diff_and_merge(object).except('type', 'gid', 'row')
                 if !differences.empty?
-                  LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize.singularize} #{key.inspect} is inconsistent\n#{differences.pretty_inspect}")
+                  LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} is inconsistent\n#{differences.pretty_inspect}")
                 end
               rescue NoMethodError
-                LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize.singularize} #{key.inspect} can't calculate difference with:\n#{object.pretty_inspect}")
+                LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} can't calculate difference with:\n#{object.pretty_inspect}")
               end
             end
           else
-            LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize.singularize}#name is blank\n#{object.pretty_inspect}")
+            LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize}#name is blank\n#{object.pretty_inspect}")
           end
         end
       end
     end
+  end
 
-    schema = JSON.load(File.read(File.expand_path(File.join('schemas', "#{type.to_s.singularize}.json"), __dir__)))
+  # Convert sets to arrays.
+  objects.each do |type,hash|
+    hash.each do |key,object|
+      hash[key] = set_to_array(object)
+    end
+  end
 
-    objects[type].each do |name,object|
-      begin
-        JSON::Validator.validate!(schema, set_to_array(object))
-      rescue JSON::Schema::ValidationError => e
-        LOGGER.warn("gid #{object['gid']} row #{object['row']}: #{e.message}")
+  unless ENV['novalidate']
+    # Validate objects.
+    objects.each do |type,hash|
+      schema = JSON.load(File.read(File.expand_path(File.join('schemas', "#{type.to_s}.json"), __dir__)))
+
+      hash.each do |_,object|
+        begin
+          JSON::Validator.validate!(schema, object)
+        rescue JSON::Schema::ValidationError => e
+          LOGGER.warn("gid #{object['gid']} row #{object['row']}: #{e.message}")
+        end
       end
     end
   end
 
+  # Build the dependency graph.
+  graph = DependencyGraph.new
+
+  objects.each do |type,hash|
+    hash.each do |key,object|
+      id = "#{type}:#{key}"
+      graph[id] = []
+
+      case type
+      when :organization
+        { 'parents' => [:organization, 'id'],
+          'sites' => [:site, 'id'],
+          'areas' => [:area, 'id'],
+          'memberships' => [:organization, 'organization_id'],
+        }.each do |property,(prefix,subproperty)|
+          if object.key?(property)
+            object[property].each do |thing|
+              if thing[subproperty] && thing[subproperty].key?('value')
+                graph[id] << "#{prefix}:#{thing[subproperty]['value']}"
+              end
+            end
+          end
+        end
+      when :person
+        object['memberships'].each do |membership|
+          if membership['organization_id'] && membership['organization_id'].key?('value')
+            graph[id] << "organization:#{membership['organization_id']['value']}"
+          end
+          if membership['site_id'] && membership['site_id'].key?('value')
+            graph[id] << "site:#{membership['site_id']['value']}"
+          end
+        end
+      when :event
+        if object['perpetrator_organization_id'] && object['perpetrator_organization_id'].key?('value')
+          graph[id] << "organization:#{object['perpetrator_organization_id']['value']}"
+        end
+      end
+    end
+  end
+
+  # Resolves an object's foreign keys from object IDs to database IDs, and
+  # embeds foreign objects.
+  #
+  # @param [Hash] object
+  # @param [Hash] map
+  # @param [Array<Hash>] objects
+  def resolve_foreign_keys(object, map, objects)
+    case object['type'].to_sym
+    when :organization
+      { 'parents' => [:organization, 'id'],
+        'sites' => [:site, 'id'],
+        'areas' => [:area, 'id'],
+        'memberships' => [:organization, 'organization_id'],
+      }.each do |property,(prefix,subproperty)|
+        if object.key?(property)
+          object["#{property.singularize}_ids"] = []
+          object[property].each_with_index do |thing,index|
+            if thing[subproperty] && thing[subproperty].key?('value')
+              value = thing[subproperty]['value']
+              key = "#{prefix}:#{value}"
+              if map.key?(key)
+                thing[subproperty]['value'] = map[key]
+                object[property][index] = objects[prefix].fetch(value)
+                object["#{property.singularize}_ids"][index] = thing
+              end
+            end
+          end
+        end
+      end
+    when :person
+      object['memberships'].each do |membership|
+        if membership['organization_id'] && membership['organization_id'].key?('value')
+          value = membership['organization_id']['value']
+          key = "organization:#{value}"
+          if map.key?(key)
+            membership['organization_id']['value'] = map[key]
+            membership['organization'] = objects[:organization].fetch(value)
+          end
+        end
+        if membership['site_id'] && membership['site_id'].key?('value')
+          value = membership['site_id']['value']
+          key = "site:#{value}"
+          if map.key?(key)
+            membership['site_id']['value'] = map[key]
+            membership['site'] = objects[:site].fetch(value)
+          end
+        end
+      end
+    when :event
+      if object['perpetrator_organization_id'] && object['perpetrator_organization_id'].key?('value')
+        value = object['perpetrator_organization_id']['value']
+        key = "organization:#{value}"
+        if map.key?(key)
+          object['perpetrator_organization_id']['value'] = map[key]
+          object['perpetrator_organization'] = objects[:organization].fetch(value)
+        end
+      end
+    end
+  end
+
+  # Saves the object to the database, and returns its database ID.
+  #
+  # @param [Hash] object
+  # @return [String] the database ID
+  def import_object(object)
+    collection_name = object['type'].pluralize
+    collection = CONNECTION[collection_name]
+    selector = {_id: object.fetch('id')}
+    query = collection.find(selector)
+    store = object.except('type') # @todo 'gid', 'row'
+
+    case query.count
+    when 0
+      collection.insert(store.merge(selector))
+      object['id']
+    when 1
+      query.update(store)
+      query.first['_id'].to_s
+    else
+      raise Errors::TooManyMatches, "selector matches multiple documents during save in collection #{collection_name} for #{object['id']}"
+    end
+  end
+
+  object_id_to_database_id = {}
+
+  # Save the objects to the database.
+  graph.tsort.each do |id|
+    type, key = id.split(':', 2)
+    if objects[type.to_sym].key?(key)
+      object = objects[type.to_sym][key]
+      resolve_foreign_keys(object, object_id_to_database_id, objects)
+      database_id = import_object(object)
+      object_id_to_database_id[id] = database_id
+      object_id_to_database_id[database_id] = database_id
+    end
+  end
+
   # @note Not setting IDs for now based on above `@note`.
-  # ids.each do |gid,ids|
-  #   ids.each do |row_number,id|
-  #     LOGGER.info("gid %10d row %3d: #{id}" % [gid, row_number])
+  # objects.each do |type,hash|
+  #   hash.each do |key,object|
+  #     LOGGER.info("gid #{object['gid']} row #{object['row']}: #{object['id']}")
   #   end
   # end
 end

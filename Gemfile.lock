@@ -59,6 +59,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   json-schema
+  moped
   pupa
   rake
   sinatra

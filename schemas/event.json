@@ -4,6 +4,10 @@
   "title": "Event",
   "type": "object",
   "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["event"]
+    },
     "gid": {
       "type": "integer"
     },
@@ -128,6 +132,7 @@
 
   "additionalProperties": false,
   "required": [
+    "type",
     "gid",
     "row",
     "id",

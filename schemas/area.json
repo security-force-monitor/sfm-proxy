@@ -4,6 +4,10 @@
   "title": "Area",
   "type": "object",
   "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["area"]
+    },
     "gid": {
       "type": "integer"
     },
@@ -35,6 +39,7 @@
 
   "additionalProperties": false,
   "required": [
+    "type",
     "gid",
     "row",
     "id",

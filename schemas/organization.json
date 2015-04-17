@@ -4,6 +4,10 @@
   "title": "Organization",
   "type": "object",
   "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["organization"]
+    },
     "gid": {
       "type": "integer"
     },
@@ -104,10 +108,44 @@
       }
     },
     "areas": {
-      "$ref": "#/definitions/complex_string_and_dates"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/complex_string"
+          },
+          "date_first_cited": {
+            "$ref": "#/definitions/complex_date"
+          },
+          "date_last_cited": {
+            "$ref": "#/definitions/complex_date"
+          }
+        },
+
+        "additionalProperties": false,
+        "required": ["id"]
+      }
     },
     "memberships": {
-      "$ref": "#/definitions/complex_string_and_dates"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "organization_id": {
+            "$ref": "#/definitions/complex_string"
+          },
+          "date_first_cited": {
+            "$ref": "#/definitions/complex_date"
+          },
+          "date_last_cited": {
+            "$ref": "#/definitions/complex_date"
+          }
+        },
+
+        "additionalProperties": false,
+        "required": ["organization_id"]
+      }
     },
     "notes": {
       "type": "object",
@@ -127,6 +165,7 @@
 
   "additionalProperties": false,
   "required": [
+    "type",
     "gid",
     "row",
     "id",
@@ -168,26 +207,6 @@
 
       "additionalProperties": false,
       "required": ["value"]
-    },
-    "complex_string_and_dates": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/definitions/complex_string"
-          },
-          "date_first_cited": {
-            "$ref": "#/definitions/complex_date"
-          },
-          "date_last_cited": {
-            "$ref": "#/definitions/complex_date"
-          }
-        },
-
-        "additionalProperties": false,
-        "required": ["id"]
-      }
     },
     "confidence": {
       "type": "string",
