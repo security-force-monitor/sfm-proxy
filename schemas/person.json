@@ -63,13 +63,13 @@
             "$ref": "#/definitions/complex_string"
           },
           "date_first_cited": {
-            "$ref": "#/definitions/complex_date"
+            "$ref": "#/definitions/complex_date_with_actual"
           },
           "start_date_description": {
             "$ref": "#/definitions/complex_string"
           },
           "date_last_cited": {
-            "$ref": "#/definitions/complex_date"
+            "$ref": "#/definitions/complex_date_with_actual"
           },
           "end_date_description": {
             "$ref": "#/definitions/complex_string"
@@ -141,6 +141,27 @@
         },
         "confidence": {
           "$ref": "#/definitions/confidence"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "complex_date_with_actual": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+        },
+        "sources": {
+          "$ref": "#/definitions/sources"
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        },
+        "actual": {
+          "type": "boolean"
         }
       },
 

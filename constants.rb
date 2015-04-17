@@ -154,7 +154,7 @@ HEADERS_MAP = {
     'First citation' => :memberships__0__date_first_cited__value__d,
     'Source: First citation' => :memberships__0__date_first_cited__sources__n,
     'Confidence: First citation' => :memberships__0__date_first_cited__confidence,
-    'Start date? (Y/N)' => nil, # @todo add
+    'Start date? (Y/N)' => :memberships__0__date_first_cited__actual__b,
 
     'Context for start date' => :memberships__0__start_date_description__value,
     'Source: Context for start date' => :memberships__0__start_date_description__sources__n,
@@ -163,7 +163,7 @@ HEADERS_MAP = {
     'Last citation' => :memberships__0__date_last_cited__value__d,
     'Source: Last citation' => :memberships__0__date_last_cited__sources__n,
     'Confidence: Last citation' => :memberships__0__date_last_cited__confidence,
-    'End date? (Y/N)' => nil, # @todo add
+    'End date? (Y/N)' => :memberships__0__date_last_cited__actual__b,
 
     'Context for end date' => :memberships__0__end_date_description__value,
     'Source: Context for end date' => :memberships__0__end_date_description__sources__n,

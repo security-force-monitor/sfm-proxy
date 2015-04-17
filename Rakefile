@@ -117,11 +117,20 @@ task :import do
       object[keys[0]] = case keys[1]
       when nil # no more keys
         value
+      when 'b'
+        case value
+        when 'Y'
+          true
+        when 'N'
+          false
+        else
+          value
+        end
       when 'd'
         if value[%r{\A(\d{1,2})/(\d{1,2})/(\d{4})\z}]
           "%d-%0.2d-%0.2d" % [$3, $1, $2]
-        else # /\A\d{4}(?:-\d{2})?\z/ is valid
-          value # JSON Schema will warn about invalid dates
+        else # /\A\d{4}(?:-\d{2})?\z/ is also valid
+          value
         end
       when 'f'
         Float(value)
