@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://www.example.com/schemas/area.json#",
+  "title": "Area",
+  "type": "object",
+  "properties": {
+    "gid": {
+      "type": "integer"
+    },
+    "row": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+    },
+    "name": {
+      "$ref": "#/definitions/simple_string"
+    },
+    "geonames_name": {
+      "$ref": "#/definitions/simple_string"
+    },
+    "geonames_id": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    }
+  },
+
+  "additionalProperties": false,
+  "required": [
+    "gid",
+    "row",
+    "id",
+    "name"
+  ],
+
+  "definitions": {
+    "simple_string": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    }
+  }
+}
