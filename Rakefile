@@ -430,7 +430,7 @@ task :import do
     collection = CONNECTION[collection_name]
     selector = {_id: object.fetch('id')}
     query = collection.find(selector)
-    store = object.except('type') # @todo 'gid', 'row'
+    store = object.except('type') # @todo 'gid', 'row' in production
 
     case query.count
     when 0

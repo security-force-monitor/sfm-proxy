@@ -179,7 +179,7 @@ HEADERS_MAP = {
   event: {
     'ID' => :id,
     'Date' => :date__value__d,
-    'Location' => :location_name__value,
+    'Location' => :location_description__value,
     'ADMIN 1 (City or smallest administrative unit)' => :location_admin_level_1__value,
     'ADMIN 2 (state, province, governorate, or other largest subnational administrative unit' => :location_admin_level_2__value,
     'Geoname' => :location_geonames_name__value,

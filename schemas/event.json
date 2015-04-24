@@ -30,7 +30,7 @@
       "additionalProperties": false,
       "required": ["value"]
     },
-    "location_name": {
+    "location_description": {
       "$ref": "#/definitions/simple_string"
     },
     "location_admin_level_1": {
