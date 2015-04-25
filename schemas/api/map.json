@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "organizations": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "root_name": {
+          "type": "string"
+        },
+        "person_name": {
+          "type": "string"
+        },
+        "events_count": {
+          "type": "integer"
+        },
+        "geometry": {
+          "type": "object"
+        }
+      },
+      "links": [{
+        "rel": "full",
+        "href": "/organizations/{id}"
+      }]
+    },
+    "events": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}(-[0-9]{2}){2}$"
+        },
+        "location_admin_level_1": {
+          "type": "string"
+        },
+        "location_admin_level_2": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "perpretrator_name": {
+          "type": "string"
+        },
+        "perpretrator_organization": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "geometry": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Point"]
+            },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2
+            }
+          }
+        }
+      },
+      "links": [{
+        "rel": "full",
+        "href": "/events/{id}"
+      }]
+    }
+  }
+}

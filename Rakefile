@@ -309,7 +309,7 @@ task :import do
   unless ENV['novalidate']
     # Validate objects.
     objects.each do |type,hash|
-      schema = JSON.load(File.read(File.expand_path(File.join('schemas', "#{type.to_s}.json"), __dir__)))
+      schema = JSON.load(File.read(File.expand_path(File.join('schemas', 'validation', "#{type.to_s}.json"), __dir__)))
 
       hash.each do |_,object|
         begin
