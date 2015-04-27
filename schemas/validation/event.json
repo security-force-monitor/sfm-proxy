@@ -106,30 +106,22 @@
     "perpretrator_name": {
       "$ref": "#/definitions/simple_string"
     },
-    "perpetrator_organization": {
+    "perpetrator_organization_id": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "object",
-          "properties": {
-            "value": {
-              "type": "string"
-            },
-            "sources": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-
-          "additionalProperties": false,
-          "required": ["value"]
+        "value": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
 
       "additionalProperties": false,
-      "required": ["id"]
+      "required": ["value"]
     }
   },
 
@@ -143,7 +135,7 @@
     "date",
     "classification",
     "description",
-    "perpetrator_organization"
+    "perpetrator_organization_id"
   ],
 
   "definitions": {
