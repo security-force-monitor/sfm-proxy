@@ -1,5 +1,7 @@
 HEADERS_MAP = {
   site: {
+    'ID' => :id,
+
     'Name' => :__name,
 
     'Headquarters (Barracks, Base, Physical Asset)' => :name__value,
@@ -21,6 +23,8 @@ HEADERS_MAP = {
     'GeonameID' => :geonames_id__value__i,
   },
   area: {
+    'ID' => :id,
+
     'Area of Responsibility (Area of Operations, Jurisdiction)' => :name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :geonames_name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value__i,
