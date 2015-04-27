@@ -1,8 +1,48 @@
+require 'rubygems'
+require 'bundler/setup'
+
+require 'pupa'
+
+LOGGER = Pupa::Logger.new('sfm-proxy')
+
+def run(command)
+  LOGGER.info(command)
+  system(command)
+end
+
+
+desc 'Converts Shapefile to TopoJSON'
+task :topojson do
+  require 'fileutils'
+  require 'tempfile'
+
+  if ENV['input'] && ENV['output']
+    file = Tempfile.new('geojson')
+    begin
+      path = file.path
+    ensure
+      file.close
+      # The GeoJSON driver does not override existing files.
+      file.unlink
+    end
+
+    dir = File.expand_path('topojson', __dir__)
+    FileUtils.mkdir_p(dir)
+
+    begin
+      if run(%(ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 "#{path}" "#{ENV['input']}"))
+        run(%(topojson -o "#{File.join(dir, "#{ENV['output']}.topojson")}" "#{path}"))
+      end
+    ensure
+      File.unlink(path)
+    end
+  else
+    LOGGER.error('usage: rake topojson input=path/to/shapefile.shp output=adm0/ng')
+  end
+end
+
 desc 'Imports the data from CSV'
 task :import do
-  require 'rubygems'
-  require 'bundler/setup'
-
   require 'csv'
   require 'json'
   require 'pp'
@@ -14,11 +54,8 @@ task :import do
   require 'active_support/inflector'
   require 'faraday'
   require 'json-schema'
-  require 'pupa'
 
   require_relative 'constants'
-
-  LOGGER = Pupa::Logger.new('sfm-proxy')
 
   CONFIDENCE_ORDER = [
       'Low',
@@ -185,6 +222,7 @@ task :import do
   end
 
   source_url = 'https://docs.google.com/spreadsheets/d/16cRBkrnXE5iGm8JXD7LSqbeFOg_anhVp2YAzYTRYDgU/export?gid=%d&format=csv'
+  division_id = 'ng'
   gids = [0, 1686464613]
 
   objects = {}
@@ -274,6 +312,7 @@ task :import do
             # If it's a row for a new object, add it to the list of objects.
             if !objects[type].key?(key)
               object['type'] = type.to_s
+              object['division_id'] = division_id
               object['gid'] = gid
               object['row'] = row_number
               unless object['id']
