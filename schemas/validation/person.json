@@ -7,6 +7,10 @@
       "type": "string",
       "enum": ["person"]
     },
+    "division_id": {
+      "type": "string",
+      "pattern": "^ocd-division/country:[a-z]{2}$"
+    },
     "gid": {
       "type": "integer"
     },
@@ -93,6 +97,7 @@
   "additionalProperties": false,
   "required": [
     "type",
+    "division_id",
     "gid",
     "row",
     "id",
