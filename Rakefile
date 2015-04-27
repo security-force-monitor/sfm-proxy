@@ -222,7 +222,7 @@ task :import do
   end
 
   source_url = 'https://docs.google.com/spreadsheets/d/16cRBkrnXE5iGm8JXD7LSqbeFOg_anhVp2YAzYTRYDgU/export?gid=%d&format=csv'
-  division_id = 'ng'
+  division_id = 'ocd-division/country:ng'
   gids = [0, 1686464613]
 
   objects = {}
@@ -280,7 +280,11 @@ task :import do
               value = names[gid].fetch(row_number)
             end
 
-            assign(object, key.to_s.split('__').map{|key| Integer(key) rescue key}, value)
+            begin
+              assign(object, key.to_s.split('__').map{|key| Integer(key) rescue key}, value)
+            rescue ArgumentError => e
+              LOGGER.error("gid #{gid} row #{row_number} ID: #{e.message}")
+            end
           end
         end
 
@@ -484,6 +488,16 @@ task :import do
   end
 
   object_id_to_database_id = {}
+
+  # @todo Handle cycles.
+  begin
+    tsort = graph.tsort
+  rescue TSort::Cyclic => e
+    LOGGER.error(e.message)
+    e.message.scan(/"(.+?)"/).flatten.each do |id|
+      graph.delete(id)
+    end
+  end
 
   # Save the objects to the database.
   graph.tsort.each do |id|
