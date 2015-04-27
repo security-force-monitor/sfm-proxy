@@ -229,6 +229,15 @@ task :import do
   names = {}
   body = {}
 
+  [ :sites,
+    :areas,
+    :organizations,
+    :persons,
+    :events,
+  ].each do |collection_name|
+    CONNECTION[collection_name].drop
+  end
+
   { site: gids,
     area: gids,
     organization: gids,
