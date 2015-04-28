@@ -498,7 +498,6 @@ task :import do
 
   object_id_to_database_id = {}
 
-  # @todo Handle cycles.
   begin
     tsort = graph.tsort
   rescue TSort::Cyclic => e
