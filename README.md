@@ -145,7 +145,7 @@ If an event occurs on a different date than the `at` parameter's value, its only
       "perpetrator_organization": {
         "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
         "name": "Brigade 1"
-      }
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [90.0, 90.0]
@@ -255,7 +255,16 @@ Sort orders:
 {
   "count": 1234,
   "facets": [
-    @todo
+    "rank": [
+      ["Major", 10],
+      ["Captain", 1],
+      ["Lieutenant", 100]
+    ],
+    "role": [
+      ["Commander", 10],
+      ["Acting Commander", 1],
+      ["Chief of Staff", 100]
+    ]
   ],
   "results": [
     {
@@ -269,23 +278,25 @@ Sort orders:
 
 `/search/events?` returns event search results. Parameters:
 
-* ``: 
+* `geonames_id`: GeoNames ID.
+* `classification__in`: comma-separated list.
+* `date__gte`: minimum date.
+* `date__lte`: maximum date.
 
 Sort orders:
 
-* ``
+* `date`
 
-Each item in the `results` array has the same format as the `/events/:id` endpoint, but without the `nearby_organizations` field.
+Each item in the `results` array is in the same format as the `/events/:id` response, but without the `nearby_organizations` field.
 
 ```json
 {
   "count": 1234,
   "facets": [
-    "geonames_id": [
-      # @todo
-    ],
     "classification": [
-      # @todo
+      ["Disappearance", 10],
+      ["Torture", 1],
+      ["Killing", 100]
     ]
   ],
   "results": [

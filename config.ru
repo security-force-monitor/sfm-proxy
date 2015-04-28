@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'json'
 
 require 'active_support/core_ext/hash/slice'
+require 'pupa'
 
 helpers do
   def connection
@@ -40,9 +41,10 @@ helpers do
     }
   end
 
-  def search(collection_name, criteria_map, order_map, result_formatter)
-    criteria = {}
+  def search(collection_name, criteria_map, order_map, facets_map, result_formatter)
+    collection = connection[collection_name]
 
+    criteria = {}
     criteria_map.each do |key,(field,operator,options)|
       if params.key?(key)
         value = params[key]
@@ -52,13 +54,40 @@ helpers do
       end
     end
 
-    matches = sort(connection[collection_name].find(criteria), order_map)
+    matches = sort(collection.find(criteria), order_map)
+
+    facets = {}
+    facets_map.each do |facet,(field,options)|
+      pipeline = [{
+        '$match' => criteria,
+      }]
+      if options && options[:unwind]
+        pipeline << {
+          '$unwind' => field,
+        }
+      end
+      pipeline << {
+        '$group' => {
+          _id: field,
+          count: {
+            '$sum' => 1,
+          },
+        },
+      }
+      facets[facet] = collection.aggregate(pipeline).map do |group|
+        [group['_id'], group['count']]
+      end
+    end
 
     results = paginate(matches).map do |result|
       formatter.call(result)
     end
 
-    [matches.count, results]
+    JSON.dump({
+      "count": matches.count,
+      "facets": facets,
+      "results": results,
+    })
   end
 
   def sort(query, valid)
@@ -147,7 +176,7 @@ get '/countries/:code.txt' do
 end
 
 # @drupal Load node from Drupal.
-get 'events/:id' do
+get '/events/:id' do
   content_type 'application/json'
 
   event = connection[:events].find(_id: params[:id]).first
@@ -173,7 +202,7 @@ get 'events/:id' do
 end
 
 # @drupal Load node from Drupal.
-get 'organizations/:id' do
+get '/organizations/:id' do
   content_type 'application/json'
 
   organization = connection[:organizations].find(_id: params[:id]).first
@@ -188,7 +217,7 @@ get 'organizations/:id' do
 end
 
 # @drupal Load node from Drupal.
-get 'people/:id' do
+get '/people/:id' do
   content_type 'application/json'
 
   person = connection[:people].find(_id: params[:id]).first
@@ -202,7 +231,7 @@ get 'people/:id' do
   end
 end
 
-get 'organizations/:id/map' do
+get '/organizations/:id/map' do
   content_type 'application/json'
 
   JSON.dump({
@@ -210,7 +239,7 @@ get 'organizations/:id/map' do
   })
 end
 
-get 'organizations/:id/chart' do
+get '/organizations/:id/chart' do
   content_type 'application/json'
 
   JSON.dump({
@@ -218,7 +247,7 @@ get 'organizations/:id/chart' do
   })
 end
 
-get 'people/:id/chart' do
+get '/people/:id/chart' do
   content_type 'application/json'
 
   JSON.dump({
@@ -226,7 +255,7 @@ get 'people/:id/chart' do
   })
 end
 
-get 'map' do
+get '/map' do
   content_type 'application/json'
 
   JSON.dump({
@@ -235,7 +264,7 @@ get 'map' do
 end
 
 # @drupal Perform search on Drupal.
-get 'search/organizations' do
+get '/search/organizations' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
@@ -250,7 +279,7 @@ get 'search/organizations' do
     }
   end
 
-  count, results, facets = search(:organizations, {
+  search(:organizations, {
     q: ['name.value', '$regex'], # @drupal Use Search API with ElasticSearch to support matching the full document.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
@@ -266,21 +295,12 @@ get 'search/organizations' do
     'date_first_cited' => 'date_first_cited.value',
     'date_last_cited' => 'date_last_cited.value',
     'events_count' => 'events_count',
+  }, {
   }, result_formatter)
-
-  JSON.dump({
-    "count": count,
-    "facets": {
-      "geonames_id": [
-        # @todo
-      ],
-    },
-    "results": results,
-  })
 end
 
 # @drupal Perform search on Drupal.
-get 'search/people' do
+get '/search/people' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
@@ -292,12 +312,12 @@ get 'search/people' do
     }
   end
 
-  count, results, facets = search(:people, {
+  search(:people, {
     q: ['name.value', '$regex'], # @drupal Use Search API with ElasticSearch to support matching the full document.
     geonames_id: ['memberships.site.geonames_id.value', '$eq'],
     classification__in: ['memberships.organization.classification.value', '$in', split: true]
-    rank__in: ['memberships.rank', '$in', split: true]
-    role__in: ['memberships.role', '$in', split: true]
+    rank__in: ['memberships.rank.value', '$in', split: true]
+    role__in: ['memberships.role.value', '$in', split: true]
     date_first_cited__gte: ['memberships.date_first_cited.value', '$gte'],
     date_first_cited__lte: ['memberships.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['memberships.date_last_cited.value', '$gte'],
@@ -308,30 +328,17 @@ get 'search/people' do
   }, {
     'name' => 'name.value',
     'events_count' => 'memberships.organization.events_count',
+  }, {
+    'rank' => ['$memberships.rank.value'],
+    'role' => ['$memberships.role.value'],
   }, result_formatter)
-
-  JSON.dump({
-    "count": count,
-    "facets": {
-      "geonames_id": [
-        # @todo
-      ],
-      "rank": [
-        # @todo
-      ],
-      "role": [
-        # @todo
-      ],
-    },
-    "results": results,
-  })
 end
 
 # @drupal Perform search on Drupal.
-get 'search/events' do
+get '/search/events' do
   content_type 'application/json'
 
-  count, results, facets = search(:events, {
+  search(:events, {
     q: ['description.value', '$regex'], # @drupal Use Search API with ElasticSearch to support matching the full document.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true]
@@ -339,40 +346,33 @@ get 'search/events' do
     date__lte: ['date.value', '$lte'],
   }, {
     'date' => 'date.value',
+  }, {
+    'classification' => ['$classification.value', unwind: true],
   }, method(:event_formatter))
-
-  JSON.dump({
-    "count": count,
-    "facets": {
-      "geonames_id": [
-        # @todo
-      ],
-      "classification": [
-        # @todo
-      ],
-    },
-    "results": results,
-  })
 end
 
 # @drupal ZIP files generated on-demand.
-get 'search/organizations.zip' do
+get '/search/organizations.zip' do
   204
 end
-get 'search/people.zip' do
+get '/search/people.zip' do
   204
 end
-get 'search/events.zip' do
+get '/search/events.zip' do
   204
 end
 
 # @drupal Text files generated on-demand.
-get 'search/organizations.txt' do
+get '/search/organizations.txt' do
   204
 end
-get 'search/people.txt' do
+get '/search/people.txt' do
   204
 end
-get 'search/events.txt' do
+get '/search/events.txt' do
   204
+end
+
+get '/autocomplete/geonames_id' do
+  # @todo
 end
