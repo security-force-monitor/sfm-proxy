@@ -654,6 +654,16 @@ get '/people/:id.txt' do
   204
 end
 
+get '/countries/:id/map' do
+  content_type 'application/json'
+
+  # @todo option without organizations?
+
+  JSON.dump({
+    # @todo
+  })
+end
+
 get '/organizations/:id/map' do
   content_type 'application/json'
 
@@ -672,16 +682,6 @@ end
 
 get '/people/:id/chart' do
   content_type 'application/json'
-
-  JSON.dump({
-    # @todo
-  })
-end
-
-get '/countries/:id/map' do
-  content_type 'application/json'
-
-  # @todo option without organizations?
 
   JSON.dump({
     # @todo
