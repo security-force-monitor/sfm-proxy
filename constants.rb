@@ -2,7 +2,7 @@ HEADERS_MAP = {
   site: {
     'ID' => :id,
 
-    'Name' => :__name,
+    'Name' => :__name, # to set default name
 
     'Headquarters (Barracks, Base, Physical Asset)' => :name__value,
 

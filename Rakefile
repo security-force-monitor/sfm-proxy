@@ -307,6 +307,9 @@ task :import do
         if !object.empty?
           # Non-events must have names.
           if type == :event || object.key?('name')
+            object['type'] = type.to_s
+            object['division_id'] = division_id
+
             # @note If new rows for an existing record are not added with IDs, the
             #   new rows will not be merged into the record.
             key = if object['id']
@@ -322,10 +325,16 @@ task :import do
               object['name']['value'].sub(/\s*\(\d+\)\z/, '')
             end
 
+            if type == :organization
+              if gid == 0
+                object['root_name'] = {'value' => 'Police'}
+              elsif gid == 1686464613
+                object['root_name'] = {'value' => 'Military'}
+              end
+            end
+
             # If it's a row for a new object, add it to the list of objects.
             if !objects[type].key?(key)
-              object['type'] = type.to_s
-              object['division_id'] = division_id
               object['gid'] = gid
               object['row'] = row_number
               unless object['id']
@@ -335,7 +344,7 @@ task :import do
             # If it's a row for an existing object, merge it into the existing object.
             elsif objects[type][key] != object
               begin
-                differences = objects[type][key].diff_and_merge(object).except('type', 'gid', 'row')
+                differences = objects[type][key].diff_and_merge(object).except('gid', 'row')
                 if !differences.empty?
                   LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} is inconsistent\n#{differences.pretty_inspect}")
                 end
@@ -434,10 +443,10 @@ task :import do
               value = thing[subproperty]['value']
               key = "#{prefix}:#{value}"
               if map.key?(key)
-                thing[subproperty]['value'] = map[key]
-                object[property][index] = objects[prefix].fetch(value)
-                object["#{property.singularize}_ids"][index] = thing
+                thing[subproperty]['value'] = map[key] # use the database ID
+                object[property][index] = objects[prefix].fetch(value) # substitute the full record
               end
+              object["#{property.singularize}_ids"][index] = thing # keep the brief record
             end
           end
         end
