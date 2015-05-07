@@ -58,6 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  faraday
   json-schema
   moped
   pupa
