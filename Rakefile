@@ -553,7 +553,7 @@ end
 
 desc 'Test the API'
 task :test do
-  BASE_URL = 'http://0.0.0.0:9292'
+  BASE_URL = ENV['base_url'] || 'http://0.0.0.0:9292'
 
   def test(path)
     response = Faraday.get("#{BASE_URL}#{path}")
