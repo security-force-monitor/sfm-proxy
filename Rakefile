@@ -1,7 +1,22 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'csv'
+require 'fileutils'
+require 'json'
+require 'pp'
+require 'securerandom'
+require 'set'
+require 'tempfile'
+
+require 'active_support/core_ext/hash/except'
+require 'active_support/core_ext/object/blank'
+require 'active_support/inflector'
+require 'faraday'
+require 'json-schema'
 require 'pupa'
+
+require_relative 'constants'
 
 LOGGER = Pupa::Logger.new('sfm-proxy')
 
@@ -10,11 +25,17 @@ def run(command)
   system(command)
 end
 
+def connection
+  @connection ||= begin
+    uri = URI.parse(ENV['MONGOLAB_URI'] || 'mongodb://localhost:27017/sfm')
+    connection = Moped::Session.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
+    connection.login(uri.user, uri.password) if uri.user && uri.password
+    connection
+  end
+end
+
 desc 'Converts Shapefile to GeoJSON'
 task :geojson do
-  require 'fileutils'
-  require 'tempfile'
-
   if ENV['input'] && ENV['output']
     dir = File.expand_path('geo/geojson', __dir__)
     FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
@@ -27,9 +48,6 @@ end
 
 desc 'Converts Shapefile to TopoJSON'
 task :topojson do
-  require 'fileutils'
-  require 'tempfile'
-
   if ENV['input'] && ENV['output']
     file = Tempfile.new('geojson')
     begin
@@ -57,29 +75,11 @@ end
 
 desc 'Imports the data from CSV'
 task :import do
-  require 'csv'
-  require 'json'
-  require 'pp'
-  require 'securerandom'
-  require 'set'
-
-  require 'active_support/core_ext/hash/except'
-  require 'active_support/core_ext/object/blank'
-  require 'active_support/inflector'
-  require 'faraday'
-  require 'json-schema'
-
-  require_relative 'constants'
-
   CONFIDENCE_ORDER = [
       'Low',
       'Medium',
       'High',
   ]
-
-  uri = URI.parse(ENV['MONGOLAB_URI'] || 'mongodb://localhost:27017/sfm')
-  CONNECTION = Moped::Session.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
-  CONNECTION.login(uri.user, uri.password) if uri.user && uri.password
 
   class DependencyGraph < Hash
     include TSort
@@ -249,7 +249,7 @@ task :import do
     :persons,
     :events,
   ].each do |collection_name|
-    CONNECTION[collection_name].drop
+    connection[collection_name].drop
   end
 
   { site: gids,
@@ -502,7 +502,7 @@ task :import do
   # @return [String] the database ID
   def import_object(object)
     collection_name = object['type'].pluralize
-    collection = CONNECTION[collection_name]
+    collection = connection[collection_name]
     selector = {_id: object.fetch('id')}
     query = collection.find(selector)
     store = object.except('type') # @todo 'gid', 'row' in production
@@ -549,4 +549,37 @@ task :import do
   #     LOGGER.info("gid #{object['gid']} row #{object['row']}: #{object['id']}")
   #   end
   # end
+end
+
+desc 'Test the API'
+task :test do
+  BASE_URL = 'http://0.0.0.0:9292'
+
+  def test(path)
+    response = Faraday.get("#{BASE_URL}#{path}")
+    if [200, 204].include?(response.status)
+      JSON.load(response.body)
+    else
+      raise "#{response.status} #{BASE_URL}#{path}"
+    end
+  end
+
+  [ "/countries",
+    "/countries/ng",
+    "/countries/ng.zip",
+    "/countries/ng.txt",
+  ].each do |path|
+    test(path)
+  end
+
+  [ :events,
+    :organizations,
+    # :people, # @todo
+  ].each do |collection_name|
+    query = connection[collection_name].find
+    puts "#{query.count} #{collection_name}"
+    query.each do |event|
+      test("/#{collection_name}/#{event['_id']}")
+    end
+  end
 end

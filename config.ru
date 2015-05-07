@@ -5,7 +5,9 @@ require 'csv'
 require 'json'
 
 require 'active_support/core_ext/hash/slice'
+require 'active_support/core_ext/object/try'
 require 'pupa'
+require 'sinatra'
 
 helpers do
   def connection
@@ -21,25 +23,25 @@ helpers do
     perpetrator_organization = if result['perpetrator_organization']
       {
         "id" => result['perpetrator_organization']['id'],
-        "name" => result['perpetrator_organization']['name']['value'],
-        "other_names" => result['perpetrator_organization']['other_names']['value'],
+        "name" => result['perpetrator_organization']['name'].try(:[], 'value'),
+        "other_names" => result['perpetrator_organization']['other_names'].try(:[], 'value'),
       }
     else
       {
-        "name" => result['perpetrator_organization_id']['value'],
+        "name" => result['perpetrator_organization_id'].try(:[], 'value'),
       }
     end
 
     {
       "id" => result['_id'],
       "division_id" => result['division_id'],
-      "date" => result['date']['value'],
-      "location_description" => result['location_description']['value'],
-      "location_admin_level_1" => result['location_admin_level_1']['value'],
-      "location_admin_level_2" => result['location_admin_level_2']['value'],
-      "classification" => result['classification']['value'],
-      "description" => result['description']['value'],
-      "perpretrator_name" => result['perpretrator_name']['value'],
+      "date" => result['date'].try(:[], 'value'),
+      "location_description" => result['location_description'].try(:[], 'value'),
+      "location_admin_level_1" => result['location_admin_level_1'].try(:[], 'value'),
+      "location_admin_level_2" => result['location_admin_level_2'].try(:[], 'value'),
+      "classification" => result['classification'].try(:[], 'value'),
+      "description" => result['description'].try(:[], 'value'),
+      "perpretrator_name" => result['perpretrator_name'].try(:[], 'value'),
       "perpetrator_organization" => perpetrator_organization,
     }
   end
@@ -132,27 +134,25 @@ end
 get '/countries' do
   content_type 'application/json'
 
-  dir = File.expand_path('topojson', __dir__)
+  dir = File.expand_path(File.join('geo', 'topojson', 'adm0'), __dir__)
 
-  JSON.dump({
-    [
-      {
-        "id" => "eg",
-        "name" => "Egypt",
-        "geometry" => JSON.load(File.read(File.join(dir, 'eg.topojson'))),
-      },
-      {
-        "id" => "mx",
-        "name" => "Mexico",
-        "geometry" => JSON.load(File.read(File.join(dir, 'mx.topojson'))),
-      },
-      {
-        "id" => "ng",
-        "name" => "Nigeria",
-        "geometry" => JSON.load(File.read(File.join(dir, 'ng.topojson'))),
-      },
-    ],
-  })
+  JSON.dump([
+    {
+      "id" => "eg",
+      "name" => "Egypt",
+      "geometry" => JSON.load(File.read(File.join(dir, 'eg.topojson'))),
+    },
+    {
+      "id" => "mx",
+      "name" => "Mexico",
+      "geometry" => JSON.load(File.read(File.join(dir, 'mx.topojson'))),
+    },
+    {
+      "id" => "ng",
+      "name" => "Nigeria",
+      "geometry" => JSON.load(File.read(File.join(dir, 'ng.topojson'))),
+    },
+  ])
 end
 
 # @drupal Load node from Drupal.
@@ -249,13 +249,15 @@ get '/organizations/:id' do
 
   result = connection[:organizations].find(_id: params[:id]).first
 
-  site_first = result['sites'].min do |a,b|
-    [a['date_first_cited']['value'], a['date_last_cited']['value']].reject(&:empty?).min <=>
-    [b['date_first_cited']['value'], b['date_last_cited']['value']].reject(&:empty?).min
+  site_ids = result['site_ids'].select{|site| site['date_first_cited'] || site['date_last_cited']}
+
+  site_first = site_ids.min do |a,b|
+    [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min <=>
+    [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).min
   end
-  site_last = result['sites'].max do |a,b|
-    [a['date_first_cited']['value'], a['date_last_cited']['value']].max <=>
-    [b['date_first_cited']['value'], b['date_last_cited']['value']].max
+  site_last = site_ids.max do |a,b|
+    [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
+    [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
   end
 
   events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
@@ -272,16 +274,16 @@ get '/organizations/:id' do
       if membership['organization_id']['value'] == result['_id']
         item = {
           "id" => member['_id'],
-          "name" => member['name']['value'],
-          "other_names" => member['other_names']['value'],
+          "name" => member['name'].try(:[], 'value'),
+          "other_names" => member['other_names'].try(:[], 'value'),
           # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
           "events_count" => 12,
-          "date_first_cited" => membership['date_first_cited']['value'],
-          "date_last_cited" => membership['date_last_cited']['value'],
+          "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
           "sources" => membership['organization_id']['sources'],
           "confidence" => membership['organization_id']['confidence'],
         }
-        if membership['role']['value'] == 'Commander'
+        if membership['role'].try(:[], 'value') == 'Commander'
           commanders << item
         else
           people << item
@@ -291,7 +293,7 @@ get '/organizations/:id' do
   end
 
   commanders = commanders.sort do |a,b|
-    b['date_first_cited']['value'] <=> a['date_first_cited']['value']
+    b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
   end
 
   if result
@@ -304,37 +306,37 @@ get '/organizations/:id' do
       "events_count" => events.count,
       "classification" => result['classification'],
       "root_name" => result['root_name'],
-      "date_first_cited" => [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| !field['value'].empty?},
-      "date_last_cited" => [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| !field['value'].empty?},
+      "date_first_cited" => site_first && [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| field.try(:[], 'value')},
+      "date_last_cited" => site_last && [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| field.try(:[], 'value')},
       "commander_present" => commanders[0],
       "commanders_former" => commanders.drop(1),
       "events" => events.map{|event|
         {
           "id" => event['_id'],
-          "date" => event['date']['value'],
-          "location_admin_level_1" => event['location_admin_level_1']['value'],
-          "location_admin_level_2" => event['location_admin_level_2']['value'],
-          "classification" => event['classification']['value'],
-          "perpretrator_name" => event['perpretrator_name']['value'],
+          "date" => event['date'].try(:[], 'value'),
+          "location_admin_level_1" => event['location_admin_level_1'].try(:[], 'value'),
+          "location_admin_level_2" => event['location_admin_level_2'].try(:[], 'value'),
+          "classification" => event['classification'].try(:[], 'value'),
+          "perpretrator_name" => event['perpretrator_name'].try(:[], 'value'),
         }
       },
-      "parents" => result['parent_ids'].each_with_index.map{|parent,index|
+      "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent,index|
         item = if result['parents'][index]['name']
           {
             "id" => result['parents'][index]['id'],
-            "name" => result['parents'][index]['name']['value'],
-            "other_names" => result['parents'][index]['other_names']['value'],
+            "name" => result['parents'][index]['name'].try(:[], 'value'),
+            "other_names" => result['parents'][index]['other_names'].try(:[], 'value'),
             # @drupal Add events_count calculated field.
             "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
           }
         else
           {
-            "name" => parent['id']['value'],
+            "name" => parent['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => parent['date_first_cited']['value'],
-          "date_last_cited" => parent['date_last_cited']['value'],
+          "date_first_cited" => parent['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => parent['date_last_cited'].try(:[], 'value'),
           "sources" => parent['id']['sources'],
           "confidence" => parent['id']['confidence'],
         })
@@ -344,70 +346,70 @@ get '/organizations/:id' do
 
         {
           "id" => child['_id'],
-          "name" => child['name']['value',]
-          "other_names" => child['other_names']['value'],
+          "name" => child['name'].try(:[], 'value'),
+          "other_names" => child['other_names'].try(:[], 'value'),
           # @drupal Add events_count calculated field.
           "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
-          "date_first_cited" => child['parent_ids'][index]['date_first_cited']['value'],
-          "date_last_cited" => child['parent_ids'][index]['date_last_cited']['value'],
+          "date_first_cited" => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
           "sources" => child['parent_ids'][index]['id']['sources'],
           "confidence" => child['parent_ids'][index]['id']['confidence'],
         }
       },
       "people" => people,
-      "memberships" => result['membership_ids'].each_with_index.map{|membership,index|
+      "memberships" => result['membership_ids'].try(:each_with_index).try(:map){|membership,index|
         item = if result['memberships'][index]['name']
           {
             "id" => result['memberships'][index]['id'],
-            "name" => result['memberships'][index]['name']['value'],
-            "other_names" => result['memberships'][index]['other_names']['value'],
+            "name" => result['memberships'][index]['name'].try(:[], 'value'),
+            "other_names" => result['memberships'][index]['other_names'].try(:[], 'value'),
           }
         else
           {
-            "name" => membership['organization_id']['value'],
+            "name" => membership['organization_id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => membership['date_first_cited']['value'],
-          "date_last_cited" => membership['date_last_cited']['value'],
+          "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
           "sources" => membership['organization_id']['sources'],
           "confidence" => membership['organization_id']['confidence'],
         })
       },
-      "areas" => result['area_ids'].each_with_index.map{|area,index|
+      "areas" => result['area_ids'].try(:each_with_index).try(:map){|area,index|
         item = if result['areas'][index]['name']
           {
             "id" => result['areas'][index]['id'],
-            "name" => result['areas'][index]['name']['value'],
+            "name" => result['areas'][index]['name'].try(:[], 'value'),
           }
         else
           {
-            "name" => area['id']['value'],
+            "name" => area['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => area['date_first_cited']['value'],
-          "date_last_cited" => area['date_last_cited']['value'],
+          "date_first_cited" => area['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => area['date_last_cited'].try(:[], 'value'),
           "sources" => area['id']['sources'],
           "confidence" => area['id']['confidence'],
         })
       },
-      "sites" => result['sites'].each_with_index.map{|site,index|
+      "sites" => result['site_ids'].each_with_index.map{|site,index|
         item = if result['sites'][index]['name']
           {
             "id" => result['sites'][index]['id'],
-            "name" => result['sites'][index]['name']['value'],
-            "admin_level_1" => result['sites'][index]['admin_level_1']['value'],
-            "admin_level_2" => result['sites'][index]['admin_level_2']['value'],
+            "name" => result['sites'][index]['name'].try(:[], 'value'),
+            "admin_level_1" => result['sites'][index]['admin_level_1'].try(:[], 'value'),
+            "admin_level_2" => result['sites'][index]['admin_level_2'].try(:[], 'value'),
           }
         else
           {
-            "name" => site['id']['value'],
+            "name" => site['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => site['date_first_cited']['value'],
-          "date_last_cited" => site['date_last_cited']['value'],
+          "date_first_cited" => site['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => site['date_last_cited'].try(:[], 'value'),
           "sources" => site['id']['sources'],
           "confidence" => site['id']['confidence'],
         })
@@ -454,12 +456,12 @@ get '/countries/:id/search/organizations' do
     end
 
     site_present = {
-      "date_first_cited" => site['date_first_cited']['value'],
-      "date_last_cited" => site['date_last_cited']['value'],
+      "date_first_cited" => site['date_first_cited'].try(:[], 'value'),
+      "date_last_cited" => site['date_last_cited'].try(:[], 'value'),
     }
     if site['name']
-      site_present['admin_level_1'] = site['admin_level_1']['value']
-      site_present['admin_level_2'] = site['admin_level_2']['value']
+      site_present['admin_level_1'] = site['admin_level_1'].try(:[], 'value')
+      site_present['admin_level_2'] = site['admin_level_2'].try(:[], 'value')
     end
 
     commander = connection[:people].find({
@@ -474,17 +476,17 @@ get '/countries/:id/search/organizations' do
     }).first
 
     commander_present = {
-      "name" => commander['name']['value'],
+      "name" => commander['name'].try(:[], 'value'),
     }
 
     {
       "id" => result['_id'],
       "division_id" => result['_id'],
-      "name" => result['name']['value'],
-      "other_names" => result['other_names']['value'],
+      "name" => result['name'].try(:[], 'value'),
+      "other_names" => result['other_names'].try(:[], 'value'),
       # @drupal Add events_count calculated field.
       "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
-      "classification" => result['classification']['value'],
+      "classification" => result['classification'].try(:[], 'value'),
       "site_present" => site_present,
       "commander_present" => commander_present,
     }
@@ -525,19 +527,19 @@ get '/countries/:id/search/people' do
     membership_present, membership_former = memberships.map do |membership|
       organization = if membership['organization']
         {
-          "name" => membership['organization']['name']['value'],
+          "name" => membership['organization']['name'].try(:[], 'value'),
         }
       else
         {
-          "name" => membership['organization_id']['value'],
+          "name" => membership['organization_id'].try(:[], 'value'),
         }
       end
 
       {
         "organization" => organization,
-        "role" => membership['role']['value'],
-        "title" => membership['role']['value'],
-        "rank" => membership['role']['value'],
+        "role" => membership['role'].try(:[], 'value'),
+        "title" => membership['role'].try(:[], 'value'),
+        "rank" => membership['role'].try(:[], 'value'),
       }
     end
 
@@ -548,8 +550,8 @@ get '/countries/:id/search/people' do
 
       if site['name']
         membership_present['organization']['site_present'] = {
-          "admin_level_1" => site['admin_level_1']['value'],
-          "admin_level_2" => site['admin_level_2']['value'],
+          "admin_level_1" => site['admin_level_1'].try(:[], 'value'),
+          "admin_level_2" => site['admin_level_2'].try(:[], 'value'),
         }
       end
     end
@@ -557,8 +559,8 @@ get '/countries/:id/search/people' do
     {
       "id" => result['_id'],
       "division_id" => result['division_id'],
-      "name" => result['name']['value'],
-      "other_names" => result['other_names']['value'],
+      "name" => result['name'].try(:[], 'value'),
+      "other_names" => result['other_names'].try(:[], 'value'),
       # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
       "events_count" => 12,
       "membership_present" => membership_present,
@@ -571,9 +573,9 @@ get '/countries/:id/search/people' do
     q: ['name.value', '$regex'],
     # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['memberships.site.geonames_id.value', '$eq'],
-    classification__in: ['memberships.organization.classification.value', '$in', split: true]
-    rank__in: ['memberships.rank.value', '$in', split: true]
-    role__in: ['memberships.role.value', '$in', split: true]
+    classification__in: ['memberships.organization.classification.value', '$in', split: true],
+    rank__in: ['memberships.rank.value', '$in', split: true],
+    role__in: ['memberships.role.value', '$in', split: true],
     date_first_cited__gte: ['memberships.date_first_cited.value', '$gte'],
     date_first_cited__lte: ['memberships.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['memberships.date_last_cited.value', '$gte'],
@@ -610,7 +612,7 @@ get '/countries/:id/search/events' do
     q: ['description.value', '$regex'],
     # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
-    classification__in: ['classification.value', '$in', split: true]
+    classification__in: ['classification.value', '$in', split: true],
     date__gte: ['date.value', '$gte'],
     date__lte: ['date.value', '$lte'],
   }, {
@@ -657,7 +659,7 @@ end
 get '/countries/:id/map' do
   content_type 'application/json'
 
-  # @todo option without organizations?
+  # @todo option without organizations for country detail?
 
   JSON.dump({
     # @todo
@@ -700,3 +702,5 @@ end
 get '/geometries/:id' do
   # @todo
 end
+
+run Sinatra::Application
