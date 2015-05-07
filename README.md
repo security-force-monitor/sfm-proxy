@@ -17,4 +17,11 @@ Download shapefiles from [GADM](http://www.gadm.org/country).
 * [Search organizations, peopl and events](/docs/search.md)
 * [Base layers and sessions](/docs/miscellaneous.md)
 
+## Deployment
+
+    heroku create
+    heroku addons:create mongolab
+    git push heroku master
+    heroku run rake import novalidate=true
+
 Copyright (c) 2015 Open North Inc., released under the MIT license
