@@ -37,7 +37,7 @@ end
 desc 'Converts Shapefile to GeoJSON'
 task :geojson do
   if ENV['input'] && ENV['output']
-    dir = File.expand_path('geo/geojson', __dir__)
+    dir = File.expand_path(File.join('data', 'geojson'), __dir__)
     FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
 
     run(%(ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 "#{File.join(dir, "#{ENV['output']}.geojson")}" "#{ENV['input']}"))
@@ -58,7 +58,7 @@ task :topojson do
       file.unlink
     end
 
-    dir = File.expand_path('geo/topojson', __dir__)
+    dir = File.expand_path(File.join('data', 'topojson'), __dir__)
     FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
 
     begin

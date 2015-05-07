@@ -178,7 +178,7 @@ end
 get '/countries' do
   content_type 'application/json'
 
-  dir = File.expand_path(File.join('geo', 'topojson', 'adm0'), __dir__)
+  dir = File.expand_path(File.join('data', 'topojson', 'adm0'), __dir__)
 
   JSON.dump([
     {
@@ -699,7 +699,7 @@ get '/people/:id/chart' do
 end
 
 get '/autocomplete/geonames_id' do
-  JSON.dump(CSV.foreach(File.expand_path('NG.txt', __dir__), col_sep: "\t").map do |row|
+  JSON.dump(CSV.foreach(File.expand_path(File.join('data', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
     {
       id: Integer(row[0]),
       name: row[1],
