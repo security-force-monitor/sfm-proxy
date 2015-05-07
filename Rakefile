@@ -10,6 +10,20 @@ def run(command)
   system(command)
 end
 
+desc 'Converts Shapefile to GeoJSON'
+task :geojson do
+  require 'fileutils'
+  require 'tempfile'
+
+  if ENV['input'] && ENV['output']
+    dir = File.expand_path('geo/geojson', __dir__)
+    FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
+
+    run(%(ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 "#{File.join(dir, "#{ENV['output']}.geojson")}" "#{ENV['input']}"))
+  else
+    LOGGER.error('usage: rake geojson input=path/to/shapefile.shp output=adm0/ng')
+  end
+end
 
 desc 'Converts Shapefile to TopoJSON'
 task :topojson do
@@ -26,8 +40,8 @@ task :topojson do
       file.unlink
     end
 
-    dir = File.expand_path('topojson', __dir__)
-    FileUtils.mkdir_p(dir)
+    dir = File.expand_path('geo/topojson', __dir__)
+    FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
 
     begin
       if run(%(ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 "#{path}" "#{ENV['input']}"))
