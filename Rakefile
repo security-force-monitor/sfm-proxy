@@ -564,12 +564,33 @@ task :test do
     end
   end
 
-  [ "/countries",
-    "/countries/ng",
-    "/countries/ng.zip",
-    "/countries/ng.txt",
+  [ '/countries',
+    '/autocomplete/geonames_id',
   ].each do |path|
     test(path)
+  end
+
+  [ '/countries/ng',
+    '/countries/ng/search/organizations',
+    '/countries/ng/search/people',
+    '/countries/ng/search/events',
+  ].each do |path|
+    ['', '.txt', '.zip'].each do |suffix|
+      test("#{path}#{suffix}")
+    end
+  end
+
+  # @note Query string parameters are not tested.
+  [ :events,
+    :organizations,
+    :people,
+  ].each do |collection_name|
+    count = JSON.load(Faraday.get("#{BASE_URL}/countries/ng/search/#{collection_name}").body)['count']
+    pages = count / 20
+    puts "%3d #{collection_name} results" % (pages + 1)
+    pages.times do |n|
+      test("/countries/ng/search/#{collection_name}?p=#{n + 2}")
+    end
   end
 
   [ :events,
@@ -577,9 +598,22 @@ task :test do
     # :people, # @todo
   ].each do |collection_name|
     query = connection[collection_name].find
-    puts "#{query.count} #{collection_name}"
-    query.each do |event|
-      test("/#{collection_name}/#{event['_id']}")
+    puts "%3d #{collection_name}" % query.count
+    query.each do |object|
+      suffixes = ['']
+      unless collection_name == :events
+        suffixes += ['.txt', '.zip']
+      end
+      suffixes.each do |suffix|
+        test("/#{collection_name}/#{object['_id']}#{suffix}")
+      end
     end
   end
+
+  # @todo
+  # /countries/:id/map
+  # /organizations/:id/map
+  # /organizations/:id/chart
+  # /people/:id/chart
+  # /geometries/:id
 end

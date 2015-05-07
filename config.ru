@@ -61,7 +61,7 @@ helpers do
       end
     end
 
-    matches = sort(collection.find(criteria), order_map)
+    query = sort(collection.find(criteria), order_map)
 
     facets = {}
     facets_map.each do |facet,(field,options)|
@@ -88,12 +88,12 @@ helpers do
       end
     end
 
-    results = paginate(matches).map do |result|
-      formatter.call(result)
+    results = paginate(query).map do |result|
+      result_formatter.call(result)
     end
 
     JSON.dump({
-      "count" => matches.count,
+      "count" => query.count,
       "facets" => facets,
       "results" => results,
     })
@@ -126,8 +126,52 @@ helpers do
 
   def paginate(query)
     offset = [params.fetch(:p, 1).to_i, 1].max - 1
-    matches.skip(offset * 20).limit(20)
+    query.skip(offset * 20).limit(20)
   end
+end
+
+# @drupal Daily or hourly ron job to create and ZIP CSV files for download.
+get '/countries/:id.zip' do
+  204
+end
+
+# @drupal ZIP file generated on-demand.
+get '/countries/:id/search/organizations.zip' do
+  204
+end
+get '/countries/:id/search/people.zip' do
+  204
+end
+get '/countries/:id/search/events.zip' do
+  204
+end
+get '/organizations/:id.zip' do
+  204
+end
+get '/people/:id.zip' do
+  204
+end
+
+# @drupal Daily or hourly ron job to create text files for download.
+get '/countries/:id.txt' do
+  204
+end
+
+# @drupal Text file generated on-demand.
+get '/countries/:id/search/organizations.txt' do
+  204
+end
+get '/countries/:id/search/people.txt' do
+  204
+end
+get '/countries/:id/search/events.txt' do
+  204
+end
+get '/organizations/:id.txt' do
+  204
+end
+get '/people/:id.txt' do
+  204
 end
 
 # @drupal Load list of nodes from Drupal. TopoJSON files are created by drush command.
@@ -204,16 +248,6 @@ EOL
   end
 end
 
-# @drupal Daily or hourly ron job to create and ZIP CSV files for download.
-get '/countries/:id.zip' do
-  204
-end
-
-# @drupal Daily or hourly ron job to create text files for download.
-get '/countries/:id.txt' do
-  204
-end
-
 # @drupal Load node from Drupal.
 get '/events/:id' do
   content_type 'application/json'
@@ -249,6 +283,7 @@ get '/organizations/:id' do
 
   result = connection[:organizations].find(_id: params[:id]).first
 
+  # Some sites may not have any dates, making sites not comparable.
   site_ids = result['site_ids'].select{|site| site['date_first_cited'] || site['date_last_cited']}
 
   site_first = site_ids.min do |a,b|
@@ -451,8 +486,9 @@ get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    site = result['sites'].max do |a,b|
-      a['date_first_cited']['value'] <=> b['date_first_cited']['value']
+    site = result['site_ids'].max do |a,b|
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
+      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
     end
 
     site_present = {
@@ -475,9 +511,13 @@ get '/countries/:id/search/organizations' do
       'memberships.date_first_cited.value' => -1, # XXX don't know if this sorts correctly
     }).first
 
-    commander_present = {
-      "name" => commander['name'].try(:[], 'value'),
-    }
+    commander_present = if commander
+      {
+        "name" => commander['name'].try(:[], 'value'),
+      }
+    else
+      nil
+    end
 
     {
       "id" => result['_id'],
@@ -521,7 +561,8 @@ get '/countries/:id/search/people' do
 
   result_formatter = lambda do |result|
     memberships = result['memberships'].max(2) do |a,b|
-      a['date_first_cited']['value'] <=> b['date_first_cited']['value']
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
+      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
     end
 
     membership_present, membership_former = memberships.map do |membership|
@@ -544,8 +585,9 @@ get '/countries/:id/search/people' do
     end
 
     if memberships[0]['organization']
-      site = memberships[0]['organization']['sites'].max do |a,b|
-        a['date_first_cited']['value'] <=> b['date_first_cited']['value']
+      site = memberships[0]['organization']['site_ids'].max do |a,b|
+        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
+        [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
       end
 
       if site['name']
@@ -620,40 +662,6 @@ get '/countries/:id/search/events' do
   }, {
     'classification' => ['$classification.value', unwind: true],
   }, result_formatter)
-end
-
-# @drupal ZIP file generated on-demand.
-get '/countries/:id/search/organizations.zip' do
-  204
-end
-get '/countries/:id/search/people.zip' do
-  204
-end
-get '/countries/:id/search/events.zip' do
-  204
-end
-get '/organizations/:id.zip' do
-  204
-end
-get '/people/:id.zip' do
-  204
-end
-
-# @drupal Text file generated on-demand.
-get '/countries/:id/search/organizations.txt' do
-  204
-end
-get '/countries/:id/search/people.txt' do
-  204
-end
-get '/countries/:id/search/events.txt' do
-  204
-end
-get '/organizations/:id.txt' do
-  204
-end
-get '/people/:id.txt' do
-  204
 end
 
 get '/countries/:id/map' do
