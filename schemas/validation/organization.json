@@ -67,6 +67,17 @@
     "name": {
       "$ref": "#/definitions/complex_string"
     },
+    "root_name": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
     "other_names": {
       "type": "object",
       "properties": {

@@ -344,7 +344,7 @@ task :import do
             # If it's a row for an existing object, merge it into the existing object.
             elsif objects[type][key] != object
               begin
-                differences = objects[type][key].diff_and_merge(object).except('gid', 'row')
+                differences = objects[type][key].diff_and_merge(object).except('gid', 'row', 'notes')
                 if !differences.empty?
                   LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} is inconsistent\n#{differences.pretty_inspect}")
                 end
@@ -511,13 +511,14 @@ task :import do
     tsort = graph.tsort
   rescue TSort::Cyclic => e
     LOGGER.error(e.message)
-    e.message.scan(/"(.+?)"/).flatten.each do |id|
+    e.message.scan(/"(#{e.message[/\borganization:Joint Task Force, /]}.+?)"/).flatten.each do |id|
       graph.delete(id)
     end
+    retry
   end
 
   # Save the objects to the database.
-  graph.tsort.each do |id|
+  tsort.each do |id|
     type, key = id.split(':', 2)
     if objects[type.to_sym].key?(key)
       object = objects[type.to_sym][key]
