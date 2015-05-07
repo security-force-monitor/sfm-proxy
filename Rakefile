@@ -16,7 +16,7 @@ require 'faraday'
 require 'json-schema'
 require 'pupa'
 
-require_relative 'constants'
+require_relative 'lib/constants'
 
 LOGGER = Pupa::Logger.new('sfm-proxy')
 
