@@ -58,7 +58,7 @@ helpers do
       'division_id' => "ocd-division/country:#{params[:id]}"
     }
     criteria_map.each do |key,(field,operator,options)|
-      if params.key?(key)
+      if params.key?(key.to_s)
         value = params[key]
         value = value.split(',') if options && options[:split]
         criteria[field] ||= {}
