@@ -14,7 +14,6 @@ get '/countries' do
 
   dir = File.expand_path(File.join('..', 'data', 'topojson', 'adm0'), __dir__)
 
-  # @todo Replace with GAUL and/or make geometries optional.
   JSON.dump([ # @hardcoded
     {
       "id" => "eg",
