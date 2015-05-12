@@ -552,7 +552,7 @@ task :import do
 end
 
 desc 'Test the API'
-task :test do
+task :default do
   BASE_URL = ENV['base_url'] || 'http://0.0.0.0:9292'
 
   def test(path)
