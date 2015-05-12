@@ -46,7 +46,7 @@ get '/organizations/:id' do
 
   # @todo Fake it until you can make it.
   if events.count.zero?
-    events = [connection[:events].findOne()]
+    events = [connection[:events].find.first]
   end
 
   members = connection[:people].find({

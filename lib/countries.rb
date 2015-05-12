@@ -12,7 +12,7 @@ end
 get '/countries' do
   content_type 'application/json'
 
-  dir = File.expand_path(File.join('data', 'topojson', 'adm0'), __dir__)
+  dir = File.expand_path(File.join('..', 'data', 'topojson', 'adm0'), __dir__)
 
   # @todo Replace with GAUL and/or make geometries optional.
   JSON.dump([ # @hardcoded

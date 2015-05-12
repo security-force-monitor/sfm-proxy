@@ -106,7 +106,7 @@ get '/countries/:id/search/events.txt' do
 end
 
 get '/autocomplete/geonames_id' do
-  JSON.dump(CSV.foreach(File.expand_path(File.join('data', 'geonames', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
+  JSON.dump(CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
     {
       id: Integer(row[0]),
       name: row[1],
