@@ -46,7 +46,7 @@ get '/organizations/:id' do
 
   # @todo Fake it until you can make it.
   if events.count.zero?
-    events = [connection[:events].find.first]
+    events = [connection[:events].find({'perpretrator_name.value' => {'$exists' => true}}).first]
   end
 
   members = connection[:people].find({
