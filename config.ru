@@ -8,6 +8,11 @@ require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/try'
 require 'pupa'
 require 'sinatra'
+require 'sinatra/cross_origin'
+
+configure do
+  enable :cross_origin
+end
 
 helpers do
   def connection
@@ -180,7 +185,8 @@ get '/countries' do
 
   dir = File.expand_path(File.join('data', 'topojson', 'adm0'), __dir__)
 
-  JSON.dump([
+  # @todo Replace with GAUL and/or make geometries optional.
+  JSON.dump([ # @hardcoded
     {
       "id" => "eg",
       "name" => "Egypt",
@@ -204,7 +210,7 @@ get '/countries/:id' do
   content_type 'application/json'
 
   if params[:id] == 'ng'
-    JSON.dump({
+    JSON.dump({ # @hardcoded
       "id" => "ng",
       "name" => "Nigeria",
       "title" => "Federal Republic of Nigeria",
@@ -257,7 +263,7 @@ get '/events/:id' do
   if result
     JSON.dump(event_formatter(result).merge({
       # @drupal Use PostGIS to determine areas and sites within a 2km radius of event.
-      "organizations_nearby" => [
+      "organizations_nearby" => [ # @hardcoded
         {
           "id" => "123e4567-e89b-12d3-a456-426655440000",
           "name" => "Brigade 2",
@@ -312,7 +318,7 @@ get '/organizations/:id' do
           "name" => member['name'].try(:[], 'value'),
           "other_names" => member['other_names'].try(:[], 'value'),
           # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-          "events_count" => 12,
+          "events_count" => 12, # @hardcoded
           "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
           "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
           "sources" => membership['organization_id']['sources'],
@@ -450,7 +456,7 @@ get '/organizations/:id' do
         })
       },
       # @drupal Use PostGIS to determine events within a 2km radius of all sites over all time.
-      "events_nearby" => [
+      "events_nearby" => [ # @hardcoded
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "date" => '2010-01-01',
@@ -551,7 +557,7 @@ get '/countries/:id/search/organizations' do
     'date_last_cited' => 'sites.date_last_cited.value', # XXX don't know if this sorts correctly
     'events_count' => 'events_count',
   }, {
-    # No facets.
+    'classification' => ['$classification.value', unwind: true],
   }, result_formatter)
 end
 
@@ -604,7 +610,7 @@ get '/countries/:id/search/people' do
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
       # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-      "events_count" => 12,
+      "events_count" => 12, # @hardcoded
       "membership_present" => membership_present,
       "membership_former" => membership_former,
     }
@@ -641,7 +647,7 @@ get '/countries/:id/search/events' do
   result_formatter = lambda do |result|
     event_formatter(result).merge({
       # @drupal How expensive is it to do radius search for each result in PostGIS?
-      "sites_nearby" => [
+      "sites_nearby" => [ # @hardcoded
         {
           "name" => "Atlantis",
         },
@@ -709,6 +715,15 @@ end
 
 get '/geometries/:id' do
   # @todo
+end
+
+# @see https://github.com/britg/sinatra-cross_origin#responding-to-options
+options '*' do
+  response.headers['Allow'] = 'HEAD,GET,PUT,POST,DELETE,OPTIONS'
+
+  response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
+
+  200
 end
 
 run Sinatra::Application

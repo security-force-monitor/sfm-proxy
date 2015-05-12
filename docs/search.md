@@ -45,10 +45,19 @@ Sort orders:
 * `date_last_cited`
 * `events_count` *Not yet supported*
 
+Facets:
+
+* `classification`
+
 ```json
 {
   "count": 1234,
   "facets": {
+    "classification": [
+      ["Battalion", 100],
+      ["Division", 1],
+      ["Brigade", 10]
+    ]
   },
   "results": [
     {
@@ -94,6 +103,11 @@ Sort orders:
 
 * `name`
 * `events_count` *Not yet supported*
+
+Facets:
+
+* `rank`
+* `role`
 
 ```json
 {
@@ -158,6 +172,10 @@ Sort orders:
 Sort orders:
 
 * `date`
+
+Facets:
+
+* `classification`
 
 Each item in the `results` array is in the same format as the `/events/:id` response, but with a `sites_nearby` field instead of a `organizations_nearby` field.
 
