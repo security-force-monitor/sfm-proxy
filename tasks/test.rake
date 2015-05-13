@@ -16,8 +16,24 @@ task :default do
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
+    '/geometries/xa',
   ].each do |path|
     test(path)
+  end
+
+  [ '/countries/ng/map',
+    '/countries/ng/map?at=invalid',
+    '/countries/ng/map?at=2010-01-01&bbox=invalid',
+  ].each do |path|
+    test(path, [400])
+  end
+
+  [ 'events',
+    'organizations',
+    'people',
+    'geometries',
+  ].each do |path|
+    test("/#{path}/nonexistent", [404])
   end
 
   [ '/countries/ng',
@@ -47,7 +63,6 @@ task :default do
     :organizations,
     # :people, # @todo
   ].each do |collection_name|
-    test("/#{collection_name}/nonexistent", [404])
     query = connection[collection_name].find
     puts "%3d #{collection_name}" % query.count
     query.each do |object|
@@ -61,15 +76,7 @@ task :default do
     end
   end
 
-  [ '/countries/ng/map',
-    '/countries/ng/map?at=invalid',
-    '/countries/ng/map?at=2010-01-01&bbox=invalid',
-  ].each do |path|
-    test(path, [400])
-  end
-
   # @todo
-  # /countries/:id/map
   # /organizations/:id/map
   # /organizations/:id/chart
   # /people/:id/chart

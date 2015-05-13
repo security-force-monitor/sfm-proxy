@@ -1,5 +1,13 @@
 get '/geometries/:id' do
-  # @todo
+  content_type 'application/json'
+
+  filename = File.expand_path(File.join('..', 'data', 'topojson', 'adm0', "#{params[:id]}.topojson"), __dir__)
+
+  if File.exist?(filename)
+    File.read(filename)
+  else
+    404
+  end
 end
 
 # @see https://github.com/britg/sinatra-cross_origin#responding-to-options
