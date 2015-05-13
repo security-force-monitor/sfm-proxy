@@ -177,7 +177,7 @@ get '/countries/:id/search/organizations' do
     date_last_cited__lte: ['sites.date_last_cited.value', '$lte'],
     # @drupal Add events_count calculated field.
     events_count__gte: ['events_count', '$gte'],
-    events_count__lte: ['events_count', '$lte'],    
+    events_count__lte: ['events_count', '$lte'],
   }, {
     'name' => 'name.value',
     'date_first_cited' => 'sites.date_first_cited.value', # XXX don't know if this sorts correctly

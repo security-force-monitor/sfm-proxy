@@ -5,7 +5,7 @@
 `/countries/:id/map` returns all matching organizations and events to render on a map and timeline. Parameters:
 
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
-* `bbox`: comma-separated bottom-left and top-right coordinates.
+* `bbox`: comma-separated south-west and north-east coordinates.
 * `classification__in`: comma-separated list.
 
 If an event occurs on a different date than the `at` parameter's value, its only properties will be `id` and `date`.
@@ -20,9 +20,11 @@ If an event occurs on a different date than the `at` parameter's value, its only
         "The Planeteers"
       ],
       "root_name": "Nigerian Army",
-      "person_name": "Michael Maris",
+      "commander_present": {
+        "name": "Michael Maris"
+      },
       "events_count": 12,
-      "geometry": TopoJSON
+      "geometry": GeoJSON
     },
     ...
   ],

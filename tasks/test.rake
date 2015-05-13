@@ -13,6 +13,9 @@ task :default do
 
   [ '/countries',
     '/autocomplete/geonames_id',
+    '/countries/ng/map?at=2010-01-01',
+    '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
+    '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
   ].each do |path|
     test(path)
   end
@@ -58,9 +61,12 @@ task :default do
     end
   end
 
-  test('/countries/ng/map', [400])
-  test('/countries/ng/map?at=invalid', [400])
-  test('/countries/ng/map?at=2010-01-01&bbox=invalid', [400])
+  [ '/countries/ng/map',
+    '/countries/ng/map?at=invalid',
+    '/countries/ng/map?at=2010-01-01&bbox=invalid',
+  ].each do |path|
+    test(path, [400])
+  end
 
   # @todo
   # /countries/:id/map
