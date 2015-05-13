@@ -25,10 +25,16 @@ To import faster, skip the validation of records against the JSON Schema:
 
     bundle exec rake import_csv novalidate=true
 
+Import admin level 1 and 2 geometries:
+
+    bundle exec rake import_geo admin_level=1 country_code=ng
+    bundle exec rake import_geo admin_level=2 country_code=ng
+
 Create the geospatial indices:
 
     mongo sfm --eval "db.events.createIndex({geo: '2dsphere'})"
     mongo sfm --eval "db.sites.createIndex({geo: '2dsphere'})"
+    mongo sfm --eval "db.geometries.createIndex({geo: '2dsphere'})"
 
 Start a local server:
 
@@ -58,6 +64,8 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
     heroku addons:create mongolab
     git push heroku master
     heroku run rake import_csv novalidate=true
+    heroku run rake import_geo admin_level=1 country_code=ng
+    heroku run rake import_geo admin_level=2 country_code=ng
 
 Log into the remote MongoDB database and create the geospatial indices.
 
