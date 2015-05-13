@@ -9,7 +9,7 @@
   {
     "id": "ng",
     "name": "Nigeria",
-    "geometry": TopoJSON
+    "geometry": GeoJSON
   },
   ...
 ]

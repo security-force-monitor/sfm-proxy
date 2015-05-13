@@ -1,7 +1,7 @@
-get '/geometries/:id' do
+get '/geometries/([a-z]{2}).(geojson|topojson)' do |id,extension|
   content_type 'application/json'
 
-  filename = File.expand_path(File.join('..', 'data', 'topojson', 'adm0', "#{params[:id]}.topojson"), __dir__)
+  filename = File.expand_path(File.join('..', 'data', extension, 'adm0', "#{id}.#{extension}"), __dir__)
 
   if File.exist?(filename)
     File.read(filename)

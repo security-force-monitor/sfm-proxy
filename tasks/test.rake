@@ -16,7 +16,8 @@ task :default do
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
-    '/geometries/xa',
+    '/geometries/xa.geojson',
+    '/geometries/xa.topojson',
   ].each do |path|
     test(path)
   end
@@ -28,12 +29,13 @@ task :default do
     test(path, [400])
   end
 
-  [ 'events',
-    'organizations',
-    'people',
-    'geometries',
+  [ '/events/nonexistent',
+    '/organizations/nonexistent',
+    '/people/nonexistent',
+    '/geometries/xz.geojson',
+    '/geometries/xz.topojson',
   ].each do |path|
-    test("/#{path}/nonexistent", [404])
+    test(path, [404])
   end
 
   [ '/countries/ng',

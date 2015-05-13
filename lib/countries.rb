@@ -12,23 +12,23 @@ end
 get '/countries' do
   content_type 'application/json'
 
-  dir = File.expand_path(File.join('..', 'data', 'topojson', 'adm0'), __dir__)
+  dir = File.expand_path(File.join('..', 'data', 'geojson', 'adm0'), __dir__)
 
   JSON.dump([ # @hardcoded
     {
       "id" => "eg",
       "name" => "Egypt",
-      "geometry" => JSON.load(File.read(File.join(dir, 'eg.topojson'))),
+      "feature" => JSON.load(File.read(File.join(dir, 'eg.geojson')))['features'][0],
     },
     {
       "id" => "mx",
       "name" => "Mexico",
-      "geometry" => JSON.load(File.read(File.join(dir, 'mx.topojson'))),
+      "feature" => JSON.load(File.read(File.join(dir, 'mx.geojson')))['features'][0],
     },
     {
       "id" => "ng",
       "name" => "Nigeria",
-      "geometry" => JSON.load(File.read(File.join(dir, 'ng.topojson'))),
+      "feature" => JSON.load(File.read(File.join(dir, 'ng.geojson')))['features'][0],
     },
   ])
 end
