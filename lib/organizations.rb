@@ -1,7 +1,7 @@
-get '/organizations/:id.zip' do
+get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).zip} do |id|
   204
 end
-get '/organizations/:id.txt' do
+get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).txt} do |id|
   204
 end
 

@@ -62,7 +62,6 @@ Facets:
   "results": [
     {
       "id": "123e4567-e89b-12d3-a456-426655440000",
-      "division_id": "ocd-division/country:ng",
       "name": "Brigade 2",
       "other_names": [
         "The Planeteers"
@@ -127,7 +126,6 @@ Facets:
   "results": [
     {
       "id": "358eba6d-d37d-4f0f-b12b-b25fefb38e6f",
-      "division_id": "ocd-division/country:ng",
       "name": "Terry Guerrier",
       "other_names": [
         "Red Ranger"
@@ -177,7 +175,7 @@ Facets:
 
 * `classification`
 
-Each item in the `results` array is in the same format as the `/events/:id` response, but with a `sites_nearby` field instead of a `organizations_nearby` field.
+Each item in the `results` array is in the same format as the `/events/:id` response, but with a `sites_nearby` field instead of a `organizations_nearby` field, and without `division_id`, `location`, and `description` fields.
 
 ```json
 {

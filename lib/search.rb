@@ -84,24 +84,24 @@ helpers do
 end
 
 # @drupal ZIP file generated on-demand.
-get '/countries/:id/search/organizations.zip' do
+get %r{/countries/([a-z]{2})/search/organizations.zip} do |id|
   204
 end
-get '/countries/:id/search/people.zip' do
+get %r{/countries/([a-z]{2})/search/people.zip} do |id|
   204
 end
-get '/countries/:id/search/events.zip' do
+get %r{/countries/([a-z]{2})/search/events.zip} do |id|
   204
 end
 
 # @drupal Text file generated on-demand.
-get '/countries/:id/search/organizations.txt' do
+get %r{/countries/([a-z]{2})/search/organizations.txt} do |id|
   204
 end
-get '/countries/:id/search/people.txt' do
+get %r{/countries/([a-z]{2})/search/people.txt} do |id|
   204
 end
-get '/countries/:id/search/events.txt' do
+get %r{/countries/([a-z]{2})/search/events.txt} do |id|
   204
 end
 
@@ -154,7 +154,6 @@ get '/countries/:id/search/organizations' do
 
     {
       "id" => result['_id'],
-      "division_id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
       # @drupal Add events_count calculated field.
@@ -233,7 +232,6 @@ get '/countries/:id/search/people' do
 
     {
       "id" => result['_id'],
-      "division_id" => result['division_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
       # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
@@ -272,7 +270,7 @@ get '/countries/:id/search/events' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    event_formatter(result).merge({
+    event_formatter(result).except('division_id', 'location', 'description').merge({
       # @drupal How expensive is it to do radius search for each result in PostGIS?
       "sites_nearby" => [ # @hardcoded
         {

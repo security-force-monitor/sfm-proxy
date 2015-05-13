@@ -1,5 +1,19 @@
 NUMERIC = /-?\d+(?:\.\d+)?/
 
+# @drupal Load nodes from Drupal.
+get '/countries/:id/events' do
+  content_type 'application/json'
+
+  results = connection[:events].find({'division_id' => "ocd-division/country:#{params[:id]}"})
+
+  JSON.dump(results.each{|result|
+    {
+      "id" => result['_id'],
+      "date" => result['date'].try(:[], 'value'),
+    }
+  })
+end
+
 # @drupal Load node from Drupal.
 get '/events/:id' do
   content_type 'application/json'
@@ -47,6 +61,10 @@ get '/countries/:id/map' do
     coordinates = [14.5771, 4.2405, 2.6917, 13.8659] # @hardcoded Nigeria west-south, east-north
   end
 
+  criteria = {
+    'division_id' => "ocd-division/country:#{params[:id]}",
+  }
+
   # @drupal Switch to PostGIS query. Just match on ADM1 for now.
   geonames_id_to_geo = {}
 
@@ -72,13 +90,13 @@ get '/countries/:id/map' do
 
   area_id_to_geoname_id = {}
 
-  connection[:areas].find({
+  connection[:areas].find(criteria.merge({
     'geonames_id.value' => {'$in' => geonames_id_to_geo.keys},
-  }).select('_id' => 1, 'geonames_id.value' => 1).each do |area|
+  })).select('_id' => 1, 'geonames_id.value' => 1).each do |area|
     area_id_to_geoname_id[area['_id']] = area['geonames_id']['value']
   end
 
-  criteria = {
+  organization_criteria = criteria.merge({
     'area_ids' => {
       '$elemMatch' => {
         '$and' => [
@@ -100,18 +118,18 @@ get '/countries/:id/map' do
         ],
       },
     },
-  }
+  })
 
   if params.key?('classification__in')
-    criteria['classification.value'] = {'$in' => params['classification__in'].split(',')}
+    organization_criteria['classification.value'] = {'$in' => params['classification__in'].split(',')}
   end
 
-  organizations = connection[:organizations].find(criteria)
+  organizations = connection[:organizations].find(organization_criteria)
 
   # @note No events have coordinates. Add date and bbox logic and remove this dummy code later.
   longitude_range = Integer(coordinates[2] * 10_000)...Integer(coordinates[0] * 10_000)
   latitude_range = Integer(coordinates[1] * 10_000)...Integer(coordinates[3] * 10_000)
-  events = connection[:events].find.limit(10)
+  events = connection[:events].find(criteria).limit(10)
 
   JSON.dump({
     "organizations" => organizations.map{|result|

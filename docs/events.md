@@ -8,8 +8,6 @@
 * `bbox`: comma-separated south-west and north-east coordinates.
 * `classification__in`: comma-separated list.
 
-If an event occurs on a different date than the `at` parameter's value, its only properties will be `id` and `date`.
-
 ```json
 {
   "organizations": [
@@ -53,9 +51,23 @@ If an event occurs on a different date than the `at` parameter's value, its only
 }
 ```
 
+## List
+
+`/countries/:id/events` returns all events to render on a timeline.
+
+```json
+[
+  {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "date": "2010-01-01",
+  },
+  ...
+]
+```
+
 ## Detail
 
-`/events/:id` returns an event:
+`/events/:id` returns an event.
 
 ```json
 {
