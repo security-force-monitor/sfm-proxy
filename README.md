@@ -43,13 +43,14 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
     ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='EG'" data/geojson/adm0/eg.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
     ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='MX'" data/geojson/adm0/mx.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
     ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='NG'" data/geojson/adm0/ng.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
+
     topojson -o data/topojson/adm0/eg.topojson data/geojson/adm0/eg.geojson
     topojson -o data/topojson/adm0/mx.topojson data/geojson/adm0/mx.geojson
     topojson -o data/topojson/adm0/ng.topojson data/geojson/adm0/ng.geojson
 
-Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefiles produces large files:
+**Note:** Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefiles produces large files:
 
-    bundle exec rake topojson input=shapefiles/NGA_adm/NGA_adm0.shp output=adm0/ng
+    bundle exec rake topojson output=adm0/ng input=shapefiles/NGA_adm/NGA_adm0.shp
 
 ## Deployment
 

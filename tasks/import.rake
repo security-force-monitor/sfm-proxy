@@ -1,5 +1,3 @@
-require 'csv'
-require 'pp'
 require 'securerandom'
 require 'set'
 
@@ -7,8 +5,6 @@ require 'active_support/core_ext/hash/except'
 require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
 require 'json-schema'
-
-require_relative 'constants'
 
 desc 'Imports the data from CSV'
 task :import_csv do

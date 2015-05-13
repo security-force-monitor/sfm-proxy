@@ -1,10 +1,14 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'csv'
 require 'json'
+require 'pp'
 
 require 'faraday'
 require 'pupa'
+
+require_relative 'tasks/constants'
 
 LOGGER = Pupa::Logger.new('sfm-proxy')
 
