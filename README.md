@@ -19,11 +19,16 @@ Use [rbenv](https://github.com/sstephenson/rbenv) or [rvm](https://rvm.io/). Ins
 Drop the local `sfm` MongoDB database, and import the data from Google Sheets:
 
     mongo sfm --eval "db.dropDatabase()"
-    bundle exec rake import
+    bundle exec rake import_csv
 
-To import faster, skip the validation of objects against JSON Schema:
+To import faster, skip the validation of records against the JSON Schema:
 
-    bundle exec rake import novalidate=true
+    bundle exec rake import_csv novalidate=true
+
+Create the geospatial indices:
+
+    mongo sfm --eval "db.events.createIndex({geo: '2dsphere'})"
+    mongo sfm --eval "db.sites.createIndex({geo: '2dsphere'})"
 
 Start a local server:
 
@@ -42,7 +47,7 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
     topojson -o data/topojson/adm0/mx.topojson data/geojson/adm0/mx.geojson
     topojson -o data/topojson/adm0/ng.topojson data/geojson/adm0/ng.geojson
 
-Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefiles produce large files:
+Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefiles produces large files:
 
     bundle exec rake topojson input=shapefiles/NGA_adm/NGA_adm0.shp output=adm0/ng
 
@@ -51,6 +56,8 @@ Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefile
     heroku create
     heroku addons:create mongolab
     git push heroku master
-    heroku run rake import novalidate=true
+    heroku run rake import_csv novalidate=true
+
+Log into the remote MongoDB database and create the geospatial indices.
 
 Copyright (c) 2015 Open North Inc., released under the MIT license

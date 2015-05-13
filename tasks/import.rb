@@ -11,7 +11,7 @@ require 'json-schema'
 require_relative 'lib/constants'
 
 desc 'Imports the data from CSV'
-task :import do
+task :import_csv do
   CONFIDENCE_ORDER = [
       'Low',
       'Medium',
@@ -326,7 +326,7 @@ task :import do
   unless ENV['novalidate']
     # Validate objects.
     objects.each do |type,hash|
-      schema = JSON.load(File.read(File.expand_path(File.join('schemas', 'validation', "#{type.to_s}.json"), __dir__)))
+      schema = JSON.load(File.read(File.expand_path(File.join('..', 'schemas', 'validation', "#{type.to_s}.json"), __dir__)))
 
       hash.each do |_,object|
         begin

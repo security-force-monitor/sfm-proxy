@@ -9,7 +9,7 @@ end
 desc 'Converts Shapefile to GeoJSON'
 task :geojson do
   if ENV['input'] && ENV['output']
-    dir = File.expand_path(File.join('data', 'geojson'), __dir__)
+    dir = File.expand_path(File.join('..', 'data', 'geojson'), __dir__)
     FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
 
     run(%(ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 "#{File.join(dir, "#{ENV['output']}.geojson")}" "#{ENV['input']}"))
@@ -30,7 +30,7 @@ task :topojson do
       file.unlink
     end
 
-    dir = File.expand_path(File.join('data', 'topojson'), __dir__)
+    dir = File.expand_path(File.join('..', 'data', 'topojson'), __dir__)
     FileUtils.mkdir_p(File.join(dir, File.dirname(ENV['output'])))
 
     begin
@@ -43,4 +43,9 @@ task :topojson do
   else
     LOGGER.error('usage: rake topojson input=path/to/shapefile.shp output=adm0/ng')
   end
+end
+
+desc 'Imports admin levels 1 and 2'
+task :import_geo do
+
 end
