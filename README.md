@@ -46,10 +46,12 @@ Test the endpoints of a local server:
 
 Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com/downloads/110m-cultural-vectors/) shapefiles:
 
-    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='EG'" data/geojson/adm0/eg.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
-    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='MX'" data/geojson/adm0/mx.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
-    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select '' -where "iso_a2='NG'" data/geojson/adm0/ng.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'iso_a2' data/geojson/adm0/xa.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'iso_a2' -where "iso_a2='EG'" data/geojson/adm0/eg.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'iso_a2' -where "iso_a2='MX'" data/geojson/adm0/mx.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'iso_a2' -where "iso_a2='NG'" data/geojson/adm0/ng.geojson shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp
 
+    topojson -o data/topojson/adm0/xa.topojson data/geojson/adm0/xa.geojson
     topojson -o data/topojson/adm0/eg.topojson data/geojson/adm0/eg.geojson
     topojson -o data/topojson/adm0/mx.topojson data/geojson/adm0/mx.geojson
     topojson -o data/topojson/adm0/ng.topojson data/geojson/adm0/ng.geojson
