@@ -8,7 +8,7 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
 require 'json-schema'
 
-require_relative 'lib/constants'
+require_relative 'constants'
 
 desc 'Imports the data from CSV'
 task :import_csv do
