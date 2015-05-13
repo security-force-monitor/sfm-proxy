@@ -69,30 +69,30 @@ get '/organizations/:id' do
 
   result = connection[:organizations].find(_id: params[:id]).first
 
-  # Some sites may not have any dates, making sites not comparable.
-  site_ids = result['site_ids'].select{|site| site['date_first_cited'] || site['date_last_cited']}
-
-  site_first = site_ids.min do |a,b|
-    [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min <=>
-    [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).min
-  end
-  site_last = site_ids.max do |a,b|
-    [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
-    [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
-  end
-
-  events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
-  children = connection[:organizations].find({'parent_ids.id.value' => result['_id']})
-  commanders_and_people = commanders_and_people(result['_id'])
-  commanders = commanders_and_people[:commanders]
-  people = commanders_and_people[:people]
-
-  # @todo Fake it until you can make it.
-  if events.count.zero?
-    events = [connection[:events].find.first]
-  end
-
   if result
+    # Some sites may not have any dates, making sites not comparable.
+    site_ids = result['site_ids'].select{|site| site['date_first_cited'] || site['date_last_cited']}
+
+    site_first = site_ids.min do |a,b|
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min <=>
+      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).min
+    end
+    site_last = site_ids.max do |a,b|
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
+      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
+    end
+
+    events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
+    children = connection[:organizations].find({'parent_ids.id.value' => result['_id']})
+    commanders_and_people = commanders_and_people(result['_id'])
+    commanders = commanders_and_people[:commanders]
+    people = commanders_and_people[:people]
+
+    # @todo Fake it until you can make it.
+    if events.count.zero?
+      events = [connection[:events].find.first]
+    end
+
     JSON.dump({
       "id" => result['_id'],
       "division_id" => result['division_id'],
