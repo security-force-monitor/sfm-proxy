@@ -110,8 +110,8 @@ get '/organizations/:id' do
         {
           "id" => event['_id'],
           "date" => event['date'].try(:[], 'value'),
-          "location_admin_level_1" => event['location_admin_level_1'].try(:[], 'value'),
-          "location_admin_level_2" => event['location_admin_level_2'].try(:[], 'value'),
+          "admin_level_1" => event['admin_level_1'].try(:[], 'value'),
+          "admin_level_2" => event['admin_level_2'].try(:[], 'value'),
           "classification" => event['classification'].try(:[], 'value'),
           "perpretrator_name" => event['perpretrator_name'].try(:[], 'value'),
         }
@@ -217,8 +217,8 @@ get '/organizations/:id' do
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "date" => '2010-01-01',
-          "location_admin_level_1" => 'Abia',
-          "location_admin_level_2" => 'Abia North',
+          "admin_level_1" => 'Abia',
+          "admin_level_2" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpretrator_name" => 'Terry Guerrier',
         }

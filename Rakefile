@@ -339,6 +339,11 @@ task :import do
               object['name']['value'].sub(/\s*\(\d+\)\z/, '')
             end
 
+            # All imported coordinates are points.
+            if object['geo']
+              object['geo']['type'] ||= 'Point'
+            end
+
             if type == :organization
               if gid == 0
                 object['root_name'] = {'value' => 'Police'}
@@ -555,9 +560,9 @@ desc 'Test the API'
 task :default do
   BASE_URL = ENV['base_url'] || 'http://0.0.0.0:9292'
 
-  def test(path)
+  def test(path, statuses = [200, 204])
     response = Faraday.get("#{BASE_URL}#{path}")
-    if [200, 204].include?(response.status)
+    if statuses.include?(response.status)
       JSON.load(response.body)
     else
       raise "#{response.status} #{BASE_URL}#{path}"
@@ -597,6 +602,7 @@ task :default do
     :organizations,
     # :people, # @todo
   ].each do |collection_name|
+    test("/#{collection_name}/nonexistent", [404])
     query = connection[collection_name].find
     puts "%3d #{collection_name}" % query.count
     query.each do |object|
@@ -609,6 +615,10 @@ task :default do
       end
     end
   end
+
+  test('/countries/ng/map', [400])
+  test('/countries/ng/map?at=invalid', [400])
+  test('/countries/ng/map?at=2010-01-01&bbox=invalid', [400])
 
   # @todo
   # /countries/:id/map

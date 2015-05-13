@@ -30,8 +30,8 @@ If an event occurs on a different date than the `at` parameter's value, its only
     {
       "id": "de305d54-75b4-431b-adb2-eb6b9e546014",
       "date": "2010-01-01",
-      "location_admin_level_1": "Abia",
-      "location_admin_level_2": "Aba North",
+      "admin_level_1": "Abia",
+      "admin_level_2": "Aba North",
       "classification": [
         "Torture",
         "Disappearance"
@@ -60,9 +60,9 @@ If an event occurs on a different date than the `at` parameter's value, its only
   "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "division_id": "ocd-division/country:ng",
   "date": "2010-01-01",
-  "location_description": "...",
-  "location_admin_level_1": "Abia",
-  "location_admin_level_2": "Aba North",
+  "location": "...",
+  "admin_level_1": "Abia",
+  "admin_level_2": "Aba North",
   "classification": [
     "Torture",
     "Disappearance"

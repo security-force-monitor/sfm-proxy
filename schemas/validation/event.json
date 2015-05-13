@@ -33,19 +33,19 @@
       "additionalProperties": false,
       "required": ["value"]
     },
-    "location_description": {
+    "location": {
       "$ref": "#/definitions/simple_string"
     },
-    "location_admin_level_1": {
+    "admin_level_1": {
       "$ref": "#/definitions/simple_string"
     },
-    "location_admin_level_2": {
+    "admin_level_2": {
       "$ref": "#/definitions/simple_string"
     },
-    "location_geonames_name": {
+    "geonames_name": {
       "$ref": "#/definitions/simple_string"
     },
-    "location_geonames_id": {
+    "geonames_id": {
       "type": "object",
       "properties": {
         "value": {
@@ -56,21 +56,33 @@
       "additionalProperties": false,
       "required": ["value"]
     },
-    "location_coordinates": {
+    "geo": {
       "type": "object",
       "properties": {
-        "value": {
-          "type": "array",
-          "items": {
-            "type": "number"
+        "type": {
+          "type": "string",
+          "enum": ["Point"]
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2
+            }
           },
-          "maxItems": 2,
-          "minItems": 2
+
+          "additionalProperties": false,
+          "required": ["value"]
         }
       },
 
       "additionalProperties": false,
-      "required": ["value"]
+      "required": ["type", "coordinates"]
     },
     "classification": {
       "type": "object",

@@ -24,27 +24,39 @@
     "name": {
       "$ref": "#/definitions/simple_string"
     },
-    "coordinates": {
+    "geo": {
       "type": "object",
       "properties": {
-        "value": {
-          "type": "array",
-          "items": {
-            "type": "number"
+        "type": {
+          "type": "string",
+          "enum": ["Point"]
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2
+            },
+            "sources": {
+              "$ref": "#/definitions/sources"
+            },
+            "confidence": {
+              "$ref": "#/definitions/confidence"
+            }
           },
-          "maxItems": 2,
-          "minItems": 2
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
+
+          "additionalProperties": false,
+          "required": ["value"]
         }
       },
 
       "additionalProperties": false,
-      "required": ["value"]
+      "required": ["type", "coordinates"]
     },
     "admin_level_1": {
       "$ref": "#/definitions/complex_string"

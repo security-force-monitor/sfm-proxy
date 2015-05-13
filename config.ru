@@ -43,9 +43,9 @@ helpers do
       "id" => result['_id'],
       "division_id" => result['division_id'],
       "date" => result['date'].try(:[], 'value'),
-      "location_description" => result['location_description'].try(:[], 'value'),
-      "location_admin_level_1" => result['location_admin_level_1'].try(:[], 'value'),
-      "location_admin_level_2" => result['location_admin_level_2'].try(:[], 'value'),
+      "location" => result['location'].try(:[], 'value'),
+      "admin_level_1" => result['admin_level_1'].try(:[], 'value'),
+      "admin_level_2" => result['admin_level_2'].try(:[], 'value'),
       "classification" => result['classification'].try(:[], 'value'),
       "description" => result['description'].try(:[], 'value'),
       "perpretrator_name" => result['perpretrator_name'].try(:[], 'value'),
@@ -54,8 +54,8 @@ helpers do
   end
 end
 
-require_relative 'lib/countries'
 require_relative 'lib/events'
+require_relative 'lib/countries'
 require_relative 'lib/miscellaneous'
 require_relative 'lib/organizations'
 require_relative 'lib/people'
