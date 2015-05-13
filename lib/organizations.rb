@@ -1,3 +1,45 @@
+helpers do
+  def commanders_and_people(organization_id)
+    commanders = []
+    people = []
+
+    members = connection[:people].find({'memberships.organization_id.value' => organization_id})
+
+    members.each do |member|
+      member['memberships'].each do |membership|
+        if membership['organization_id']['value'] == organization_id
+          item = {
+            "id" => member['_id'],
+            "name" => member['name'].try(:[], 'value'),
+            "other_names" => member['other_names'].try(:[], 'value'),
+            # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+            "events_count" => 12, # @hardcoded
+            "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
+            "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
+            "sources" => membership['organization_id']['sources'],
+            "confidence" => membership['organization_id']['confidence'],
+          }
+
+          if membership['role'].try(:[], 'value') == 'Commander'
+            commanders << item
+          else
+            people << item
+          end
+        end
+      end
+    end
+
+    commanders = commanders.sort do |a,b|
+      b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
+    end
+
+    {
+      commanders: commanders,
+      people: people,
+    }
+  end
+end
+
 get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).zip} do |id|
   204
 end

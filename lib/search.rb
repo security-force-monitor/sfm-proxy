@@ -133,25 +133,6 @@ get '/countries/:id/search/organizations' do
       site_present['admin_level_2'] = site['admin_level_2'].try(:[], 'value')
     end
 
-    commander = connection[:people].find({
-      'memberships' => {
-        '$elemMatch' => {
-          'organization_id.value' => result['_id'],
-          'role.value' => 'Commander',
-        },
-      },
-    }).sort({
-      'memberships.date_first_cited.value' => -1, # XXX don't know if this sorts correctly
-    }).first
-
-    commander_present = if commander
-      {
-        "name" => commander['name'].try(:[], 'value'),
-      }
-    else
-      nil
-    end
-
     {
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
@@ -160,7 +141,7 @@ get '/countries/:id/search/organizations' do
       "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
       "classification" => result['classification'].try(:[], 'value'),
       "site_present" => site_present,
-      "commander_present" => commander_present,
+      "commander_present" => commander_present(result['_id']),
     }
   end
 

@@ -25,44 +25,25 @@ helpers do
     end
   end
 
-  def commanders_and_people(organization_id)
-    commanders = []
-    people = []
+  def commander_present(organization_id)
+    commander = connection[:people].find({
+      'memberships' => {
+        '$elemMatch' => {
+          'organization_id.value' => organization_id,
+          'role.value' => 'Commander',
+        },
+      },
+    }).sort({
+      'memberships.date_first_cited.value' => -1, # XXX don't know if this sorts correctly
+    }).first
 
-    members = connection[:people].find({'memberships.organization_id.value' => organization_id})
-
-    members.each do |member|
-      member['memberships'].each do |membership|
-        if membership['organization_id']['value'] == organization_id
-          item = {
-            "id" => member['_id'],
-            "name" => member['name'].try(:[], 'value'),
-            "other_names" => member['other_names'].try(:[], 'value'),
-            # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-            "events_count" => 12, # @hardcoded
-            "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
-            "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
-            "sources" => membership['organization_id']['sources'],
-            "confidence" => membership['organization_id']['confidence'],
-          }
-
-          if membership['role'].try(:[], 'value') == 'Commander'
-            commanders << item
-          else
-            people << item
-          end
-        end
-      end
+    if commander
+      {
+        "name" => commander['name'].try(:[], 'value'),
+      }
+    else
+      nil
     end
-
-    commanders = commanders.sort do |a,b|
-      b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
-    end
-
-    {
-      commanders: commanders,
-      people: people,
-    }
   end
 
   def event_formatter(result)

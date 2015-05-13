@@ -133,36 +133,39 @@ get '/countries/:id/map' do
 
   JSON.dump({
     "organizations" => organizations.map{|result|
-      organization = if result['area_ids']
+      geometry = if result['area_ids']
         area_id = result['area_ids'].find do |area_id|
           area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) &&
           (area_id['date_first_cited'].try(:[], 'value').nil? || area_id['date_first_cited']['value'] <= params[:at]) &&
           (area_id['date_last_cited'].try(:[], 'value').nil? || area_id['date_last_cited']['value'] >= params[:at])
         end['id']['value']
 
-        {"geometry" => geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id))}
-      else
-        {}
+        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id))
       end
 
-      commander_present = commanders_and_people(result['_id'])[:commanders][0]
-
-      organization.merge({
+      {
+        "type" => "Feature",
         "id" => result['_id'],
-        "name" => result['name'].try(:[], 'value'),
-        "other_names" => result['other_names'].try(:[], 'value'),
-        "root_name" => result['root_name'].try(:[], 'value'),
-        "commander_present" => commander_present && commander_present.slice('name'),
-        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
-      })
+        "properties" => {
+          "name" => result['name'].try(:[], 'value'),
+          "other_names" => result['other_names'].try(:[], 'value'),
+          "root_name" => result['root_name'].try(:[], 'value'),
+          "commander_present" => commander_present(result['_id']),
+          "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+        },
+        "geometry" => geometry,
+      }
     },
     "events" => events.map{|result|
-      event_formatter(result).except('division_id', 'location', 'description').merge({
+      {
+        "type" => "Feature",
+        "id" => result['_id'],
+        "properties" => event_formatter(result).except('id', 'division_id', 'location', 'description'),
         "geometry" => result['geo'] || {
           "type" => "Point",
           "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
         },
-      })
+      }
     },
   })
 end
