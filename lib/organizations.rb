@@ -1,3 +1,45 @@
+helpers do
+  def commanders_and_people(organization_id)
+    commanders = []
+    people = []
+
+    members = connection[:people].find({'memberships.organization_id.value' => organization_id})
+
+    members.each do |member|
+      member['memberships'].each do |membership|
+        if membership['organization_id']['value'] == organization_id
+          item = {
+            "id" => member['_id'],
+            "name" => member['name'].try(:[], 'value'),
+            "other_names" => member['other_names'].try(:[], 'value'),
+            # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+            "events_count" => 12, # @hardcoded
+            "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
+            "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
+            "sources" => membership['organization_id']['sources'],
+            "confidence" => membership['organization_id']['confidence'],
+          }
+
+          if membership['role'].try(:[], 'value') == 'Commander'
+            commanders << item
+          else
+            people << item
+          end
+        end
+      end
+    end
+
+    commanders = commanders.sort do |a,b|
+      b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
+    end
+
+    {
+      commanders: commanders,
+      people: people,
+    }
+  end
+end
+
 get '/organizations/:id.zip' do
   204
 end
@@ -41,43 +83,13 @@ get '/organizations/:id' do
 
   events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
   children = connection[:organizations].find({'parent_ids.id.value' => result['_id']})
-  commanders = []
-  people = []
+  commanders_and_people = commanders_and_people(result['_id'])
+  commanders = commanders_and_people[:commanders]
+  people = commanders_and_people[:people]
 
   # @todo Fake it until you can make it.
   if events.count.zero?
     events = [connection[:events].find.first]
-  end
-
-  members = connection[:people].find({
-    'memberships.organization_id.value' => result['_id'],
-  })
-
-  members.each do |member|
-    member['memberships'].each do |membership|
-      if membership['organization_id']['value'] == result['_id']
-        item = {
-          "id" => member['_id'],
-          "name" => member['name'].try(:[], 'value'),
-          "other_names" => member['other_names'].try(:[], 'value'),
-          # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-          "events_count" => 12, # @hardcoded
-          "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
-          "sources" => membership['organization_id']['sources'],
-          "confidence" => membership['organization_id']['confidence'],
-        }
-        if membership['role'].try(:[], 'value') == 'Commander'
-          commanders << item
-        else
-          people << item
-        end
-      end
-    end
-  end
-
-  commanders = commanders.sort do |a,b|
-    b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
   end
 
   if result
@@ -112,6 +124,7 @@ get '/organizations/:id' do
             "other_names" => result['parents'][index]['other_names'].try(:[], 'value'),
             # @drupal Add events_count calculated field.
             "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
+            "commander_present" => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
           }
         else
           {
@@ -134,6 +147,7 @@ get '/organizations/:id' do
           "other_names" => child['other_names'].try(:[], 'value'),
           # @drupal Add events_count calculated field.
           "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+          "commander_present" => commanders_and_people(child['_id'])[:commanders][0],
           "date_first_cited" => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
           "date_last_cited" => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
           "sources" => child['parent_ids'][index]['id']['sources'],
