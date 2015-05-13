@@ -1,45 +1,3 @@
-helpers do
-  def commanders_and_people(organization_id)
-    commanders = []
-    people = []
-
-    members = connection[:people].find({'memberships.organization_id.value' => organization_id})
-
-    members.each do |member|
-      member['memberships'].each do |membership|
-        if membership['organization_id']['value'] == organization_id
-          item = {
-            "id" => member['_id'],
-            "name" => member['name'].try(:[], 'value'),
-            "other_names" => member['other_names'].try(:[], 'value'),
-            # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-            "events_count" => 12, # @hardcoded
-            "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
-            "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
-            "sources" => membership['organization_id']['sources'],
-            "confidence" => membership['organization_id']['confidence'],
-          }
-
-          if membership['role'].try(:[], 'value') == 'Commander'
-            commanders << item
-          else
-            people << item
-          end
-        end
-      end
-    end
-
-    commanders = commanders.sort do |a,b|
-      b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
-    end
-
-    {
-      commanders: commanders,
-      people: people,
-    }
-  end
-end
-
 get '/organizations/:id.zip' do
   204
 end
@@ -107,14 +65,7 @@ get '/organizations/:id' do
       "commander_present" => commanders[0],
       "commanders_former" => commanders.drop(1),
       "events" => events.map{|event|
-        {
-          "id" => event['_id'],
-          "date" => event['date'].try(:[], 'value'),
-          "admin_level_1" => event['admin_level_1'].try(:[], 'value'),
-          "admin_level_2" => event['admin_level_2'].try(:[], 'value'),
-          "classification" => event['classification'].try(:[], 'value'),
-          "perpretrator_name" => event['perpretrator_name'].try(:[], 'value'),
-        }
+        event_formatter(event).except('division_id', 'location', 'description', 'perpetrator_organization')
       },
       "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent,index|
         item = if result['parents'][index]['name']
