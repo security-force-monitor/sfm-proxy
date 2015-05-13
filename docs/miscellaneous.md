@@ -2,9 +2,9 @@
 
 ## Base layers
 
-`/geometries/:id.geojson` returns the GeoJSON for the country with the corresponding lowercase ISO 3166-1 alpha-2 code. The code `xa` returns the GeoJSON for the world.
+`/geometries/:id.geojson` returns the country with the corresponding lowercase ISO 3166-1 alpha-2 code. The code `xa` returns all countries as GeoJSON features.
 
-`/geometries/:id.topojson` returns the TopoJSON for the country with the corresponding lowercase ISO 3166-1 alpha-2 code. The code `xa` returns the TopoJSON for the world.
+`/geometries/:id.topojson` returns the country with the corresponding lowercase ISO 3166-1 alpha-2 code. The code `xa` returns all countries.
 
 ## Sessions
 
