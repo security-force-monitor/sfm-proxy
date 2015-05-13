@@ -2,14 +2,17 @@
 
 ## List
 
-`/countries/` returns a list of countries.
+`/countries/` returns a list of countries as GeoJSON features.
 
 ```json
 [
   {
+    "type": "Feature",
     "id": "ng",
-    "name": "Nigeria",
-    "geometry": GeoJSON
+    "properties": {
+      "name": "Nigeria",
+    }
+    "geometry": ...
   },
   ...
 ]

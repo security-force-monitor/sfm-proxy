@@ -16,19 +16,28 @@ get '/countries' do
 
   JSON.dump([ # @hardcoded
     {
+      "type": "Feature",
       "id" => "eg",
-      "name" => "Egypt",
-      "feature" => JSON.load(File.read(File.join(dir, 'eg.geojson')))['features'][0],
+      "properties" => {
+        "name": "Egypt",
+      },
+      "geometry" => JSON.load(File.read(File.join(dir, 'eg.geojson')))['features'][0]['geometry'],
     },
     {
+      "type": "Feature",
       "id" => "mx",
-      "name" => "Mexico",
-      "feature" => JSON.load(File.read(File.join(dir, 'mx.geojson')))['features'][0],
+      "properties" => {
+        "name" => "Mexico",
+      },
+      "geometry" => JSON.load(File.read(File.join(dir, 'mx.geojson')))['features'][0]['geometry'],
     },
     {
+      "type": "Feature",
       "id" => "ng",
-      "name" => "Nigeria",
-      "feature" => JSON.load(File.read(File.join(dir, 'ng.geojson')))['features'][0],
+      "properties" => {
+        "name" => "Nigeria",
+      },
+      "geometry" => JSON.load(File.read(File.join(dir, 'ng.geojson')))['features'][0]['geometry'],
     },
   ])
 end

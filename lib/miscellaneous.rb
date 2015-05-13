@@ -1,10 +1,15 @@
-get '/geometries/([a-z]{2}).(geojson|topojson)' do |id,extension|
+get %r{/geometries/([a-z]{2})\.(geojson|topojson)} do |id,extension|
   content_type 'application/json'
 
   filename = File.expand_path(File.join('..', 'data', extension, 'adm0', "#{id}.#{extension}"), __dir__)
 
   if File.exist?(filename)
-    File.read(filename)
+    body = File.read(filename)
+    if extension == 'geojson'
+      JSON.dump(JSON.load(body)['features'])
+    else
+      body
+    end
   else
     404
   end
