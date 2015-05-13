@@ -168,6 +168,7 @@ task :import_geo do
         connection[:geometries].find(_id: geonames_id).upsert({
           division_id: "ocd-division/country:#{ENV['country_code']}",
           name: names.fetch(geonames_id),
+          classification: "ADM#{ENV['admin_level']}",
           geo: feature.fetch('geometry'),
         })
       else
