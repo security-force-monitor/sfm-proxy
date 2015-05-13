@@ -124,6 +124,7 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
         "Power Rangers Megaforce"
       ],
       "events_count": 1,
+      "commander_present": ...,
       "date_first_cited": "2013-01-01",
       "date_last_cited": "2014-01-01",
       "sources": [
@@ -141,6 +142,7 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
         "Power Rangers Samurai"
       ],
       "events_count": 1,
+      "commander_present": ...,
       "date_first_cited": "2011-01-01",
       "date_last_cited": "2012-01-01",
       "sources": [

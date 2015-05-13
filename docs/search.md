@@ -188,18 +188,13 @@ Each item in the `results` array is in the same format as the `/events/:id` resp
     ]
   },
   "results": [
-    ...
-  ]
-}
-```
-
-The `sites_nearby` field looks like:
-
-```json
-{
-  "sites_nearby": [
     {
-      "name": "Atlantis"
+      ...,
+      "sites_nearby": [
+        {
+          "name": "Atlantis"
+        }
+      ]
     }
   ]
 }
