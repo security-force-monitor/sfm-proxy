@@ -15,31 +15,28 @@ get '/countries' do
   dir = File.expand_path(File.join('..', 'data', 'geojson', 'adm0'), __dir__)
 
   JSON.dump([ # @hardcoded
+    ['eg', 'Egypt'],
+    ['mx', 'Mexico'],
+    ['ng', 'Nigeria'],
+  ].each{|code,name|
+    geometry = JSON.load(File.read(File.join(dir, "#{code}.geojson")))['features'][0]['geometry']
+
+    east, west = geometry['coordinates'][0].map(&:first).minmax
+    south, north = geometry['coordinates'][0].map(&:last).minmax
+
     {
       "type": "Feature",
-      "id" => "eg",
+      "id" => code,
       "properties" => {
-        "name": "Egypt",
+        "name" => name,
       },
-      "geometry" => JSON.load(File.read(File.join(dir, 'eg.geojson')))['features'][0]['geometry'],
-    },
-    {
-      "type": "Feature",
-      "id" => "mx",
-      "properties" => {
-        "name" => "Mexico",
-      },
-      "geometry" => JSON.load(File.read(File.join(dir, 'mx.geojson')))['features'][0]['geometry'],
-    },
-    {
-      "type": "Feature",
-      "id" => "ng",
-      "properties" => {
-        "name" => "Nigeria",
-      },
-      "geometry" => JSON.load(File.read(File.join(dir, 'ng.geojson')))['features'][0]['geometry'],
-    },
-  ])
+      "bbox" => [
+        {lon: west, lat: south},
+        {lon: east, lat: north},
+      ],
+      "geometry" => geometry,
+    }
+  })
 end
 
 # @drupal Load node from Drupal.

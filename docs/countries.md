@@ -12,6 +12,16 @@
     "properties": {
       "name": "Nigeria",
     }
+    "bbox": [
+      {
+        "lon": "WEST",
+        "lat": "SOUTH"
+      },
+      {
+        "lon": "EAST",
+        "lat": "NORTH"
+      }
+    ],
     "geometry": ...
   },
   ...
