@@ -16,6 +16,15 @@ configure do
 end
 
 helpers do
+  def etag_and_return(response, options = {})
+    etag(response)
+    if options[:raw]
+      response
+    else
+      JSON.dump(response)
+    end
+  end
+
   def connection
     @connection ||= begin
       uri = URI.parse(ENV['MONGOLAB_URI'] || 'mongodb://localhost:27017/sfm')
@@ -83,4 +92,5 @@ require_relative 'lib/organizations'
 require_relative 'lib/people'
 require_relative 'lib/search'
 
+use Rack::Deflater
 run Sinatra::Application

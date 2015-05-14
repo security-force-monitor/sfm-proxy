@@ -14,11 +14,11 @@ get '/countries' do
 
   dir = File.expand_path(File.join('..', 'data', 'geojson', 'adm0'), __dir__)
 
-  JSON.dump([ # @hardcoded
+  response = [ # @hardcoded
     ['eg', 'Egypt'],
     ['mx', 'Mexico'],
     ['ng', 'Nigeria'],
-  ].map{|code,name|
+  ].map do |code,name|
     geometry = JSON.load(File.read(File.join(dir, "#{code}.geojson")))['features'][0]['geometry']
 
     east, west = geometry['coordinates'][0].map(&:first).minmax
@@ -31,12 +31,20 @@ get '/countries' do
         "name" => name,
       },
       "bbox" => [
-        {lon: west, lat: south},
-        {lon: east, lat: north},
+        {
+          lon: west,
+          lat: south,
+        },
+        {
+          lon: east,
+          lat: north,
+        },
       ],
       "geometry" => geometry,
     }
-  })
+  end
+
+  etag_and_return(response)
 end
 
 # @drupal Load node from Drupal.
@@ -44,7 +52,7 @@ get '/countries/:id' do
   content_type 'application/json'
 
   if params[:id] == 'ng'
-    JSON.dump({ # @hardcoded
+    etag_and_return({ # @hardcoded
       "id" => "ng",
       "name" => "Nigeria",
       "title" => "Federal Republic of Nigeria",

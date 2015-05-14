@@ -50,7 +50,7 @@ end
 get '/organizations/:id/map' do
   content_type 'application/json'
 
-  JSON.dump({
+  etag_and_return({
     # @todo
   })
 end
@@ -58,7 +58,7 @@ end
 get '/organizations/:id/chart' do
   content_type 'application/json'
 
-  JSON.dump({
+  etag_and_return({
     # @todo
   })
 end
@@ -93,7 +93,7 @@ get '/organizations/:id' do
       events = [connection[:events].find.first]
     end
 
-    JSON.dump({
+    etag_and_return({
       "id" => result['_id'],
       "division_id" => result['division_id'],
       "name" => result['name'],

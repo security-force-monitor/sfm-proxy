@@ -6,12 +6,14 @@ get '/countries/:id/events' do
 
   results = connection[:events].find({'division_id' => "ocd-division/country:#{params[:id]}"})
 
-  JSON.dump(results.each{|result|
+  response = results.each do |result|
     {
       "id" => result['_id'],
       "date" => result['date'].try(:[], 'value'),
     }
-  })
+  end
+
+  etag_and_return(response)
 end
 
 # @drupal Load node from Drupal.
@@ -21,7 +23,7 @@ get '/events/:id' do
   result = connection[:events].find(_id: params[:id]).first
 
   if result
-    JSON.dump(event_formatter(result).merge({
+    etag_and_return(event_formatter(result).merge({
       # @drupal Use PostGIS to determine areas and sites within a 2km radius of event.
       "organizations_nearby" => [ # @hardcoded
         {
@@ -131,7 +133,7 @@ get '/countries/:id/map' do
   latitude_range = Integer(coordinates[1] * 10_000)...Integer(coordinates[3] * 10_000)
   events = connection[:events].find(criteria).limit(10)
 
-  JSON.dump({
+  etag_and_return({
     "organizations" => organizations.map{|result|
       geometry = if result['area_ids']
         area_id = result['area_ids'].find do |area_id|

@@ -45,7 +45,7 @@ helpers do
       result_formatter.call(result)
     end
 
-    JSON.dump({
+    etag_and_return({
       "count" => query.count,
       "facets" => facets,
       "results" => results,
@@ -106,12 +106,14 @@ get %r{/countries/([a-z]{2})/search/events.txt} do |id|
 end
 
 get '/autocomplete/geonames_id' do
-  JSON.dump(CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
+  response = CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
     {
       id: Integer(row[0]),
       name: row[1],
     }
-  end)
+  end
+
+  etag_and_return(response)
 end
 
 # @drupal Perform search on Drupal.

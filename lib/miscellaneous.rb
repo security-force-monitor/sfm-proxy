@@ -6,9 +6,9 @@ get %r{/geometries/([a-z]{2})\.(geojson|topojson)} do |id,extension|
   if File.exist?(filename)
     body = File.read(filename)
     if extension == 'geojson'
-      JSON.dump(JSON.load(body)['features'])
+      etag_and_return(JSON.load(body)['features'])
     else
-      body
+      etag_and_return(body, raw: true)
     end
   else
     404

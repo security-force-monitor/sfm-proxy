@@ -8,7 +8,7 @@ end
 get '/people/:id/chart' do
   content_type 'application/json'
 
-  JSON.dump({
+  etag_and_return({
     # @todo
   })
 end
@@ -20,7 +20,7 @@ get '/people/:id' do
   result = connection[:people].find(_id: params[:id]).first
 
   if result
-    JSON.dump({
+    etag_and_return({
       # @todo
     })
   else
