@@ -18,7 +18,7 @@ get '/countries' do
     ['eg', 'Egypt'],
     ['mx', 'Mexico'],
     ['ng', 'Nigeria'],
-  ].each{|code,name|
+  ].map{|code,name|
     geometry = JSON.load(File.read(File.join(dir, "#{code}.geojson")))['features'][0]['geometry']
 
     east, west = geometry['coordinates'][0].map(&:first).minmax
