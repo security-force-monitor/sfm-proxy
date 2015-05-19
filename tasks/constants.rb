@@ -192,7 +192,7 @@ HEADERS_MAP = {
     'Longitude' => :geo__coordinates__value__0__f,
     'Violation type' => :classification__value__n,
     'Description' => :description__value,
-    'Perpetrator name' => :perpretrator_name__value,
+    'Perpetrator name' => :perpetrator_name__value,
     'Perpetrator organization' => :perpetrator_organization_id__value, # event belongs_to organization
     'Source: Violator organization' => :perpetrator_organization_id__sources__n,
   }

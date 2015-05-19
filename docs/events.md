@@ -41,7 +41,7 @@
           "Torture",
           "Disappearance"
         ],
-        "perpretrator_name": "Terry Guerrier",
+        "perpetrator_name": "Terry Guerrier",
         "perpetrator_organization": {
           "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
           "name": "Brigade 1"
@@ -88,7 +88,7 @@
     "Disappearance"
   ],
   "description": "...",
-  "perpretrator_name": "Terry Guerrier",
+  "perpetrator_name": "Terry Guerrier",
   "perpetrator_organization": {
     "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
     "name": "Brigade 1",

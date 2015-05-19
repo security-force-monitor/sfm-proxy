@@ -112,7 +112,7 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
         "Torture",
         "Disappearance"
       ],
-      "perpretrator_name": "Terry Guerrier"
+      "perpetrator_name": "Terry Guerrier"
     },
     ...
   ],
@@ -220,7 +220,7 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "admin_level_1": "Abia",
       "admin_level_2": "Abia North",
       "classification": ["Killing"],
-      "perpretrator_name": "Marvin Steele"
+      "perpetrator_name": "Marvin Steele"
     },
     ...
   ]

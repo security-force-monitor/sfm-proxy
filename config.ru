@@ -79,7 +79,7 @@ helpers do
       "admin_level_2" => result['admin_level_2'].try(:[], 'value'),
       "classification" => result['classification'].try(:[], 'value'),
       "description" => result['description'].try(:[], 'value'),
-      "perpretrator_name" => result['perpretrator_name'].try(:[], 'value'),
+      "perpetrator_name" => result['perpetrator_name'].try(:[], 'value'),
       "perpetrator_organization" => perpetrator_organization,
     }
   end

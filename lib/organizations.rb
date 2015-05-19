@@ -213,7 +213,7 @@ get '/organizations/:id' do
           "admin_level_1" => 'Abia',
           "admin_level_2" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
-          "perpretrator_name" => 'Terry Guerrier',
+          "perpetrator_name" => 'Terry Guerrier',
         }
       ]
     })

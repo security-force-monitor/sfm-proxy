@@ -116,7 +116,7 @@
     "description": {
       "$ref": "#/definitions/simple_string"
     },
-    "perpretrator_name": {
+    "perpetrator_name": {
       "$ref": "#/definitions/simple_string"
     },
     "perpetrator_organization_id": {
