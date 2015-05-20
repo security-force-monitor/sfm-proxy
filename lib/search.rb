@@ -53,7 +53,7 @@ helpers do
   end
 
   def sort(query, valid)
-    o = params.fetch(:o, '_score')
+    o = params.fetch('o', '_score')
 
     direction = if o[0] == '-'
       field = o[1..-1]
@@ -78,7 +78,7 @@ helpers do
   end
 
   def paginate(query)
-    offset = [params.fetch(:p, 1).to_i, 1].max - 1
+    offset = [params.fetch('p', 1).to_i, 1].max - 1
     query.skip(offset * 20).limit(20)
   end
 end
