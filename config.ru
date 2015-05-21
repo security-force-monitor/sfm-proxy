@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'csv'
+require 'digest/md5'
 require 'json'
 
 require 'active_support/core_ext/hash/slice'
@@ -17,7 +18,7 @@ end
 
 helpers do
   def etag_and_return(response, options = {})
-    etag(response)
+    etag(Digest::MD5.hexdigest(response.inspect))
     if options[:raw]
       response
     else
