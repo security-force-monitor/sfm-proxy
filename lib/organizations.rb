@@ -209,7 +209,8 @@ get '/organizations/:id' do
       "events_nearby" => [ # @hardcoded
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
-          "date" => '2010-01-01',
+          "start_date" => '2010-01-01',
+          "end_date" => nil,
           "admin_level_1" => 'Abia',
           "admin_level_2" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],

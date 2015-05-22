@@ -9,7 +9,8 @@ get '/countries/:id/events' do
   response = results.map do |result|
     {
       "id" => result['_id'],
-      "date" => result['date'].try(:[], 'value'),
+      "start_date" => result['start_date'].try(:[], 'value'),
+      "end_date" => result['end_date'].try(:[], 'value'),
     }
   end
 

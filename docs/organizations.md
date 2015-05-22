@@ -105,7 +105,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
   "events": [
     {
       "id": "eba734d7-8078-4af5-ae8f-838c0d47fdc0",
-      "date": "2010-01-01",
+      "start_date": "2010-01-01",
+      "end_date": null,
       "admin_level_1": "Abia",
       "admin_level_2": "Abia North",
       "classification": [
@@ -216,7 +217,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
   "events_nearby": [
     {
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
-      "date": "2012-01-01",
+      "start_date": "2012-01-01",
+      "end_date": null,
       "admin_level_1": "Abia",
       "admin_level_2": "Abia North",
       "classification": ["Killing"],

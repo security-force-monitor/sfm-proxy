@@ -164,12 +164,12 @@ Facets:
 
 * `geonames_id`: GeoNames ID.
 * `classification__in`: comma-separated list.
-* `date__gte`: minimum date.
-* `date__lte`: maximum date.
+* `start_date__gte`: minimum start date.
+* `start_date__lte`: maximum start date.
 
 Sort orders:
 
-* `date`
+* `start_date`
 
 Facets:
 

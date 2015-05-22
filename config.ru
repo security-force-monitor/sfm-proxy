@@ -74,7 +74,8 @@ helpers do
     {
       "id" => result['_id'],
       "division_id" => result['division_id'],
-      "date" => result['date'].try(:[], 'value'),
+      "start_date" => result['start_date'].try(:[], 'value'),
+      "end_date" => result['end_date'].try(:[], 'value'),
       "location" => result['location'].try(:[], 'value'),
       "admin_level_1" => result['admin_level_1'].try(:[], 'value'),
       "admin_level_2" => result['admin_level_2'].try(:[], 'value'),

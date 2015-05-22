@@ -269,10 +269,10 @@ get '/countries/:id/search/events' do
     # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
-    date__gte: ['date.value', '$gte'],
-    date__lte: ['date.value', '$lte'],
+    start_date__gte: ['start_date.value', '$gte'],
+    start_date__lte: ['start_date.value', '$lte'],
   }, {
-    'date' => 'date.value',
+    'start_date' => 'start_date.value',
   }, {
     'classification' => ['$classification.value', unwind: true],
   }, result_formatter)

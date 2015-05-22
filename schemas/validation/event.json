@@ -21,7 +21,19 @@
       "type": "string",
       "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
     },
-    "date": {
+    "start_date": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "end_date": {
       "type": "object",
       "properties": {
         "value": {
@@ -145,7 +157,8 @@
     "gid",
     "row",
     "id",
-    "date",
+    "start_date",
+    "end_date",
     "classification",
     "description",
     "perpetrator_organization_id"

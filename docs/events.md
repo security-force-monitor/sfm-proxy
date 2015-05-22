@@ -34,7 +34,8 @@
       "type": "Feature",
       "id": "de305d54-75b4-431b-adb2-eb6b9e546014",
       "properties": {
-        "date": "2010-01-01",
+        "start_date": "2010-01-01",
+        "end_date": null,
         "admin_level_1": "Abia",
         "admin_level_2": "Aba North",
         "classification": [
@@ -65,7 +66,8 @@
 [
   {
     "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    "date": "2010-01-01",
+    "start_date": "2010-01-01",
+    "end_date": null
   },
   ...
 ]
@@ -79,7 +81,8 @@
 {
   "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "division_id": "ocd-division/country:ng",
-  "date": "2010-01-01",
+  "start_date": "2010-01-01",
+  "end_date": null,
   "location": "...",
   "admin_level_1": "Abia",
   "admin_level_2": "Aba North",
