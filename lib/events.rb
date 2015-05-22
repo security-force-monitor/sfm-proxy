@@ -6,7 +6,7 @@ get '/countries/:id/events' do
 
   results = connection[:events].find({'division_id' => "ocd-division/country:#{params[:id]}"})
 
-  response = results.each do |result|
+  response = results.map do |result|
     {
       "id" => result['_id'],
       "date" => result['date'].try(:[], 'value'),
