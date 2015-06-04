@@ -8,7 +8,11 @@ helpers do
     criteria_map.each do |key,(field,operator,options)|
       if params.key?(key.to_s)
         value = params[key]
-        value = value.split(',') if options && options[:split]
+        if options && options[:split]
+          value = value.split(',')
+        elsif operator == '$regex'
+          value = /#{Regexp.escape(value)}/i
+        end
         criteria[field] ||= {}
         criteria[field][operator] = value
       end
