@@ -25,7 +25,7 @@ get '/countries' do
     south, north = geometry['coordinates'][0].map(&:last).minmax
 
     {
-      "type": "Feature",
+      "type" => "Feature",
       "id" => code,
       "properties" => {
         "name" => name,

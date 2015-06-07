@@ -8,7 +8,79 @@
 * `bbox`: comma-separated south-west and north-east coordinates.
 
 ```json
-@todo
+{
+  "area": {
+    "type": "Feature",
+    "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
+    "properties": {},
+    "geometry": GeoJSON
+  },
+  "sites": [
+    {
+      "type": "Feature",
+      "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
+      "properties": {
+        "name": "Command Center",
+        "admin_level_1": "Abia",
+        "admin_level_2": "Abia North"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
+      }
+    },
+    ...
+  ],
+  "events": [
+    {
+      "type": "Feature",
+      "id": "1f3e4427-ae20-4cc6-abc4-a70b6ed3c7e0",
+      "properties": {
+        "start_date": "2010-01-01",
+        "end_date": null,
+        "admin_level_1": "Abia",
+        "admin_level_2": "Abia North",
+        "classification": [
+          "Torture",
+          "Disappearance"
+        ],
+        "perpetrator_name": "Terry Guerrier",
+        "perpetrator_organization": {
+          "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
+          "name": "Brigade 1",
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
+      }
+    },
+    ...
+  ],
+  "events_nearby": [
+    {
+      "type": "Feature",
+      "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
+      "properties": {
+        "start_date": "2012-01-01",
+        "end_date": null,
+        "admin_level_1": "Abia",
+        "admin_level_2": "Abia North",
+        "classification": ["Killing"],
+        "perpetrator_name": "Marvin Steele",
+        "perpetrator_organization": {
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "name": "Brigade 2",
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
+      }
+    },
+    ...
+  ]
+}
 ```
 
 ## Chart
@@ -105,7 +177,7 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
   ],
   "events": [
     {
-      "id": "eba734d7-8078-4af5-ae8f-838c0d47fdc0",
+      "id": "1f3e4427-ae20-4cc6-abc4-a70b6ed3c7e0",
       "start_date": "2010-01-01",
       "end_date": null,
       "admin_level_1": "Abia",
@@ -114,7 +186,11 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
         "Torture",
         "Disappearance"
       ],
-      "perpetrator_name": "Terry Guerrier"
+      "perpetrator_name": "Terry Guerrier",
+      "perpetrator_organization": {
+        "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
+        "name": "Brigade 1",
+      }
     },
     ...
   ],
@@ -223,7 +299,11 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "admin_level_1": "Abia",
       "admin_level_2": "Abia North",
       "classification": ["Killing"],
-      "perpetrator_name": "Marvin Steele"
+      "perpetrator_name": "Marvin Steele",
+      "perpetrator_organization": {
+        "id": "123e4567-e89b-12d3-a456-426655440000",
+        "name": "Brigade 2",
+      }
     },
     ...
   ]

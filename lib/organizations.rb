@@ -115,9 +115,9 @@ get '/organizations/:id/map' do
             "admin_level_2" => 'Abia North',
             "classification" => ['Torture', 'Disappearance'],
             "perpetrator_name" => 'Terry Guerrier',
-            "perpetrator_organization": {
-              "id" => '42bb1cff-eed5-4458-a9b4-b00bad09f615',
-              "name" => 'Brigade 1',
+            "perpetrator_organization" => {
+              "id" => '123e4567-e89b-12d3-a456-426655440000',
+              "name" => 'Brigade 2',
             }
           },
           "geometry" => sample_point,
@@ -295,9 +295,9 @@ get '/organizations/:id' do
           "admin_level_2" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
-          "perpetrator_organization": {
-            "id" => '42bb1cff-eed5-4458-a9b4-b00bad09f615',
-            "name" => 'Brigade 1',
+          "perpetrator_organization" => {
+            "id" => '123e4567-e89b-12d3-a456-426655440000',
+            "name" => 'Brigade 2',
           }
         }
       ]
