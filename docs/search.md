@@ -14,17 +14,22 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 
 ## Autocomplete
 
-`/autocomplete/geonames_id` returns GeoNames and GeoNames IDs.
+`/countries/:id/autocomplete/geonames_id` returns GeoNames and GeoNames IDs.
 
 ```json
 [
   {
     "id": 2221333,
-    "name": "River Tunga"
+    "name": "River Tunga",
+    "coordinates": [
+      9.6772,
+      6.87725
+    ]
   },
   ...
 ]
 ```
+
 ## Organizations
 
 `/countries/:id/search/organizations?` returns organization search results. Parameters:

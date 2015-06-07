@@ -109,11 +109,14 @@ get %r{/countries/([a-z]{2})/search/events.txt} do |id|
   204
 end
 
-get '/autocomplete/geonames_id' do
-  response = CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', 'NG.txt'), __dir__), col_sep: "\t").map do |row|
+get '/countries/:id/autocomplete/geonames_id' do
+  content_type 'application/json'
+
+  response = CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', "#{params[:id].upcase}.txt"), __dir__), col_sep: "\t").map do |row|
     {
       id: Integer(row[0]),
       name: row[1],
+      coordinates: [Float(row[5]), Float(row[4])],
     }
   end
 
