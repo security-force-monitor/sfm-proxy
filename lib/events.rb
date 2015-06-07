@@ -55,11 +55,8 @@ get '/countries/:id/map' do
     return [400, JSON.dump({'message' => "Invalid 'at' value"})]
   end
 
-  criteria = {
+  organization_criteria = {
     'division_id' => "ocd-division/country:#{params[:id]}",
-  }
-
-  organization_criteria = criteria.merge({
     'area_ids' => {
       '$elemMatch' => {
         '$and' => [
@@ -81,7 +78,7 @@ get '/countries/:id/map' do
         ],
       },
     },
-  })
+  }
 
   if params.key?('classification__in')
     organization_criteria['classification.value'] = {'$in' => params['classification__in'].split(',')}
@@ -89,17 +86,21 @@ get '/countries/:id/map' do
 
   organizations = connection[:organizations].find(organization_criteria)
 
-  # @note No events have coordinates. Add date and bbox logic and remove this dummy code later.
-  longitude_range = Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
-  latitude_range = Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
-  events = connection[:events].find(criteria).limit(10)
+  # @note No events have coordinates. Add bbox logic later.
+  events = connection[:events].find({
+    'division_id' => "ocd-division/country:#{params[:id]}",
+    'start_date.value' => params[:at],
+  })
 
   etag_and_return({
     "organizations" => organizations.map{|result|
       geometry = if result['area_ids']
-        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(result['area_ids'].find{|area_id|
+        area_id = result['area_ids'].find{|area_id|
           area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
-        }['id']['value']))
+        }
+        if area_id
+          geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
+        end
       end
 
       {
@@ -115,16 +116,8 @@ get '/countries/:id/map' do
         "geometry" => geometry,
       }
     },
-    "events" => events.map{|event|
-      {
-        "type" => "Feature",
-        "id" => event['_id'],
-        "properties" => event_formatter(event).except('id', 'division_id', 'location', 'description'),
-        "geometry" => event['geo'].try(:[], 'coordinates').try(:[], 'value') || {
-          "type" => "Point",
-          "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
-        },
-      }
+    "events" => events.map{|result|
+      event_feature_formatter(result)
     },
   })
 end

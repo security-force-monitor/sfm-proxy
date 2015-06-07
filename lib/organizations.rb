@@ -50,13 +50,93 @@ end
 get '/organizations/:id/map' do
   content_type 'application/json'
 
-  etag_and_return({
-    # @todo
-  })
+  if !params.key?('at')
+    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+  elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
+    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+  end
+
+  result = connection[:organizations].find(_id: params[:id]).first
+
+  if result
+    geometry = if result['area_ids']
+      area_id = result['area_ids'].find{|area_id|
+        area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
+      }
+      if area_id
+        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
+      end
+    end
+
+    # @note No events have coordinates. Add bbox logic later.
+    events = connection[:events].find({
+      'start_date.value' => params[:at],
+      'perpetrator_organization_id.value' => result['_id'],
+    })
+
+    # @todo Fake it until you make it.
+    if events.count.zero?
+      events = [connection[:events].find.first]
+    end
+
+    etag_and_return({
+      "area" => {
+        "type" => "Feature",
+        "id" => result['_id'],
+        "properties" => {},
+        "geometry" => geometry,
+      },
+      "sites" => result['site_ids'].each_with_index.select{|site_id,index|
+        result['sites'][index]['name'] && contemporary?(site_id)
+      }.map{|site_id,index|
+        {
+          "type" => "Feature",
+          "id" => result['sites'][index]['id'],
+          "properties" => {
+            "name" => result['sites'][index]['name'].try(:[], 'value'),
+            "admin_level_1" => result['sites'][index]['admin_level_1'].try(:[], 'value'),
+            "admin_level_2" => result['sites'][index]['admin_level_2'].try(:[], 'value'),
+          },
+          "geometry" => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'),
+        }
+      },
+      "events" => events.map{|event|
+        event_feature_formatter(event)
+      },
+      # @drupal Use PostGIS to determine events within a 2km radius of all sites over all time.
+      "events_nearby" => [ # @hardcoded
+        {
+          "type" => "Feature",
+          "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
+          "properties" => {
+            "start_date" => '2010-01-01',
+            "end_date" => nil,
+            "admin_level_1" => 'Abia',
+            "admin_level_2" => 'Abia North',
+            "classification" => ['Torture', 'Disappearance'],
+            "perpetrator_name" => 'Terry Guerrier',
+            "perpetrator_organization": {
+              "id" => '42bb1cff-eed5-4458-a9b4-b00bad09f615',
+              "name" => 'Brigade 1',
+            }
+          },
+          "geometry" => sample_point,
+        }
+      ]
+    })
+  else
+    404
+  end
 end
 
 get '/organizations/:id/chart' do
   content_type 'application/json'
+
+  if !params.key?('at')
+    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+  elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
+    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+  end
 
   etag_and_return({
     # @todo
@@ -71,7 +151,7 @@ get '/organizations/:id' do
 
   if result
     # Some sites may not have any dates, making sites not comparable.
-    site_ids = result['site_ids'].select{|site| site['date_first_cited'] || site['date_last_cited']}
+    site_ids = result['site_ids'].select{|site_id| site_id['date_first_cited'] || site_id['date_last_cited']}
 
     site_first = site_ids.min do |a,b|
       [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min <=>
@@ -88,7 +168,7 @@ get '/organizations/:id' do
     commanders = commanders_and_people[:commanders]
     people = commanders_and_people[:people]
 
-    # @todo Fake it until you can make it.
+    # @todo Fake it until you make it.
     if events.count.zero?
       events = [connection[:events].find.first]
     end
@@ -185,7 +265,7 @@ get '/organizations/:id' do
           "confidence" => area['id']['confidence'],
         })
       },
-      "sites" => result['site_ids'].each_with_index.map{|site,index|
+      "sites" => result['site_ids'].each_with_index.map{|site_id,index|
         item = if result['sites'][index]['name']
           {
             "id" => result['sites'][index]['id'],
@@ -195,14 +275,14 @@ get '/organizations/:id' do
           }
         else
           {
-            "name" => site['id'].try(:[], 'value'),
+            "name" => site_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => site['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => site['date_last_cited'].try(:[], 'value'),
-          "sources" => site['id']['sources'],
-          "confidence" => site['id']['confidence'],
+          "date_first_cited" => site_id['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
+          "sources" => site_id['id']['sources'],
+          "confidence" => site_id['id']['confidence'],
         })
       },
       # @drupal Use PostGIS to determine events within a 2km radius of all sites over all time.
@@ -215,6 +295,10 @@ get '/organizations/:id' do
           "admin_level_2" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
+          "perpetrator_organization": {
+            "id" => '42bb1cff-eed5-4458-a9b4-b00bad09f615',
+            "name" => 'Brigade 1',
+          }
         }
       ]
     })

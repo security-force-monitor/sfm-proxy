@@ -43,7 +43,7 @@ helpers do
   def bounding_box
     @bounding_box ||= if params.key?('bbox')
       if !params[:bbox].match(/\A#{NUMERIC},#{NUMERIC},#{NUMERIC},#{NUMERIC}\z/)
-        return [400, JSON.dump({'message' => "Invalid 'bbox' value"})]
+        halt 400, JSON.dump({'message' => "Invalid 'bbox' value"})
       end
       params[:bbox].split(',').map{|coordinate| Float(coordinate)}
     else
@@ -141,6 +141,26 @@ helpers do
       "description" => result['description'].try(:[], 'value'),
       "perpetrator_name" => result['perpetrator_name'].try(:[], 'value'),
       "perpetrator_organization" => perpetrator_organization,
+    }
+  end
+
+  def event_feature_formatter(result)
+    {
+      "type" => "Feature",
+      "id" => result['_id'],
+      "properties" => event_formatter(result).except('id', 'division_id', 'geonames_name', 'geonames_id', 'location', 'geo', 'description'),
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
+    }
+  end
+
+  def sample_point
+    # @note No events have coordinates. Remove this dummy code later.
+    longitude_range = Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
+    latitude_range = Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
+
+    {
+      "type" => "Point",
+      "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
     }
   end
 end

@@ -11,12 +11,14 @@ task :default do
     end
   end
 
-  [ '/autocomplete/geonames_id',
-    '/countries',
+  [ '/countries',
+    '/countries/ng/autocomplete/geonames_id',
     '/countries/ng/events',
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
+    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01',
+    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01&bbox=10,5,5,10',
     '/geometries/xa.geojson',
     '/geometries/xa.topojson',
   ].each do |path|
@@ -26,6 +28,8 @@ task :default do
   [ '/countries/ng/map',
     '/countries/ng/map?at=invalid',
     '/countries/ng/map?at=2010-01-01&bbox=invalid',
+    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=invalid',
+    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01&bbox=invalid',
   ].each do |path|
     test(path, [400])
   end
@@ -80,7 +84,6 @@ task :default do
   end
 
   # @todo
-  # /organizations/:id/map
   # /organizations/:id/chart
   # /people/:id/chart
 end
