@@ -128,18 +128,18 @@ get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    site = result['site_ids'].max do |a,b|
+    site_id = result['site_ids'].max do |a,b|
       ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '') <=>
       ([b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
     end
 
     site_present = {
-      "date_first_cited" => site['date_first_cited'].try(:[], 'value'),
-      "date_last_cited" => site['date_last_cited'].try(:[], 'value'),
+      "date_first_cited" => site_id['date_first_cited'].try(:[], 'value'),
+      "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
     }
-    if site['name']
-      site_present['admin_level_1'] = site['admin_level_1'].try(:[], 'value')
-      site_present['admin_level_2'] = site['admin_level_2'].try(:[], 'value')
+    if site_id['name']
+      site_present['admin_level_1'] = site_id['admin_level_1'].try(:[], 'value')
+      site_present['admin_level_2'] = site_id['admin_level_2'].try(:[], 'value')
     end
 
     {
@@ -207,15 +207,15 @@ get '/countries/:id/search/people' do
     end
 
     if memberships[0]['organization']
-      site = memberships[0]['organization']['site_ids'].max do |a,b|
+      site_id = memberships[0]['organization']['site_ids'].max do |a,b|
         [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
         [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
       end
 
-      if site['name']
+      if site_id['name']
         membership_present['organization']['site_present'] = {
-          "admin_level_1" => site['admin_level_1'].try(:[], 'value'),
-          "admin_level_2" => site['admin_level_2'].try(:[], 'value'),
+          "admin_level_1" => site_id['admin_level_1'].try(:[], 'value'),
+          "admin_level_2" => site_id['admin_level_2'].try(:[], 'value'),
         }
       end
     end

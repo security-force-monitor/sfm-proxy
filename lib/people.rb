@@ -8,6 +8,12 @@ end
 get '/people/:id/chart' do
   content_type 'application/json'
 
+  if !params.key?('at')
+    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+  elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
+    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+  end
+
   etag_and_return({
     # @todo
   })
