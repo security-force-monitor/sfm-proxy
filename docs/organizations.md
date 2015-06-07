@@ -5,6 +5,7 @@
 `/organizations/:id/map?` returns an organization's areas, sites and nearby events to render on a map and timeline. Parameters:
 
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
+* `bbox`: comma-separated south-west and north-east coordinates.
 
 ```json
 @todo

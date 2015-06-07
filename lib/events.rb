@@ -55,49 +55,9 @@ get '/countries/:id/map' do
     return [400, JSON.dump({'message' => "Invalid 'at' value"})]
   end
 
-  if params.key?('bbox')
-    if !params[:bbox].match(/\A#{NUMERIC},#{NUMERIC},#{NUMERIC},#{NUMERIC}\z/)
-      return [400, JSON.dump({'message' => "Invalid 'bbox' value"})]
-    end
-    coordinates = params[:bbox].split(',').map{|coordinate| Float(coordinate)}
-  else
-    coordinates = [14.5771, 4.2405, 2.6917, 13.8659] # @hardcoded Nigeria west-south, east-north
-  end
-
   criteria = {
     'division_id' => "ocd-division/country:#{params[:id]}",
   }
-
-  # @drupal Switch to PostGIS query. Just match on ADM1 for now.
-  geonames_id_to_geo = {}
-
-  connection[:geometries].find({
-    classification: 'ADM1',
-    geo: {
-      '$geoIntersects' => {
-        '$geometry' => {
-          type: 'Polygon',
-          coordinates: [[
-            [coordinates[0], coordinates[1]],
-            [coordinates[2], coordinates[1]],
-            [coordinates[2], coordinates[3]],
-            [coordinates[0], coordinates[3]],
-            [coordinates[0], coordinates[1]],
-          ]]
-        }
-      },
-    },
-  }).select(_id: 1, geo: 1).each do |geometry|
-    geonames_id_to_geo[geometry['_id']] = geometry['geo']
-  end
-
-  area_id_to_geoname_id = {}
-
-  connection[:areas].find(criteria.merge({
-    'geonames_id.value' => {'$in' => geonames_id_to_geo.keys},
-  })).select('_id' => 1, 'geonames_id.value' => 1).each do |area|
-    area_id_to_geoname_id[area['_id']] = area['geonames_id']['value']
-  end
 
   organization_criteria = criteria.merge({
     'area_ids' => {
@@ -130,20 +90,16 @@ get '/countries/:id/map' do
   organizations = connection[:organizations].find(organization_criteria)
 
   # @note No events have coordinates. Add date and bbox logic and remove this dummy code later.
-  longitude_range = Integer(coordinates[2] * 10_000)...Integer(coordinates[0] * 10_000)
-  latitude_range = Integer(coordinates[1] * 10_000)...Integer(coordinates[3] * 10_000)
+  longitude_range = Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
+  latitude_range = Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
   events = connection[:events].find(criteria).limit(10)
 
   etag_and_return({
     "organizations" => organizations.map{|result|
       geometry = if result['area_ids']
-        area_id = result['area_ids'].find do |area_id|
-          area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) &&
-          (area_id['date_first_cited'].try(:[], 'value').nil? || area_id['date_first_cited']['value'] <= params[:at]) &&
-          (area_id['date_last_cited'].try(:[], 'value').nil? || area_id['date_last_cited']['value'] >= params[:at])
-        end['id']['value']
-
-        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id))
+        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(result['area_ids'].find{|area_id|
+          area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
+        }['id']['value']))
       end
 
       {
@@ -159,12 +115,12 @@ get '/countries/:id/map' do
         "geometry" => geometry,
       }
     },
-    "events" => events.map{|result|
+    "events" => events.map{|event|
       {
         "type" => "Feature",
-        "id" => result['_id'],
-        "properties" => event_formatter(result).except('id', 'division_id', 'location', 'description'),
-        "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || {
+        "id" => event['_id'],
+        "properties" => event_formatter(event).except('id', 'division_id', 'location', 'description'),
+        "geometry" => event['geo'].try(:[], 'coordinates').try(:[], 'value') || {
           "type" => "Point",
           "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
         },
