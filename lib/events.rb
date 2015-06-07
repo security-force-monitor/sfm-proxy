@@ -164,7 +164,7 @@ get '/countries/:id/map' do
         "type" => "Feature",
         "id" => result['_id'],
         "properties" => event_formatter(result).except('id', 'division_id', 'location', 'description'),
-        "geometry" => result['geo'] || {
+        "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || {
           "type" => "Point",
           "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
         },
