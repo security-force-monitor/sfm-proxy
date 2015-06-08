@@ -1,4 +1,69 @@
 helpers do
+  def walk_up(result, height = 0)
+    parents = []
+
+    result['parent_ids'].try(:each_with_index) do |parent_id,index|
+      if contemporary?(parent_id)
+        parents << walk_up(result['parents'][index], height + 1)
+      end
+    end
+
+    if parents.empty?
+      [result['id'], height]
+    else
+      parents.max_by(&:last)
+    end
+  end
+
+  def walk_down(id)
+    response = []
+
+    children = connection[:organizations].find({
+      'parent_ids' => {
+        '$elemMatch' => {
+          '$and' => [
+            {
+              'id.value' => id,
+            },
+            {
+              '$or' => [
+                {'date_first_cited.value' => nil},
+                {'date_first_cited.value' => {'$lte' => params[:at]}},
+              ],
+            },
+            {
+              '$or' => [
+                {'date_last_cited.value' => nil},
+                {'date_last_cited.value' => {'$gte' => params[:at]}},
+              ],
+            },
+          ],
+        },
+      },
+    })
+
+    children.each do |child|
+      index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == id}
+
+      begin
+        response << {
+          "id" => child['_id'],
+          "name" => child['name'].try(:[], 'value'),
+          "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+          "parent_id" => id,
+          "classification" => child['parent_ids'][index]['classification'].try(:[], 'value'),
+          "commander" => commanders_and_people(child['_id'])[:commanders][0],
+        }
+      rescue
+        raise child.inspect
+      end
+
+      response += walk_down(child['_id'])
+    end
+
+    response
+  end
+
   def commanders_and_people(organization_id)
     commanders = []
     people = []
@@ -138,9 +203,28 @@ get '/organizations/:id/chart' do
     return [400, JSON.dump({'message' => "Invalid 'at' value"})]
   end
 
-  etag_and_return({
-    # @todo
-  })
+  result = connection[:organizations].find(_id: params[:id]).first
+
+  if result
+    parent_id, _ = walk_up(result)
+
+    root = connection[:organizations].find(_id: parent_id).first
+
+    response = walk_down(parent_id)
+
+    response.unshift({
+      "id" => root['_id'],
+      "name" => root['name'].try(:[], 'value'),
+      "events_count" => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
+      "parent_id" => nil,
+      "classification" => nil,
+      "commander" => commanders_and_people(root['_id'])[:commanders][0],
+    })
+
+    etag_and_return(response)
+  else
+    404
+  end
 end
 
 # @drupal Load node from Drupal.
@@ -153,13 +237,11 @@ get '/organizations/:id' do
     # Some sites may not have any dates, making sites not comparable.
     site_ids = result['site_ids'].select{|site_id| site_id['date_first_cited'] || site_id['date_last_cited']}
 
-    site_first = site_ids.min do |a,b|
-      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min <=>
-      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).min
+    site_first = site_ids.min_by do |a|
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).min
     end
-    site_last = site_ids.max do |a,b|
-      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
-      [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
+    site_last = site_ids.max_by do |a|
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
     end
 
     events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
@@ -189,7 +271,7 @@ get '/organizations/:id' do
       "events" => events.map{|event|
         event_formatter(event).except('division_id', 'location', 'description', 'perpetrator_organization')
       },
-      "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent,index|
+      "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent_id,index|
         item = if result['parents'][index]['name']
           {
             "id" => result['parents'][index]['id'],
@@ -201,18 +283,18 @@ get '/organizations/:id' do
           }
         else
           {
-            "name" => parent['id'].try(:[], 'value'),
+            "name" => parent_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => parent['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => parent['date_last_cited'].try(:[], 'value'),
-          "sources" => parent['id']['sources'],
-          "confidence" => parent['id']['confidence'],
+          "date_first_cited" => parent_id['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => parent_id['date_last_cited'].try(:[], 'value'),
+          "sources" => parent_id['id']['sources'],
+          "confidence" => parent_id['id']['confidence'],
         })
       },
       "children" => children.map{|child|
-        index = child['parent_ids'].index{|parent| parent['id']['value'] == result['_id']}
+        index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == result['_id']}
 
         {
           "id" => child['_id'],

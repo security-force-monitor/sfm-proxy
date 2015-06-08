@@ -11,8 +11,8 @@ task :default do
     end
   end
 
-  organization_id = connection[:organizations].first['_id']
-  person_id = connection[:people].first['_id']
+  organization_id = connection[:organizations].find.first['_id']
+  person_id = connection[:people].find.first['_id']
 
   [ '/countries',
     '/countries/ng/autocomplete/geonames_id',
@@ -57,7 +57,8 @@ task :default do
   end
 
   # @note Query string parameters are not tested.
-  [ :events,
+  [
+    :events,
     :organizations,
     :people,
   ].each do |collection_name|
@@ -69,7 +70,8 @@ task :default do
     end
   end
 
-  [ :events,
+  [
+    :events,
     :organizations,
     # :people, # @todo
   ].each do |collection_name|

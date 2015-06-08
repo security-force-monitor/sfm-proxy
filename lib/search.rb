@@ -128,9 +128,8 @@ get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    site_id = result['site_ids'].max do |a,b|
-      ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '') <=>
-      ([b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
+    site_id = result['site_ids'].max_by do |a|
+      ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
     end
 
     site_present = {
@@ -182,9 +181,8 @@ get '/countries/:id/search/people' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    memberships = result['memberships'].max(2) do |a,b|
-      ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '') <=>
-      ([b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
+    memberships = result['memberships'].max_by(2) do |a|
+      ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
     end
 
     membership_present, membership_former = memberships.map do |membership|
@@ -207,9 +205,8 @@ get '/countries/:id/search/people' do
     end
 
     if memberships[0]['organization']
-      site_id = memberships[0]['organization']['site_ids'].max do |a,b|
-        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max <=>
-        [b['date_first_cited'].try(:[], 'value'), b['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
+      site_id = memberships[0]['organization']['site_ids'].max_by do |a|
+        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
       end
 
       if site_id['name']
