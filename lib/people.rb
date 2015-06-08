@@ -14,9 +14,15 @@ get '/people/:id/chart' do
     return [400, JSON.dump({'message' => "Invalid 'at' value"})]
   end
 
-  etag_and_return({
-    # @todo
-  })
+  result = connection[:people].find(_id: params[:id]).first
+
+  if result
+    etag_and_return({
+      # @todo
+    })
+  else
+    404
+  end
 end
 
 # @drupal Load node from Drupal.

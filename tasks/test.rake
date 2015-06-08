@@ -11,14 +11,15 @@ task :default do
     end
   end
 
+  organization_id = connection[:organizations].first['_id']
+  person_id = connection[:people].first['_id']
+
   [ '/countries',
     '/countries/ng/autocomplete/geonames_id',
     '/countries/ng/events',
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
-    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01',
-    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01&bbox=10,5,5,10',
     '/geometries/xa.geojson',
     '/geometries/xa.topojson',
   ].each do |path|
@@ -28,8 +29,10 @@ task :default do
   [ '/countries/ng/map',
     '/countries/ng/map?at=invalid',
     '/countries/ng/map?at=2010-01-01&bbox=invalid',
-    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=invalid',
-    '/organizations/4768cd9f-db5c-4803-8cbe-d53613a99f71/map?at=2012-01-01&bbox=invalid',
+    "/organizations/#{organization_id}/map?at=invalid",
+    "/organizations/#{organization_id}/map?at=2012-01-01&bbox=invalid",
+    "/organizations/#{organization_id}/chart?at=invalid",
+    "/people/#{person_id}/chart?at=invalid",
   ].each do |path|
     test(path, [400])
   end
@@ -74,16 +77,15 @@ task :default do
     puts "%3d #{collection_name}" % query.count
     query.each do |object|
       suffixes = ['']
-      unless collection_name == :events
-        suffixes += ['.txt', '.zip']
+      case collection_name
+      when :organizations
+        suffixes += ['.txt', '.zip', '/map?at=2012-01-01', '/map?at=2012-01-01&bbox=10,5,5,10', '/chart?at=2012-01-01']
+      when :people
+        suffixes += ['.txt', '.zip'] #, '/chart?at=2012-01-01'] # @todo
       end
       suffixes.each do |suffix|
         test("/#{collection_name}/#{object['_id']}#{suffix}")
       end
     end
   end
-
-  # @todo
-  # /organizations/:id/chart
-  # /people/:id/chart
 end
