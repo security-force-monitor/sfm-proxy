@@ -9,7 +9,7 @@ helpers do
     end
 
     if parents.empty?
-      [result['id'], height]
+      [result['id']['value'] || result['id'], height]
     else
       parents.max_by(&:last)
     end
@@ -45,18 +45,14 @@ helpers do
     children.each do |child|
       index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == id}
 
-      begin
-        response << {
-          "id" => child['_id'],
-          "name" => child['name'].try(:[], 'value'),
-          "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
-          "parent_id" => id,
-          "classification" => child['parent_ids'][index]['classification'].try(:[], 'value'),
-          "commander" => commanders_and_people(child['_id'])[:commanders][0],
-        }
-      rescue
-        raise child.inspect
-      end
+      response << {
+        "id" => child['_id'],
+        "name" => child['name'].try(:[], 'value'),
+        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+        "parent_id" => id,
+        "classification" => child['parent_ids'][index]['classification'].try(:[], 'value'),
+        "commander" => commanders_and_people(child['_id'])[:commanders][0],
+      }
 
       response += walk_down(child['_id'])
     end
@@ -212,14 +208,24 @@ get '/organizations/:id/chart' do
 
     response = walk_down(parent_id)
 
-    response.unshift({
-      "id" => root['_id'],
-      "name" => root['name'].try(:[], 'value'),
-      "events_count" => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
-      "parent_id" => nil,
-      "classification" => nil,
-      "commander" => commanders_and_people(root['_id'])[:commanders][0],
-    })
+    if root
+      response.unshift({
+        "id" => root['_id'],
+        "name" => root['name'].try(:[], 'value'),
+        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
+        "parent_id" => nil,
+        "classification" => nil,
+        "commander" => commanders_and_people(root['_id'])[:commanders][0],
+      })
+    else
+      response.unshift({
+        "name" => parent_id,
+        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => parent_id}).count,
+        "parent_id" => nil,
+        "classification" => nil,
+        "commander" => commanders_and_people(parent_id)[:commanders][0],
+      })
+    end
 
     etag_and_return(response)
   else
