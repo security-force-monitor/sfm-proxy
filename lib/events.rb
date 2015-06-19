@@ -6,19 +6,9 @@ get '/countries/:id/events' do
 
   results = connection[:events].find({'division_id' => "ocd-division/country:#{params[:id]}"})
 
-  response = results.map do |result|
-    {
-      "type" => "Feature",
-      "id" => result['_id'],
-      "properties" => {
-        "start_date" => result['start_date'].try(:[], 'value'),
-        "end_date" => result['end_date'].try(:[], 'value'),
-      },
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
-    }
-  end
-
-  etag_and_return(response)
+  etag_and_return(results.map{|result|
+    event_feature_formatter(result)
+  })
 end
 
 # @drupal Load node from Drupal.
@@ -98,6 +88,7 @@ get '/countries/:id/map' do
 
   etag_and_return({
     "organizations" => organizations.map{|result|
+      # @todo use a default
       geometry = if result['area_ids']
         area_id = result['area_ids'].find{|area_id|
           area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)

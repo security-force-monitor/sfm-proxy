@@ -66,10 +66,21 @@
 [
   {
     "type": "Feature",
-    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "id": "de305d54-75b4-431b-adb2-eb6b9e546014",
     "properties": {
       "start_date": "2010-01-01",
-      "end_date": null
+      "end_date": null,
+      "admin_level_1": "Abia",
+      "admin_level_2": "Aba North",
+      "classification": [
+        "Torture",
+        "Disappearance"
+      ],
+      "perpetrator_name": "Terry Guerrier",
+      "perpetrator_organization": {
+        "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
+        "name": "Brigade 1"
+      }
     },
     "geometry": {
       "type": "Point",
