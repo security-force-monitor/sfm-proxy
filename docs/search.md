@@ -14,14 +14,16 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 
 ## Autocomplete
 
-`/countries/:id/autocomplete/geonames_id` returns GeoNames and GeoNames IDs.
+`/countries/:id/autocomplete/geonames_id` returns GeoNames and GeoNames IDs. Parameters:
+
+* `classification`: a GeoNames [feature code](http://www.geonames.org/export/codes.html).
+* `bbox`: comma-separated south-west and north-east coordinates.
 
 ```json
 [
   {
     "id": 2221333,
-    "name": "River Tunga",
-    "coordinates": [9.6772, 6.87725]
+    "name": "River Tunga"
   },
   ...
 ]

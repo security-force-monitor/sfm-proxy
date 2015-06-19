@@ -112,11 +112,33 @@ end
 get '/countries/:id/autocomplete/geonames_id' do
   content_type 'application/json'
 
-  response = CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', "#{params[:id].upcase}.txt"), __dir__), col_sep: "\t").map do |row|
+  criteria = {'division_id' => "ocd-division/country:#{params[:id]}"}
+
+  if params[:classification]
+    criteria['classification'] = params[:classification]
+  end
+
+  if params[:bbox]
+    criteria['geo'] = {
+      '$geoIntersects' => {
+        '$geometry' => {
+          type: 'Polygon',
+          coordinates: [[
+            [bounding_box[0], bounding_box[1]],
+            [bounding_box[2], bounding_box[1]],
+            [bounding_box[2], bounding_box[3]],
+            [bounding_box[0], bounding_box[3]],
+            [bounding_box[0], bounding_box[1]],
+          ]]
+        }
+      },
+    }
+  end
+
+  response = connection[:geometries].find(criteria).select('_id' => 1, 'name' => 1).map do |result|
     {
-      id: Integer(row[0]),
-      name: row[1],
-      coordinates: [Float(row[5]), Float(row[4])],
+      "id" => result['_id'],
+      "name" => result['name'],
     }
   end
 
@@ -159,17 +181,17 @@ get '/countries/:id/search/organizations' do
     # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
-    date_first_cited__gte: ['sites.date_first_cited.value', '$gte'],
-    date_first_cited__lte: ['sites.date_first_cited.value', '$lte'],
-    date_last_cited__gte: ['sites.date_last_cited.value', '$gte'],
-    date_last_cited__lte: ['sites.date_last_cited.value', '$lte'],
+    date_first_cited__gte: ['site_ids.date_first_cited.value', '$gte'],
+    date_first_cited__lte: ['site_ids.date_first_cited.value', '$lte'],
+    date_last_cited__gte: ['site_ids.date_last_cited.value', '$gte'],
+    date_last_cited__lte: ['site_ids.date_last_cited.value', '$lte'],
     # @drupal Add events_count calculated field.
     events_count__gte: ['events_count', '$gte'],
     events_count__lte: ['events_count', '$lte'],
   }, {
     'name' => 'name.value',
-    'date_first_cited' => 'sites.date_first_cited.value', # XXX don't know if this sorts correctly
-    'date_last_cited' => 'sites.date_last_cited.value', # XXX don't know if this sorts correctly
+    'date_first_cited' => 'site_ids.date_first_cited.value', # XXX don't know if this sorts correctly
+    'date_last_cited' => 'site_ids.date_last_cited.value', # XXX don't know if this sorts correctly
     'events_count' => 'events_count',
   }, {
     'classification' => ['$classification.value'],

@@ -42,6 +42,7 @@ task :default do
     '/people/e7f6028a-1117-435a-86f9-c0a59401cd80',
     '/geometries/xz.geojson',
     '/geometries/xz.topojson',
+    '/countries/ng/geometries'
   ].each do |path|
     test(path, [404])
   end
