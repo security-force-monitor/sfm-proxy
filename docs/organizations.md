@@ -90,7 +90,29 @@
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
 
 ```json
-@todo
+[
+  {
+    "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
+    "name": "Brigade 1",
+    "events_count": 12,
+    "parent_id": "010bfd80-4eed-4843-807c-20bd34eaf7aa",
+    "classification": "Brigade",
+    "commander": {
+      "id": "92a458f4-ecc1-441f-8ab7-e68b24cd5695",
+      "name": "Neil Cable",
+      "other_names": [
+        "Black Ranger"
+      ],
+      "events_count": 1,
+      "date_first_cited": "2014-08-01",
+      "date_last_cited": "2014-12-01",
+      "sources": [
+        "..."
+      ],
+      "confidence": "High"
+    }
+  }
+]
 ```
 
 ## Detail
