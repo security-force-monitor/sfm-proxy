@@ -72,6 +72,12 @@ Facets:
       ],
       "events_count": 12,
       "classification": "Brigade",
+      "area_present": {
+        "type": "Feature",
+        "id": "123e4567-e89b-12d3-a456-426655440000",
+        "properties": {},
+        "geometry": GeoJSON
+      },
       "site_present": {
         "date_first_cited": "2000-01-01",
         "date_last_cited": "2015-01-01",

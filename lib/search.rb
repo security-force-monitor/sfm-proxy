@@ -163,7 +163,14 @@ get '/countries/:id/search/organizations' do
       site_present['admin_level_2'] = site_id['admin_level_2'].try(:[], 'value')
     end
 
-    # @todo add geometry
+    geometry = if result['area_ids']
+      area_id = result['area_ids'].max_by do |a|
+        ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
+      end
+
+      geonames_id_to_geo.fetch(area_id_to_geoname_id[area_id['id']['value']], connection[:geometries].find.first['geo']) # hardcoded
+    end
+
     {
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
@@ -171,6 +178,12 @@ get '/countries/:id/search/organizations' do
       # @drupal Add events_count calculated field.
       "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
       "classification" => result['classification'].try(:[], 'value'),
+      "area_present" => {
+        "type" => "Feature",
+        "id" => result['_id'],
+        "properties" => {},
+        "geometry" => geometry,
+      },
       "site_present" => site_present,
       "commander_present" => commander_present(result['_id']),
     }

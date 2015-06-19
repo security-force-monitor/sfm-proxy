@@ -126,6 +126,8 @@ get '/organizations/:id/map' do
       }
       if area_id
         geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
+      else
+        connection[:geometries].find.first['geo'] # hardcoded
       end
     end
 

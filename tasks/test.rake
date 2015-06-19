@@ -17,6 +17,7 @@ task :default do
   [ '/countries',
     '/countries/ng/autocomplete/geonames_id',
     '/countries/ng/events',
+    '/countries/ng/geometries',
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
@@ -42,7 +43,6 @@ task :default do
     '/people/e7f6028a-1117-435a-86f9-c0a59401cd80',
     '/geometries/xz.geojson',
     '/geometries/xz.topojson',
-    '/countries/ng/geometries'
   ].each do |path|
     test(path, [404])
   end
