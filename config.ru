@@ -148,7 +148,7 @@ helpers do
     {
       "type" => "Feature",
       "id" => result['_id'],
-      "properties" => event_formatter(result).except('id', 'division_id', 'geonames_name', 'geonames_id', 'location', 'geo', 'description'),
+      "properties" => event_formatter(result).except('id', 'division_id', 'location', 'geo', 'description'),
       "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
     }
   end

@@ -65,9 +65,16 @@
 ```json
 [
   {
+    "type": "Feature",
     "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    "start_date": "2010-01-01",
-    "end_date": null
+    "properties": {
+      "start_date": "2010-01-01",
+      "end_date": null
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [90.0, 90.0]
+    }
   },
   ...
 ]

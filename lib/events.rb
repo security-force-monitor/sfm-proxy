@@ -8,9 +8,13 @@ get '/countries/:id/events' do
 
   response = results.map do |result|
     {
+      "type" => "Feature",
       "id" => result['_id'],
-      "start_date" => result['start_date'].try(:[], 'value'),
-      "end_date" => result['end_date'].try(:[], 'value'),
+      "properties" => {
+        "start_date" => result['start_date'].try(:[], 'value'),
+        "end_date" => result['end_date'].try(:[], 'value'),
+      },
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
     }
   end
 
