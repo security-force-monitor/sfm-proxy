@@ -29,7 +29,7 @@ helpers do
       ]
       if options && options[:unwind]
         pipeline << {
-          '$unwind' => field,
+          '$unwind' => options[:unwind],
         }
       end
       pipeline << {
@@ -163,6 +163,7 @@ get '/countries/:id/search/organizations' do
       site_present['admin_level_2'] = site_id['admin_level_2'].try(:[], 'value')
     end
 
+    # @todo add geometry
     {
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
@@ -269,8 +270,8 @@ get '/countries/:id/search/people' do
     'name' => 'name.value',
     'events_count' => 'events_count',
   }, {
-    'rank' => ['$memberships.rank.value'],
-    'role' => ['$memberships.role.value'],
+    'rank' => ['$memberships.rank.value', unwind: '$memberships'],
+    'role' => ['$memberships.role.value', unwind: '$memberships'],
   }, result_formatter)
 end
 
@@ -300,6 +301,6 @@ get '/countries/:id/search/events' do
   }, {
     'start_date' => 'start_date.value',
   }, {
-    'classification' => ['$classification.value', unwind: true],
+    'classification' => ['$classification.value', unwind: '$classification.value'],
   }, result_formatter)
 end
