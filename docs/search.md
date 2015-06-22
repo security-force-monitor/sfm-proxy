@@ -200,6 +200,10 @@ Each item in the `results` array is in the same format as the `/events/:id` resp
   "results": [
     {
       ...,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
+      },
       "sites_nearby": [
         {
           "name": "Atlantis"

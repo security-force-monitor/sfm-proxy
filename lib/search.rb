@@ -294,6 +294,7 @@ get '/countries/:id/search/events' do
 
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'location', 'description').merge({
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
       # @drupal How expensive is it to do radius search for each result in PostGIS?
       "sites_nearby" => [ # @hardcoded
         {
