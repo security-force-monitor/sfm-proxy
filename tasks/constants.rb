@@ -56,7 +56,7 @@ HEADERS_MAP = {
     'Source: Aliases or alternative spellings' => :other_names__sources__n,
     'Confidence: Aliases or alternative spellings' => :other_names__confidence,
 
-    'Classification' => :classification__value,
+    'Classification' => :classification__value__n,
     'Source: Classification' => :classification__sources__n,
     'Confidence: Classification' => :classification__confidence,
 

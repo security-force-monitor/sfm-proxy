@@ -3,7 +3,7 @@
 [Post|role;title;rank;chain_of_command]
 [Membership|role;title;rank;date_first_cited;date_last_cited;start_date_description;end_date_description]
 [Site|name;geonames_name;geonames_id;admin_level_1;admin_level_2;geometry]
-[Area|name;geonames_id;classification;geometry]
+[Area|name;other_names:array;geonames_id;classification;geometry]
 [OrganizationComposition|date_first_cited;date_last_cited;classification]
 [AreaAssociation|date_first_cited;date_last_cited]
 [Emplacement|date_first_cited;date_last_cited]

@@ -99,7 +99,24 @@
       "required": ["value"]
     },
     "classification": {
-      "$ref": "#/definitions/complex_string"
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "$ref": "#/definitions/sources"
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
     },
     "sites": {
       "type": "array",
