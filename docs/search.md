@@ -23,7 +23,9 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 [
   {
     "id": 2221333,
-    "name": "River Tunga"
+    "name": "River Tunga",
+    "classification": "STM",
+    "coordinates": [9.6772, 6.87725]
   },
   ...
 ]

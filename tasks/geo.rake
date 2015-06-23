@@ -154,9 +154,9 @@ end
 desc 'Imports admin levels 1 and 2'
 task :import_geo do
   if ENV['admin_level'] && ENV['country_code']
-    names = {}
+    properties = {}
     CSV.foreach(File.expand_path(File.join('..', 'data', 'geonames', "#{ENV['country_code'].upcase}.txt"), __dir__), col_sep: "\t").each do |row|
-      names[Integer(row[0])] = row[1]
+      properties[Integer(row[0])] = {name: row[1], coordinates: [Float(row[5]), Float(row[4])]}
     end
 
     JSON.load(File.read(File.expand_path(File.join('..', 'data', 'geojson', "adm#{ENV['admin_level']}", "#{ENV['country_code']}.geojson"), __dir__)))['features'].each do |feature|
@@ -167,9 +167,10 @@ task :import_geo do
         geonames_id = GAUL_ID_TO_GEONAMES_ID[gaul_id]
         connection[:geometries].find(_id: geonames_id).upsert({
           division_id: "ocd-division/country:#{ENV['country_code']}",
-          name: names.fetch(geonames_id),
+          name: properties.fetch(geonames_id).fetch(:name),
           classification: "ADM#{ENV['admin_level']}",
           geo: feature.fetch('geometry'),
+          coordinates: properties.fetch(geonames_id).fetch(:coordinates),
         })
       else
         LOGGER.warn("#{gaul_id} not found #{name}")

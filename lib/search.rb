@@ -139,6 +139,8 @@ get '/countries/:id/autocomplete/geonames_id' do
     {
       "id" => result['_id'],
       "name" => result['name'],
+      "classification" => result['classification'],
+      "coordinates" => result['coordinates'],
     }
   end
 
