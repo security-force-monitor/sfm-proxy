@@ -210,7 +210,7 @@ get '/countries/:id/search/organizations' do
     'date_last_cited' => 'site_ids.date_last_cited.value', # XXX don't know if this sorts correctly
     'events_count' => 'events_count',
   }, {
-    'classification' => ['$classification.value'],
+    'classification' => ['$classification.value', unwind: '$classification.value'],
   }, result_formatter)
 end
 
