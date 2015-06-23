@@ -135,7 +135,7 @@ get '/countries/:id/autocomplete/geonames_id' do
     }
   end
 
-  response = connection[:geometries].find(criteria).select('_id' => 1, 'name' => 1).map do |result|
+  response = connection[:geometries].find(criteria).select('_id' => 1, 'name' => 1, 'classification' => 1, 'coordinates' => 1).map do |result|
     {
       "id" => result['_id'],
       "name" => result['name'],
