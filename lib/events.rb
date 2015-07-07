@@ -88,7 +88,6 @@ get '/countries/:id/map' do
 
   etag_and_return({
     "organizations" => organizations.map{|result|
-      # @todo use a default
       geometry = if result['area_ids']
         area_id = result['area_ids'].find{|area_id|
           area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)

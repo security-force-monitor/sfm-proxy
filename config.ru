@@ -93,6 +93,19 @@ helpers do
     end
   end
 
+  def organization_geometry(result)
+    if result['area_ids']
+      area_id = result['area_ids'].find{|area_id|
+        area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
+      }
+      if area_id
+        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
+      else
+        connection[:geometries].find.first['geo'] # hardcoded
+      end
+    end
+  end
+
   def commander_present(organization_id)
     commander = connection[:people].find({
       'memberships' => {

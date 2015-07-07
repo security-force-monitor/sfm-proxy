@@ -33,7 +33,6 @@ task :default do
     "/organizations/#{organization_id}/map?at=invalid",
     "/organizations/#{organization_id}/map?at=2012-01-01&bbox=invalid",
     "/organizations/#{organization_id}/chart?at=invalid",
-    "/people/#{person_id}/chart?at=invalid",
   ].each do |path|
     test(path, [400])
   end
@@ -74,7 +73,7 @@ task :default do
   [
     :events,
     :organizations,
-    # :people, # @todo
+    :people,
   ].each do |collection_name|
     query = connection[collection_name].find
     puts "%3d #{collection_name}" % query.count
@@ -84,7 +83,7 @@ task :default do
       when :organizations
         suffixes += ['.txt', '.zip', '/map?at=2012-01-01', '/map?at=2012-01-01&bbox=10,5,5,10', '/chart?at=2012-01-01']
       when :people
-        suffixes += ['.txt', '.zip'] #, '/chart?at=2012-01-01'] # @todo
+        suffixes += ['.txt', '.zip']
       end
       suffixes.each do |suffix|
         test("/#{collection_name}/#{object['_id']}#{suffix}")

@@ -190,7 +190,6 @@ task :import_csv do
     organization: gids,
     person: [510712342, 394650791],
     event: [939834263],
-    # @todo add posts
   }.each do |type,gids|
     gids.each do |gid|
       objects[type] = {}

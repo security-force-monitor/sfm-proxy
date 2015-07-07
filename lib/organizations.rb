@@ -120,16 +120,6 @@ get '/organizations/:id/map' do
   result = connection[:organizations].find(_id: params[:id]).first
 
   if result
-    geometry = if result['area_ids']
-      area_id = result['area_ids'].find{|area_id|
-        area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
-      }
-      if area_id
-        geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
-      else
-        connection[:geometries].find.first['geo'] # hardcoded
-      end
-    end
 
     # @note No events have coordinates. Add bbox logic later.
     events = connection[:events].find({
@@ -147,7 +137,7 @@ get '/organizations/:id/map' do
         "type" => "Feature",
         "id" => result['_id'],
         "properties" => {},
-        "geometry" => geometry,
+        "geometry" => organization_geometry(result),
       },
       "sites" => result['site_ids'].each_with_index.select{|site_id,index|
         result['sites'][index]['name'] && contemporary?(site_id)
