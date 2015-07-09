@@ -29,7 +29,15 @@ get '/people/:id' do
     end
 
     memberships.sort! do |a,b|
-      b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
+      if b['date_first_cited'].try(:[], 'value') && a['date_first_cited'].try(:[], 'value')
+        b['date_first_cited'].try(:[], 'value') <=> a['date_first_cited'].try(:[], 'value')
+      elsif b['date_first_cited'].try(:[], 'value')
+        1
+      elsif a['date_first_cited'].try(:[], 'value')
+        -1
+      else
+        0
+      end
     end
 
     site = if memberships[0]['site_id']
