@@ -62,7 +62,7 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
 
 ## Deployment
 
-    heroku create
+    heroku apps:create
     heroku addons:create mongolab
     git push heroku master
     heroku run rake import_csv novalidate=true
