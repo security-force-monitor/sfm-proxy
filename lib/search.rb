@@ -72,7 +72,7 @@ helpers do
       direction = -1
     end
 
-    # @drupal Use Search API with ElasticSearch to sort by _score.
+    # @backend Use Search API with ElasticSearch to sort by _score.
     # valid << '_score'
     if valid.include?(field)
       query.sort(field => direction)
@@ -87,7 +87,7 @@ helpers do
   end
 end
 
-# @drupal ZIP file generated on-demand.
+# @backend ZIP file generated on-demand.
 get %r{/countries/([a-z]{2})/search/organizations.zip} do |id|
   204
 end
@@ -98,7 +98,7 @@ get %r{/countries/([a-z]{2})/search/events.zip} do |id|
   204
 end
 
-# @drupal Text file generated on-demand.
+# @backend Text file generated on-demand.
 get %r{/countries/([a-z]{2})/search/organizations.txt} do |id|
   204
 end
@@ -147,7 +147,7 @@ get '/countries/:id/autocomplete/geonames_id' do
   etag_and_return(response)
 end
 
-# @drupal Perform search on Drupal.
+# @backend Perform search on Drupal.
 get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
@@ -177,7 +177,7 @@ get '/countries/:id/search/organizations' do
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
-      # @drupal Add events_count calculated field.
+      # @backend Add events_count calculated field.
       "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
       "classification" => result['classification'].try(:[], 'value'),
       "area_present" => {
@@ -192,16 +192,16 @@ get '/countries/:id/search/organizations' do
   end
 
   search(:organizations, {
-    # @drupal Use Search API with ElasticSearch to support matching the full document.
+    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['name.value', '$regex'],
-    # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
+    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
     date_first_cited__gte: ['site_ids.date_first_cited.value', '$gte'],
     date_first_cited__lte: ['site_ids.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['site_ids.date_last_cited.value', '$gte'],
     date_last_cited__lte: ['site_ids.date_last_cited.value', '$lte'],
-    # @drupal Add events_count calculated field.
+    # @backend Add events_count calculated field.
     events_count__gte: ['events_count', '$gte'],
     events_count__lte: ['events_count', '$lte'],
   }, {
@@ -214,7 +214,7 @@ get '/countries/:id/search/organizations' do
   }, result_formatter)
 end
 
-# @drupal Perform search on Drupal.
+# @backend Perform search on Drupal.
 get '/countries/:id/search/people' do
   content_type 'application/json'
 
@@ -259,7 +259,7 @@ get '/countries/:id/search/people' do
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
-      # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+      # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
       "events_count" => 12, # @hardcoded
       "membership_present" => membership_present,
       "membership_former" => membership_former,
@@ -267,9 +267,9 @@ get '/countries/:id/search/people' do
   end
 
   search(:people, {
-    # @drupal Use Search API with ElasticSearch to support matching the full document.
+    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['name.value', '$regex'],
-    # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
+    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['memberships.site.geonames_id.value', '$eq'],
     classification__in: ['memberships.organization.classification.value', '$in', split: true],
     rank__in: ['memberships.rank.value', '$in', split: true],
@@ -278,7 +278,7 @@ get '/countries/:id/search/people' do
     date_first_cited__lte: ['memberships.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['memberships.date_last_cited.value', '$gte'],
     date_last_cited__lte: ['memberships.date_last_cited.value', '$lte'],
-    # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+    # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
     events_count__gte: ['events_count', '$gte'],
     events_count__lte: ['events_count', '$lte'],
   }, {
@@ -290,14 +290,14 @@ get '/countries/:id/search/people' do
   }, result_formatter)
 end
 
-# @drupal Perform search on Drupal.
+# @backend Perform search on Drupal.
 get '/countries/:id/search/events' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'location', 'description').merge({
       "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
-      # @drupal How expensive is it to do radius search for each result in PostGIS?
+      # @backend How expensive is it to do radius search for each result in PostGIS?
       "sites_nearby" => [ # @hardcoded
         {
           "name" => "Atlantis",
@@ -307,9 +307,9 @@ get '/countries/:id/search/events' do
   end
 
   search(:events, {
-    # @drupal Use Search API with ElasticSearch to support matching the full document.
+    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['description.value', '$regex'],
-    # @drupal Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
+    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
     start_date__gte: ['start_date.value', '$gte'],

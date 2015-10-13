@@ -73,7 +73,7 @@ helpers do
             "id" => member['_id'],
             "name" => member['name'].try(:[], 'value'),
             "other_names" => member['other_names'].try(:[], 'value'),
-            # @drupal Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+            # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
             "events_count" => 12, # @hardcoded
             "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
             "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
@@ -156,7 +156,7 @@ get '/organizations/:id/map' do
       "events" => events.map{|event|
         event_feature_formatter(event)
       },
-      # @drupal Use PostGIS to determine events within a 2km radius of all sites over all time.
+      # @backend Use PostGIS to determine events within a 2km radius of all sites over all time.
       "events_nearby" => [ # @hardcoded
         {
           "type" => "Feature",
@@ -225,7 +225,7 @@ get '/organizations/:id/chart' do
   end
 end
 
-# @drupal Load node from Drupal.
+# @backend Load node from Drupal.
 get '/organizations/:id' do
   content_type 'application/json'
 
@@ -258,7 +258,7 @@ get '/organizations/:id' do
       "division_id" => result['division_id'],
       "name" => result['name'],
       "other_names" => result['other_names'],
-      # @drupal Add events_count calculated field.
+      # @backend Add events_count calculated field.
       "events_count" => events.count,
       "classification" => result['classification'],
       "root_name" => result['root_name'],
@@ -275,7 +275,7 @@ get '/organizations/:id' do
             "id" => result['parents'][index]['id'],
             "name" => result['parents'][index]['name'].try(:[], 'value'),
             "other_names" => result['parents'][index]['other_names'].try(:[], 'value'),
-            # @drupal Add events_count calculated field.
+            # @backend Add events_count calculated field.
             "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
             "commander_present" => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
           }
@@ -298,7 +298,7 @@ get '/organizations/:id' do
           "id" => child['_id'],
           "name" => child['name'].try(:[], 'value'),
           "other_names" => child['other_names'].try(:[], 'value'),
-          # @drupal Add events_count calculated field.
+          # @backend Add events_count calculated field.
           "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
           "commander_present" => commanders_and_people(child['_id'])[:commanders][0],
           "date_first_cited" => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
@@ -365,7 +365,7 @@ get '/organizations/:id' do
           "confidence" => site_id['id']['confidence'],
         })
       },
-      # @drupal Use PostGIS to determine events within a 2km radius of all sites over all time.
+      # @backend Use PostGIS to determine events within a 2km radius of all sites over all time.
       "events_nearby" => [ # @hardcoded
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',

@@ -1,14 +1,14 @@
-# @drupal Daily or hourly ron job to create and ZIP CSV files for download.
+# @backend Daily or hourly ron job to create and ZIP CSV files for download.
 get %r{/countries/([a-z]{2}).zip} do |id|
   204
 end
 
-# @drupal Daily or hourly ron job to create text files for download.
+# @backend Daily or hourly ron job to create text files for download.
 get %r{/countries/([a-z]{2}).txt} do |id|
   204
 end
 
-# @drupal Load list of nodes from Drupal. TopoJSON files are created by drush command.
+# @backend Load list of nodes from Drupal. TopoJSON files are created by drush command.
 get '/countries' do
   content_type 'application/json'
 
@@ -47,7 +47,7 @@ get '/countries' do
   etag_and_return(response)
 end
 
-# @drupal Load node from Drupal.
+# @backend Load node from Drupal.
 get '/countries/:id' do
   content_type 'application/json'
 
@@ -56,7 +56,7 @@ get '/countries/:id' do
       "id" => "ng",
       "name" => "Nigeria",
       "title" => "Federal Republic of Nigeria",
-      # @drupal Add events_count calculated field.
+      # @backend Add events_count calculated field.
       "events_count" => connection[:events].find({'division_id' => 'ocd-division/country:ng'}).count,
       "description" => <<-EOL
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. In purus massa, porta non tincidunt vitae,

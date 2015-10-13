@@ -1,6 +1,6 @@
 NUMERIC = /-?\d+(?:\.\d+)?/
 
-# @drupal Load nodes from Drupal.
+# @backend Load nodes from Drupal.
 get '/countries/:id/events' do
   content_type 'application/json'
 
@@ -11,7 +11,7 @@ get '/countries/:id/events' do
   })
 end
 
-# @drupal Load node from Drupal.
+# @backend Load node from Drupal.
 get '/events/:id' do
   content_type 'application/json'
 
@@ -19,7 +19,7 @@ get '/events/:id' do
 
   if result
     etag_and_return(event_formatter(result).merge({
-      # @drupal Use PostGIS to determine areas and sites within a 2km radius of event.
+      # @backend Use PostGIS to determine areas and sites within a 2km radius of event.
       "organizations_nearby" => [ # @hardcoded
         {
           "id" => "123e4567-e89b-12d3-a456-426655440000",
@@ -27,10 +27,10 @@ get '/events/:id' do
           "other_names" => [
             "The Planeteers",
           ],
-          # @drupal Add root_id denormalized field.
+          # @backend Add root_id denormalized field.
           "root_name" => "Nigerian Army",
           "person_name" => "Michael Maris",
-          # @drupal Add events_count calculated field.
+          # @backend Add events_count calculated field.
           "events_count" => 12,
         },
       ],
