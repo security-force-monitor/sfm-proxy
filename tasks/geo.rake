@@ -70,7 +70,7 @@ task :crosswalk_adm1 do
       end
     end
 
-    # Not a Geonames alternate name.
+    # Not a GeoNames alternate name.
     name_to_id_map['abuja'] ||= 2352776
 
     gaul_id_to_geonames_id = {}
@@ -123,6 +123,51 @@ task :crosswalk_adm2 do
       end
     end
 
+    # Not GeoNames alternate names.
+    { '16' => {
+        'egbado yewa north' => 8636323,
+        'egbado yewa south' => 8636324,
+      },
+      '24' => {
+        'danmusa' => 8633647,
+      },
+      '26' => {
+        'ogbadigbo' => 7729907,
+      },
+      # '27' => {
+      #   'lake chad' => ,
+      # },
+      '29' => {
+        'tundun wada' => 8633726,
+      },
+      '35' => {
+        'girie' => 8659810,
+      },
+      # '41' => {
+      #   'koton karfe' => ,
+      # },
+      '42' => {
+        'aiyedaade' => 8636369,
+        'atakumosa east' => 7730030,
+        'atakumosa west' => 7730042,
+      },
+      # '45' => {
+      #   'oboma ngwa' => ,
+      # },
+      '54' => {
+        'gboyin' => 8636741,
+      },
+      '56' => {
+        'nassarawa egon' => 8635059,
+        'nassarawa' => 8633818,
+      },
+    }.each do |code_adm1,hash|
+      hash.each do |name,id|
+        name_to_id_map[code_adm1] ||= {}
+        name_to_id_map[code_adm1][name] ||= id
+      end
+    end
+
     gaul_id_to_geonames_id = {}
     gaul_id_to_geonames_code = {}
 
@@ -160,7 +205,7 @@ task :import_geo do
     end
 
     JSON.load(File.read(File.expand_path(File.join('..', 'data', 'geojson', "adm#{ENV['admin_level']}", "#{ENV['country_code']}.geojson"), __dir__)))['features'].each do |feature|
-      name = normalize(feature['properties']['ADM1_NAME'])
+      name = normalize(feature['properties']["ADM#{ENV['admin_level']}_NAME"])
       gaul_id = feature['properties']["ADM#{ENV['admin_level']}_CODE"]
 
       if GAUL_ID_TO_GEONAMES_ID.key?(gaul_id)
@@ -173,7 +218,7 @@ task :import_geo do
           coordinates: properties.fetch(geonames_id).fetch(:coordinates),
         }, upsert: true)
       else
-        LOGGER.warn("#{gaul_id} not found #{name}")
+        LOGGER.warn("#{ENV['country_code'].upcase} ADM#{ENV['admin_level']} GAUL ID #{gaul_id.to_s.rjust(6)} not mapped to GeoNames: #{name}")
       end
     end
   else
