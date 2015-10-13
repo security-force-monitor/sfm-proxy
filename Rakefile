@@ -10,6 +10,8 @@ require 'pupa'
 
 require_relative 'tasks/constants'
 
+Mongo::Logger.logger.level = Logger::WARN
+
 LOGGER = Pupa::Logger.new('sfm-proxy')
 
 def connection
