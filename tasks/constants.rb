@@ -6,11 +6,6 @@ HEADERS_MAP = {
 
     'Headquarters (Barracks, Base, Physical Asset)' => :name__value,
 
-    'Headquarters GPS Latitude' => :geo__coordinates__value__1__f,
-    'Headquarters GPS Longitude' => :geo__coordinates__value__0__f,
-    'Source: Headquarters GPS' => :geo__coordinates__sources__n,
-    'Confidence: Headquarters GPS' => :geo__coordinates__confidence,
-
     'City or smallest administrative unit GeoName' => :geonames_name__value,
     'City or smallest administrative unit GeonameID' => :geonames_id__value__i,
     'Source: City or smallest administrative unit' => :geonames_name__sources__n,
@@ -61,10 +56,6 @@ HEADERS_MAP = {
     'Headquarters (Barracks, Base, Physical Asset)' => :sites__0__id__value,
     'Source: Headquarters' => :sites__0__id__sources__n,
     'Confidence: Headquarters' => :sites__0__id__confidence,
-    'Headquarters GPS Latitude' => nil, # Site
-    'Headquarters GPS Longitude' => nil, # Site
-    'Source: Headquarters GPS' => nil, # Site
-    'Confidence: Headquarters GPS' => nil, # Site
     'City or smallest administrative unit GeoName' => nil, # Site
     'City or smallest administrative unit GeonameID' => nil, # Site
     'Source: City or smallest administrative unit' => nil, # Site

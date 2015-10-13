@@ -45,10 +45,10 @@ task :import_csv do
           elsif key == 'confidence'
             # Use the lowest confidence.
             self[key] = [self[key], other[key]].min_by{|value| CONFIDENCE_ORDER.index(value)}
+          elsif parent_key == 'other_names' && key == 'value'
+            # Merge the other's other names.
+            self[key] |= other[key]
           elsif self[key] != other[key]
-            if key == 'other_names' && other[key]['value'].include?('One Division')
-              raise [self, other].inspect
-            end
             hash[key] = if self[key].respond_to?(:diff_and_merge) && other[key].respond_to?(:diff_and_merge)
               self[key].diff_and_merge(other[key], key)
             else
@@ -220,11 +220,11 @@ task :import_csv do
             # A site may not have a name.
             if type == :site && key == :name__value && value.nil?
               admin_levels = []
-              if row[:admin_level_2__value]
-                admin_levels << row[:admin_level_2__value]
+              if row[:geonames_name__value]
+                admin_levels << row[:geonames_name__value]
               end
-              if row[:admin_level_1__value]
-                admin_levels << row[:admin_level_1__value]
+              if row[:admin_level_1_geonames_name__value]
+                admin_levels << row[:admin_level_1_geonames_name__value]
               end
               name = "#{row[:__name]}'s base"
               unless admin_levels.empty?
@@ -327,7 +327,7 @@ task :import_csv do
         begin
           JSON::Validator.validate!(schema, object)
         rescue JSON::Schema::ValidationError => e
-          LOGGER.warn("gid #{object['gid']} row #{object['row']}: #{e.message}")
+          LOGGER.warn("gid #{object['gid']} row #{object['row']}: #{type.to_s.capitalize}: #{e.message}")
         end
       end
     end
@@ -446,7 +446,7 @@ task :import_csv do
 
     case query.count
     when 0
-      collection.insert(store.merge(selector))
+      collection.insert_one(store.merge(selector))
       object['id']
     when 1
       query.update(store)
