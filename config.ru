@@ -72,7 +72,7 @@ helpers do
             }
           },
         },
-      }).select({
+      }).projection({
         '_id' => 1,
         'geo' => 1,
       }).each do |geometry|
@@ -86,7 +86,7 @@ helpers do
       connection[:areas].find({
         'division_id' => "ocd-division/country:#{params[:id]}",
         'geonames_id.value' => {'$in' => geonames_id_to_geo.keys},
-      }).select({
+      }).projection({
         '_id' => 1,
         'geonames_id.value' => 1,
       }).each do |area|
