@@ -56,6 +56,16 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
     topojson -o data/topojson/adm0/mx.topojson data/geojson/adm0/mx.geojson
     topojson -o data/topojson/adm0/ng.topojson data/geojson/adm0/ng.geojson
 
+If you have access to [GAUL](http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691), extract a country, in this case Nigeria:
+
+    ogr2ogr -f "ESRI Shapefile" -select 'ADM1_CODE,ADM1_NAME' -where "ADM0_CODE=182" shapefiles/gaul_ng_adm1 path/to/g2015_2014_1.shp
+    ogr2ogr -f "ESRI Shapefile" -select 'ADM2_CODE,ADM2_NAME,ADM1_CODE,ADM1_NAME' -where "ADM0_CODE=182" shapefiles/gaul_ng_adm2 path/to/g2015_2014_2.shp
+
+In QGIS, simplify the geometries by a factor of 0.01. Then, create GeoJSON:
+
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'ADM1_CODE,ADM1_NAME' data/geojson/adm1/ng.geojson shapefiles/gaul_ng_adm1_0.01/gaul_ng_adm1_0.01.shp
+    ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -select 'ADM2_CODE,ADM2_NAME,ADM1_CODE,ADM1_NAME' data/geojson/adm2/ng.geojson shapefiles/gaul_ng_adm2_0.01/gaul_ng_adm2_0.01.shp
+
 **Note:** Creating GeoJSON and TopoJSON from [GADM](http://www.gadm.org/country) shapefiles produces large files:
 
     bundle exec rake topojson output=adm0/ng input=shapefiles/NGA_adm/NGA_adm0.shp
