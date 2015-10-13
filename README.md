@@ -30,11 +30,11 @@ Import admin level 1 and 2 geometries:
     bundle exec rake import_geo admin_level=1 country_code=ng
     bundle exec rake import_geo admin_level=2 country_code=ng
 
-Create the geospatial indices:
+Create the geospatial indices in the MongoDB shell:
 
-    mongo sfm --eval "db.events.createIndex({geo: '2dsphere'})"
-    mongo sfm --eval "db.sites.createIndex({geo: '2dsphere'})"
-    mongo sfm --eval "db.geometries.createIndex({geo: '2dsphere'})"
+    db.events.createIndex({geo: '2dsphere'})
+    db.sites.createIndex({geo: '2dsphere'})
+    db.geometries.createIndex({geo: '2dsphere'})
 
 Start a local server:
 
