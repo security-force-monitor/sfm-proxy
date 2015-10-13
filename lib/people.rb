@@ -45,7 +45,7 @@ get '/people/:id' do
         "name" => memberships[0]['site_id']['value']
       }
     elsif memberships[0]['organization']
-      { # @hardcoded
+      { # @backend @hardcoded
         "type" => "Feature",
         "id" => "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
         "name" => "Command Center",
@@ -71,8 +71,8 @@ get '/people/:id' do
         "geometry" => organization_geometry(memberships[0]['organization']),
       },
       "site_present" => site,
-      # Add events related to an organization during the membership of the person.
-      "events" => [ # @hardcoded
+      # @backend @hardcoded Add events related to an organization during the membership of the person.
+      "events" => [
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
@@ -87,8 +87,8 @@ get '/people/:id' do
           }
         }
       ],
-      # Add events near an organization during the membership of the person.
-      "events_nearby" => [ # @hardcoded
+      # @backend @hardcoded Add events near an organization during the membership of the person.
+      "events_nearby" => [
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',

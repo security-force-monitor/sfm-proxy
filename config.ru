@@ -47,7 +47,7 @@ helpers do
       end
       params[:bbox].split(',').map{|coordinate| Float(coordinate)}
     else
-      [14.5771, 4.2405, 2.6917, 13.8659] # @hardcoded Nigeria west-south, east-north
+      [14.5771, 4.2405, 2.6917, 13.8659] # @backend @hardcoded Nigeria west-south, east-north
     end
   end
 

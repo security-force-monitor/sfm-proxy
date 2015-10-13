@@ -259,8 +259,8 @@ get '/countries/:id/search/people' do
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
-      # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-      "events_count" => 12, # @hardcoded
+      # @backend @hardcoded Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+      "events_count" => 12,
       "membership_present" => membership_present,
       "membership_former" => membership_former,
     }
@@ -297,8 +297,8 @@ get '/countries/:id/search/events' do
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'location', 'description').merge({
       "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
-      # @backend How expensive is it to do radius search for each result in PostGIS?
-      "sites_nearby" => [ # @hardcoded
+      # @backend @hardcoded How expensive is it to do radius search for each result in PostGIS?
+      "sites_nearby" => [
         {
           "name" => "Atlantis",
         },

@@ -19,8 +19,8 @@ get '/events/:id' do
 
   if result
     etag_and_return(event_formatter(result).merge({
-      # @backend Use PostGIS to determine areas and sites within a 2km radius of event.
-      "organizations_nearby" => [ # @hardcoded
+      # @backend @hardcoded Use PostGIS to determine areas and sites within a 2km radius of event.
+      "organizations_nearby" => [
         {
           "id" => "123e4567-e89b-12d3-a456-426655440000",
           "name" => "Brigade 2",

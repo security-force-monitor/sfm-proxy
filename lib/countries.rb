@@ -14,7 +14,7 @@ get '/countries' do
 
   dir = File.expand_path(File.join('..', 'data', 'geojson', 'adm0'), __dir__)
 
-  response = [ # @hardcoded
+  response = [ # @backend @hardcoded
     ['eg', 'Egypt'],
     ['mx', 'Mexico'],
     ['ng', 'Nigeria'],
@@ -52,7 +52,7 @@ get '/countries/:id' do
   content_type 'application/json'
 
   if params[:id] == 'ng'
-    etag_and_return({ # @hardcoded
+    etag_and_return({ # @backend @hardcoded
       "id" => "ng",
       "name" => "Nigeria",
       "title" => "Federal Republic of Nigeria",

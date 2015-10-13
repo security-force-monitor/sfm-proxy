@@ -73,8 +73,8 @@ helpers do
             "id" => member['_id'],
             "name" => member['name'].try(:[], 'value'),
             "other_names" => member['other_names'].try(:[], 'value'),
-            # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
-            "events_count" => 12, # @hardcoded
+            # @backend @hardcoded Add events_count calculated field, equal to the events related to an organization during the membership of the person.
+            "events_count" => 12,
             "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
             "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
             "sources" => membership['organization_id']['sources'],
@@ -127,7 +127,7 @@ get '/organizations/:id/map' do
       'perpetrator_organization_id.value' => result['_id'],
     })
 
-    # @todo Fake it until you make it.
+    # @backend @hardcoded Fake it until you make it.
     if events.count.zero?
       events = [connection[:events].find.first]
     end
@@ -156,8 +156,8 @@ get '/organizations/:id/map' do
       "events" => events.map{|event|
         event_feature_formatter(event)
       },
-      # @backend Use PostGIS to determine events within a 2km radius of all sites over all time.
-      "events_nearby" => [ # @hardcoded
+      # @backend @hardcoded Use PostGIS to determine events within a 2km radius of all sites over all time.
+      "events_nearby" => [
         {
           "type" => "Feature",
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
@@ -248,7 +248,7 @@ get '/organizations/:id' do
     commanders = commanders_and_people[:commanders]
     people = commanders_and_people[:people]
 
-    # @todo Fake it until you make it.
+    # @backend @hardcoded Fake it until you make it.
     if events.count.zero?
       events = [connection[:events].find.first]
     end
@@ -365,8 +365,8 @@ get '/organizations/:id' do
           "confidence" => site_id['id']['confidence'],
         })
       },
-      # @backend Use PostGIS to determine events within a 2km radius of all sites over all time.
-      "events_nearby" => [ # @hardcoded
+      # @backend @hardcoded Use PostGIS to determine events within a 2km radius of all sites over all time.
+      "events_nearby" => [
         {
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
