@@ -114,6 +114,10 @@ get '/countries/:id/autocomplete/geonames_id' do
 
   criteria = {'division_id' => "ocd-division/country:#{params[:id]}"}
 
+  if params[:q]
+    criteria['name'] = {'$regex' => params['q']}
+  end
+
   if params[:classification]
     criteria['classification'] = params[:classification]
   end

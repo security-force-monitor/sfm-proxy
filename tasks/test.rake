@@ -16,11 +16,14 @@ task :default do
 
   [ '/countries',
     '/countries/ng/autocomplete/geonames_id',
+    '/countries/ng/autocomplete/geonames_id&q=State',
+    '/countries/ng/autocomplete/geonames_id&classification=ADM1',
+    '/countries/ng/autocomplete/geonames_id&bbox=10,5,5,10',
     '/countries/ng/events',
     '/countries/ng/geometries',
     '/countries/ng/map?at=2010-01-01',
     '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10',
-    '/countries/ng/map?at=2010-01-01&bbox=10,5,5,10&classification__in=Brigade',
+    '/countries/ng/map?at=2010-01-01&classification__in=Brigade',
     '/geometries/xa.geojson',
     '/geometries/xa.topojson',
   ].each do |path|
