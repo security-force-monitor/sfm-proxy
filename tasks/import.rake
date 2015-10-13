@@ -268,7 +268,7 @@ task :import_csv do
 
             # Parenthesized numbers just disambiguate records with the same name.
             unless type == :event
-              object['name']['value'].sub(/\s*\(\d+\)\z/, '')
+              object['name']['value'].sub!(/\s*\(\d+\)\z/, '')
             end
 
             # All imported coordinates are points.
