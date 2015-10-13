@@ -69,6 +69,6 @@ Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com
     heroku run rake import_geo admin_level=1 country_code=ng
     heroku run rake import_geo admin_level=2 country_code=ng
 
-Log into the remote MongoDB database and create the geospatial indices.
+Log into the remote MongoDB database and create the geospatial indices as above.
 
 Copyright (c) 2015 Open North Inc., released under the MIT license

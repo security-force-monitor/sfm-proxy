@@ -165,13 +165,13 @@ task :import_geo do
 
       if GAUL_ID_TO_GEONAMES_ID.key?(gaul_id)
         geonames_id = GAUL_ID_TO_GEONAMES_ID[gaul_id]
-        connection[:geometries].find(_id: geonames_id).upsert({
+        connection[:geometries].update_one({_id: geonames_id}, {
           division_id: "ocd-division/country:#{ENV['country_code']}",
           name: properties.fetch(geonames_id).fetch(:name),
           classification: "ADM#{ENV['admin_level']}",
           geo: feature.fetch('geometry'),
           coordinates: properties.fetch(geonames_id).fetch(:coordinates),
-        })
+        }, upsert: true)
       else
         LOGGER.warn("#{gaul_id} not found #{name}")
       end

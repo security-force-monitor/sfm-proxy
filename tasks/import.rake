@@ -176,6 +176,7 @@ task :import_csv do
   names = {}
   body = {}
 
+  # Drop the collections to import.
   [ :sites,
     :areas,
     :organizations,
