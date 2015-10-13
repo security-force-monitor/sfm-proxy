@@ -48,12 +48,6 @@
     "location": {
       "$ref": "#/definitions/simple_string"
     },
-    "admin_level_1": {
-      "$ref": "#/definitions/simple_string"
-    },
-    "admin_level_2": {
-      "$ref": "#/definitions/simple_string"
-    },
     "geonames_name": {
       "$ref": "#/definitions/simple_string"
     },
@@ -68,33 +62,19 @@
       "additionalProperties": false,
       "required": ["value"]
     },
-    "geo": {
+    "admin_level_1_geonames_name": {
+      "$ref": "#/definitions/simple_string"
+    },
+    "admin_level_1_geonames_id": {
       "type": "object",
       "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["Point"]
-        },
-        "coordinates": {
-          "type": "object",
-          "properties": {
-            "value": {
-              "type": "array",
-              "items": {
-                "type": "number"
-              },
-              "maxItems": 2,
-              "minItems": 2
-            }
-          },
-
-          "additionalProperties": false,
-          "required": ["value"]
+        "value": {
+          "type": "integer"
         }
       },
 
       "additionalProperties": false,
-      "required": ["type", "coordinates"]
+      "required": ["value"]
     },
     "classification": {
       "type": "object",
@@ -120,7 +100,12 @@
               "Restricting freedom of speech and press",
               "Restricting of freedom of association",
               "Torture",
-              "Use of Child Soldiers"
+              "Use of Child Soldiers",
+              "Violations against personal integrity",
+              "Violations against the right to liberty",
+              "Violations of rights of detained or imprisoned persons",
+              "Violations of the right to adequate housing",
+              "Violations of the right to life"
             ]
           }
         }
@@ -140,17 +125,17 @@
       "properties": {
         "value": {
           "type": "string"
-        },
-        "sources": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       },
 
       "additionalProperties": false,
       "required": ["value"]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
 

@@ -24,9 +24,6 @@
     "name": {
       "$ref": "#/definitions/simple_string"
     },
-    "geonames_name": {
-      "$ref": "#/definitions/simple_string"
-    },
     "geonames_id": {
       "type": "object",
       "properties": {

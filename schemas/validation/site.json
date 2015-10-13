@@ -58,16 +58,24 @@
       "additionalProperties": false,
       "required": ["type", "coordinates"]
     },
-    "admin_level_1": {
-      "$ref": "#/definitions/complex_string"
-    },
-    "admin_level_2": {
-      "$ref": "#/definitions/complex_string"
-    },
     "geonames_name": {
-      "$ref": "#/definitions/simple_string"
+      "$ref": "#/definitions/complex_string"
     },
     "geonames_id": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "admin_level_1_geonames_name": {
+      "$ref": "#/definitions/complex_string"
+    },
+    "admin_level_1_geonames_id": {
       "type": "object",
       "properties": {
         "value": {

@@ -11,22 +11,20 @@ HEADERS_MAP = {
     'Source: Headquarters GPS' => :geo__coordinates__sources__n,
     'Confidence: Headquarters GPS' => :geo__coordinates__confidence,
 
-    'ADMIN 1 (City or smallest administrative unit)' => :admin_level_1__value,
-    'Source: ADMIN 1' => :admin_level_1__sources__n,
-    'Confidence: ADMIN 1' => :admin_level_1__confidence,
+    'City or smallest administrative unit GeoName' => :geonames_name__value,
+    'City or smallest administrative unit GeonameID' => :geonames_id__value__i,
+    'Source: City or smallest administrative unit' => :geonames_name__sources__n,
+    'Confidence: City or smallest administrative unit' => :geonames_name__confidence,
 
-    'ADMIN 2 (state, province, governorate, or other largest administrative unit)' => :admin_level_2__value,
-    'Source: ADMIN 2' => :admin_level_2__sources__n,
-    'Confidence: ADMIN 2' => :admin_level_2__confidence,
-
-    'Geoname' => :geonames_name__value,
-    'GeonameID' => :geonames_id__value__i,
+    'ADMIN1 (state, province, governorate, or other largest administrative unit) Geoname' => :admin_level_1_geonames_name__value,
+    'ADMIN1 (state, province, governorate, or other largest administrative unit) GeonameID' => :admin_level_1_geonames_id__value__i,
+    'Source: ADMIN1' => :admin_level_1_geonames_name__sources__n,
+    'Confidence: ADMIN1' => :admin_level_1_geonames_name__confidence,
   },
   area: {
     'ID' => :id,
 
-    'Area of Responsibility (Area of Operations, Jurisdiction)' => :name__value,
-    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :geonames_name__value,
+    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :name__value,
     'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value__i,
   },
   organization: {
@@ -36,9 +34,9 @@ HEADERS_MAP = {
     'Source: Parent organization' => :parents__0__id__sources__n,
     'Confidence: Parent organization' => :parents__0__id__confidence,
 
-    'Organization/Administrative, Command, or Informal parent relationship' => :parents__0__classification__value,
-    'Source: Organization/Administrative, Command, or Informal parent relationship' => :parents__0__classification__sources__n,
-    'Confidence: Organization/Administrative, Command, or Informal parent relationship' => :parents__0__classification__confidence,
+    'Administrative, Command, or Informal parent relationship' => :parents__0__classification__value,
+    'Source: Administrative, Command, or Informal parent relationship' => :parents__0__classification__sources__n,
+    'Confidence: Administrative, Command, or Informal parent relationship' => :parents__0__classification__confidence,
 
     'Date of first citation for parent organization' => :parents__0__date_first_cited__value__d,
     'Source: Date of first citation for parent organization' => :parents__0__date_first_cited__sources__n,
@@ -67,20 +65,19 @@ HEADERS_MAP = {
     'Headquarters GPS Longitude' => nil, # Site
     'Source: Headquarters GPS' => nil, # Site
     'Confidence: Headquarters GPS' => nil, # Site
-    'ADMIN 1 (City or smallest administrative unit)' => nil, # Site
-    'Source: ADMIN 1' => nil, # Site
-    'Confidence: ADMIN 1' => nil, # Site
-    'ADMIN 2 (state, province, governorate, or other largest administrative unit)' => nil, # Site
-    'Source: ADMIN 2' => nil, # Site
-    'Confidence: ADMIN 2' => nil, # Site
-    'Geoname' => nil, # Site
-    'GeonameID' => nil, # Site
+    'City or smallest administrative unit GeoName' => nil, # Site
+    'City or smallest administrative unit GeonameID' => nil, # Site
+    'Source: City or smallest administrative unit' => nil, # Site
+    'Confidence: City or smallest administrative unit' => nil, # Site
+    'ADMIN1 (state, province, governorate, or other largest administrative unit) Geoname' => nil, # Site
+    'ADMIN1 (state, province, governorate, or other largest administrative unit) GeonameID' => nil, # Site
+    'Source: ADMIN1' => nil, # Site
+    'Confidence: ADMIN1' => nil, # Site
 
-    'Area of Responsibility (Area of Operations, Jurisdiction)' => :areas__0__id__value,
+    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :areas__0__id__value,
+    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => nil, # Area
     'Source: Area of Responsibility' => :areas__0__id__sources__n,
     'Confidence: Area of Responsibility' => :areas__0__id__confidence,
-    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => nil, # Area
-    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => nil, # Area
 
     'Date of first citation for area of responsibility' => :areas__0__date_first_cited__value__d,
     'Source: Date of first citation for area of responsibility' => :areas__0__date_first_cited__sources__n,
@@ -185,17 +182,15 @@ HEADERS_MAP = {
     'Start Date' => :start_date__value__d,
     'End Date' => :end_date__value__d,
     'Location' => :location__value,
-    'ADMIN 1 (City or smallest administrative unit)' => :admin_level_1__value,
-    'ADMIN 2 (state, province, governorate, or other largest subnational administrative unit' => :admin_level_2__value,
-    'Geoname' => :geonames_name__value,
-    'GeonameID' => :geonames_id__value__i,
-    'Latitude' => :geo__coordinates__value__1__f,
-    'Longitude' => :geo__coordinates__value__0__f,
+    'City or smallest administrative unit GeoName' => :geonames_name__value,
+    'City or smallest administrative unit GeonameID' => :geonames_id__value__i,
+    'ADMIN1 Geoname' => :admin_level_1_geonames_name__value,
+    'ADMIN1 GeonameID' => :admin_level_1_geonames_id__value__i,
     'Violation type' => :classification__value__n,
     'Description' => :description__value,
     'Perpetrator name' => :perpetrator_name__value,
     'Perpetrator organization' => :perpetrator_organization_id__value, # event belongs_to organization
-    'Source: Violator organization' => :perpetrator_organization_id__sources__n,
+    'Source' => :sources__n,
   }
 }
 
