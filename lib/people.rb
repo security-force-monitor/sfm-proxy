@@ -64,12 +64,7 @@ get '/people/:id' do
       'name' => result['name'],
       'other_names' => result['other_names'],
       'memberships' => memberships,
-      'area_present' => {
-        'type' => 'Feature',
-        'id' => memberships[0]['organization']['id'],
-        'properties' => {},
-        'geometry' => organization_geometry(memberships[0]['organization']),
-      },
+      'area_present' => feature_formatter(memberships[0]['organization'], organization_geometry(memberships[0]['organization']), {}),
       'site_present' => site,
       'events' => [sample_event],
       'events_nearby' => [sample_event],

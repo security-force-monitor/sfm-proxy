@@ -71,15 +71,15 @@ get '/countries/:id/map' do
 
   etag_and_return({
     'organizations' => organizations.map{|result|
-      {
-        'type' => 'Feature',
-        'id' => result['_id'],
-        'properties' => get_properties_safely(result, ['name', 'other_names', 'root_id', 'root_name']).merge({
-          'commander_present' => commander_present(result['_id']),
-          'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['_id']).count,
-        }),
-        'geometry' => organization_geometry(result),
-      }
+      feature_formatter(result, organization_geometry(result), get_properties_safely(result, [
+        'name',
+        'other_names',
+        'root_id',
+        'root_name',
+      ]).merge({
+        'commander_present' => commander_present(result['_id']),
+        'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['_id']).count,
+      }))
     },
     'events' => events.map{|result|
       event_feature_formatter(result)

@@ -129,17 +129,12 @@ get '/organizations/:id/map' do
       'sites' => result['site_ids'].each_with_index.select{|site_id,index|
         result['sites'][index]['name'] && contemporary?(site_id)
       }.map{|site_id,index|
-        {
-          'type' => 'Feature',
-          'id' => result['sites'][index]['id'],
-          'properties' => {
-            'name' => result['sites'][index]['name'].try(:[], 'value'),
-            'location' => location_formatter(result['sites'][index]),
-            'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
-            'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
-          },
-          'geometry' => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), # @todo geo
-        }
+        feature_formatter(result['sites'][index], result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), { # @todo geo
+          'name' => result['sites'][index]['name'].try(:[], 'value'),
+          'location' => location_formatter(result['sites'][index]),
+          'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
+          'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+        })
       },
       'events' => events.map{|event|
         event_feature_formatter(event)

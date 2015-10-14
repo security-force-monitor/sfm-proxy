@@ -227,12 +227,8 @@ helpers do
   end
 
   def event_feature_formatter(result)
-    {
-      'type' => 'Feature',
-      'id' => result['_id'],
-      'properties' => event_formatter(result).except('id', 'division_id', 'geo', 'description'), # @todo geo
-      'geometry' => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
-    }
+    feature_formatter(result, result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
+      event_formatter(result).except('id', 'division_id', 'geo', 'description')) # @todo geo
   end
 
   def feature_formatter(result, geometry, properties = nil)
