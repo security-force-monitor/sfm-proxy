@@ -1,4 +1,3 @@
-# @backend Load nodes from Drupal.
 get '/countries/:id/events' do
   content_type 'application/json'
 
@@ -9,7 +8,6 @@ get '/countries/:id/events' do
   })
 end
 
-# @backend Load node from Drupal.
 get '/events/:id' do
   content_type 'application/json'
 
@@ -17,8 +15,8 @@ get '/events/:id' do
 
   if result
     etag_and_return(event_formatter(result).merge({
-      # @backend @hardcoded Use PostGIS to determine areas and sites within a 2km radius of event.
-      "organizations_nearby" => [sample_organization],
+      # @backend Use PostGIS to determine areas and sites within a 2km radius of event.
+      'organizations_nearby' => [sample_organization],
     }))
   else
     404
@@ -65,29 +63,26 @@ get '/countries/:id/map' do
 
   organizations = connection[:organizations].find(organization_criteria)
 
-  # @note No events have coordinates. Add bbox logic later.
+  # @todo Add bbox logic for event coordinates.
+
   events = connection[:events].find({
     'division_id' => "ocd-division/country:#{params[:id]}",
     'start_date.value' => params[:at],
   })
 
   etag_and_return({
-    "organizations" => organizations.map{|result|
+    'organizations' => organizations.map{|result|
       {
-        "type" => "Feature",
-        "id" => result['_id'],
-        "properties" => {
-          "name"              => result['name'].try(:[], 'value'),
-          "other_names"       => result['other_names'].try(:[], 'value'),
-          "root_id"           => nil, # @todo
-          "root_name"         => result['root_name'].try(:[], 'value'),
-          "commander_present" => commander_present(result['_id']),
-          "events_count"      => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
-        },
-        "geometry" => organization_geometry(result),
+        'type' => 'Feature',
+        'id' => result['_id'],
+        'properties' => get_properties_safely(result, ['name', 'other_names', 'root_id', 'root_name']).merge({
+          'commander_present' => commander_present(result['_id']),
+          'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+        }),
+        'geometry' => organization_geometry(result),
       }
     },
-    "events" => events.map{|result|
+    'events' => events.map{|result|
       event_feature_formatter(result)
     },
   })

@@ -146,56 +146,77 @@ helpers do
     }).first
 
     if commander
-      {
-        "name" => commander['name'].try(:[], 'value'),
-      }
+      get_properties_safely(commander, ['name'])
     else
       nil
     end
   end
 
+  def get_source_and_target(value)
+    if Array === value
+      value
+    else
+      [value, value]
+    end
+  end
+
+  def get_properties_safely(result, complex_property_names, simple_property_names = [])
+    {}.tap do |hash|
+      simple_property_names.each do |property_name|
+        source, target = get_source_and_target(property_name)
+        hash[target] = result[source]
+      end
+      complex_property_names.each do |property_name|
+        source, target = get_source_and_target(property_name)
+        hash[target] = result[source].try(:[], 'value')
+      end
+    end
+  end
+
   def location_formatter(result)
-    result['location'].try(:[], 'value') || [
-      result['geonames_name'].try(:[], 'value'),
-      result['admin_level_1_geonames_name'].try(:[], 'value'),
-    ].compact.join(', ')
+    result['location'].try(:[], 'value') || get_properties_safely(result, ['geonames_name', 'admin_level_1_geonames_name']).values.compact.join(', ')
   end
 
   def event_formatter(result)
     perpetrator_organization = if result['perpetrator_organization']
-      {
-        "id" => result['perpetrator_organization']['id'],
-        "name" => result['perpetrator_organization']['name'].try(:[], 'value'),
-        "other_names" => result['perpetrator_organization']['other_names'].try(:[], 'value'),
-      }
+      get_properties_safely(result['perpetrator_organization'], ['name', 'other_names'], ['id'])
     else
-      {
-        "name" => result['perpetrator_organization_id'].try(:[], 'value'),
-      }
+      get_properties_safely(result, [['perpetrator_organization_id', 'name']])
     end
 
-    {
-      "id" => result['_id'],
-      "division_id" => result['division_id'],
-      "start_date" => result['start_date'].try(:[], 'value'),
-      "end_date" => result['end_date'].try(:[], 'value'),
-      "location" => location_formatter(result),
-      "admin_level_1_geonames_name" => result['admin_level_1_geonames_name'].try(:[], 'value'),
-      "geonames_name" => result['geonames_name'].try(:[], 'value'),
-      "classification" => result['classification'].try(:[], 'value'),
-      "description" => result['description'].try(:[], 'value'),
-      "perpetrator_name" => result['perpetrator_name'].try(:[], 'value'),
-      "perpetrator_organization" => perpetrator_organization,
-      "sources" => result['sources'].try(:[], 'value'),
-    }
+    get_properties_safely(result, [
+      'start_date',
+      'end_date',
+      'geonames_name',
+      'admin_level_1_geonames_name',
+      'classification',
+      'description',
+      'perpetrator_name',
+      'sources',
+    ], [
+      ['_id', 'id'],
+      'division_id',
+    ]).merge({
+      'location' => location_formatter(result),
+      'perpetrator_organization' => perpetrator_organization,
+    })
   end
 
   def event_feature_formatter(result)
     {
-      "type" => "Feature",
-      "id" => result['_id'],
-      "properties" => event_formatter(result).except('id', 'division_id', 'geo', 'description'), # @todo
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo
+      'type' => 'Feature',
+      'id' => result['_id'],
+      'properties' => event_formatter(result).except('id', 'division_id', 'geo', 'description'), # @todo geo
+      'geometry' => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
+    }
+  end
+
+  def feature_formatter(result)
+    {
+      'type' => 'Feature',
+      'id' => result.fetch('id'),
+      'properties' => result.except('id'),
+      'geometry' => sample_point,
     }
   end
 end

@@ -63,15 +63,6 @@ EOL
     }
   end
 
-  def sample_feature(hash)
-    {
-      'type' => 'Feature',
-      'id' => hash.fetch('id'),
-      'properties' => hash.except('id'),
-      'geometry' => sample_point,
-    }
-  end
-
   def sample_organization
     {
       'id' => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
