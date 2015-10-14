@@ -22,7 +22,7 @@ get '/events/:id' do
       # @backend @hardcoded Use PostGIS to determine areas and sites within a 2km radius of event.
       "organizations_nearby" => [
         {
-          "id" => "123e4567-e89b-12d3-a456-426655440000",
+          "id" => "68e90978-fa3f-42f3-9d56-4218c4f3f785",
           "name" => "Brigade 2",
           "other_names" => [
             "The Planeteers",

@@ -75,7 +75,7 @@ get '/people/:id' do
       # @backend @hardcoded Add events related to an organization during the membership of the person.
       "events" => [
         {
-          "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
+          "id" => '656e71bc-ef2d-4483-8099-a8d701490670',
           "start_date" => '2010-01-01',
           "end_date" => nil,
           "location" => "Abia North, Abia",
@@ -84,7 +84,7 @@ get '/people/:id' do
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {
-            "id" => '123e4567-e89b-12d3-a456-426655440000',
+            "id" => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
             "name" => 'Brigade 2',
           }
         }
@@ -92,7 +92,7 @@ get '/people/:id' do
       # @backend @hardcoded Add events near an organization during the membership of the person.
       "events_nearby" => [
         {
-          "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
+          "id" => '656e71bc-ef2d-4483-8099-a8d701490670',
           "start_date" => '2010-01-01',
           "end_date" => nil,
           "location" => "Abia North, Abia",
@@ -101,7 +101,7 @@ get '/people/:id' do
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {
-            "id" => '123e4567-e89b-12d3-a456-426655440000',
+            "id" => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
             "name" => 'Brigade 2',
           }
         }
