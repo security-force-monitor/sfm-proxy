@@ -113,7 +113,6 @@ HEADERS_MAP = {
     'Is this the dissolution date? (Y/N)' => nil,
 
     'Notes' => :notes__value,
-    'Source: Notes' => :notes__source,
     'Corrections' => nil,
   },
   person: {
@@ -181,7 +180,7 @@ HEADERS_MAP = {
     'Description' => :description__value,
     'Perpetrator name' => :perpetrator_name__value,
     'Perpetrator organization' => :perpetrator_organization_id__value, # event belongs_to organization
-    'Source' => :sources__n,
+    'Source' => :sources__value__n,
   }
 }
 

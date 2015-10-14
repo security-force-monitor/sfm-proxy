@@ -135,12 +135,10 @@ helpers do
         "id" => result['perpetrator_organization']['id'],
         "name" => result['perpetrator_organization']['name'].try(:[], 'value'),
         "other_names" => result['perpetrator_organization']['other_names'].try(:[], 'value'),
-        "sources" => result['perpetrator_organization_id']['sources'],
       }
     else
       {
         "name" => result['perpetrator_organization_id'].try(:[], 'value'),
-        "sources" => result['perpetrator_organization_id']['sources'],
       }
     end
 
@@ -156,6 +154,7 @@ helpers do
       "description" => result['description'].try(:[], 'value'),
       "perpetrator_name" => result['perpetrator_name'].try(:[], 'value'),
       "perpetrator_organization" => perpetrator_organization,
+      "sources" => result['sources'].try(:[], 'value'),
     }
   end
 

@@ -90,10 +90,17 @@
       "$ref": "#/definitions/simple_string"
     },
     "sources": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
     }
   },
 
