@@ -87,7 +87,6 @@ helpers do
   end
 end
 
-# @backend ZIP file generated on-demand.
 get %r{/countries/([a-z]{2})/search/organizations.zip} do |id|
   204
 end
@@ -97,8 +96,6 @@ end
 get %r{/countries/([a-z]{2})/search/events.zip} do |id|
   204
 end
-
-# @backend Text file generated on-demand.
 get %r{/countries/([a-z]{2})/search/organizations.txt} do |id|
   204
 end
@@ -197,9 +194,7 @@ get '/countries/:id/search/organizations' do
   end
 
   search(:organizations, {
-    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['name.value', '$regex'],
-    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
     date_first_cited__gte: ['site_ids.date_first_cited.value', '$gte'],
@@ -271,9 +266,7 @@ get '/countries/:id/search/people' do
   end
 
   search(:people, {
-    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['name.value', '$regex'],
-    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['memberships.site.geonames_id.value', '$eq'],
     classification__in: ['memberships.organization.classification.value', '$in', split: true],
     rank__in: ['memberships.rank.value', '$in', split: true],
@@ -308,9 +301,7 @@ get '/countries/:id/search/events' do
   end
 
   search(:events, {
-    # @backend Use Search API with ElasticSearch to support matching the full document.
     q: ['description.value', '$regex'],
-    # @backend Submit string to Google Maps API to get coordinates, and submit to API to do radius search with PostGIS.
     geonames_id: ['geonames_id.value', '$eq'],
     classification__in: ['classification.value', '$in', split: true],
     start_date__gte: ['start_date.value', '$gte'],
