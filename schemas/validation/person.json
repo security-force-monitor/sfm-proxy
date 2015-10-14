@@ -105,23 +105,6 @@
   ],
 
   "definitions": {
-    "complex_string": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
-    },
     "complex_date": {
       "type": "object",
       "properties": {
@@ -155,6 +138,23 @@
         },
         "actual": {
           "type": "boolean"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "complex_string": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "sources": {
+          "$ref": "#/definitions/sources"
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
         }
       },
 

@@ -68,95 +68,19 @@
       "$ref": "#/definitions/complex_string"
     },
     "root_name": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/simple_string"
     },
     "other_names": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/complex_string_array"
     },
     "classification": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/complex_string_array"
     },
     "sites": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/definitions/complex_string"
-          },
-          "date_first_cited": {
-            "$ref": "#/definitions/complex_date"
-          },
-          "date_last_cited": {
-            "$ref": "#/definitions/complex_date"
-          }
-        },
-
-        "additionalProperties": false,
-        "required": ["id"]
-      }
+      "$ref": "#/definitions/relation"
     },
     "areas": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/definitions/complex_string"
-          },
-          "date_first_cited": {
-            "$ref": "#/definitions/complex_date"
-          },
-          "date_last_cited": {
-            "$ref": "#/definitions/complex_date"
-          }
-        },
-
-        "additionalProperties": false,
-        "required": ["id"]
-      }
+      "$ref": "#/definitions/relation"
     },
     "memberships": {
       "type": "array",
@@ -179,18 +103,7 @@
       }
     },
     "notes": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/simple_string"
     }
   },
 
@@ -205,17 +118,11 @@
   ],
 
   "definitions": {
-    "complex_string": {
+    "simple_string": {
       "type": "object",
       "properties": {
         "value": {
           "type": "string"
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
         }
       },
 
@@ -239,6 +146,63 @@
 
       "additionalProperties": false,
       "required": ["value"]
+    },
+    "complex_string": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "sources": {
+          "$ref": "#/definitions/sources"
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "complex_string_array": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "$ref": "#/definitions/sources"
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
+    "relation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/complex_string"
+          },
+          "date_first_cited": {
+            "$ref": "#/definitions/complex_date"
+          },
+          "date_last_cited": {
+            "$ref": "#/definitions/complex_date"
+          }
+        },
+
+        "additionalProperties": false,
+        "required": ["id"]
+      }
     },
     "confidence": {
       "type": "string",

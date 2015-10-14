@@ -24,67 +24,17 @@
     "name": {
       "$ref": "#/definitions/simple_string"
     },
-    "geo": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["Point"]
-        },
-        "coordinates": {
-          "type": "object",
-          "properties": {
-            "value": {
-              "type": "array",
-              "items": {
-                "type": "number"
-              },
-              "maxItems": 2,
-              "minItems": 2
-            },
-            "sources": {
-              "$ref": "#/definitions/sources"
-            },
-            "confidence": {
-              "$ref": "#/definitions/confidence"
-            }
-          },
-
-          "additionalProperties": false,
-          "required": ["value"]
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["type", "coordinates"]
-    },
     "geonames_name": {
       "$ref": "#/definitions/complex_string"
     },
     "geonames_id": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "integer"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/simple_integer"
     },
     "admin_level_1_geonames_name": {
       "$ref": "#/definitions/complex_string"
     },
     "admin_level_1_geonames_id": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "integer"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/simple_integer"
     }
   },
 
@@ -99,6 +49,17 @@
   ],
 
   "definitions": {
+    "simple_integer": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        }
+      },
+
+      "additionalProperties": false,
+      "required": ["value"]
+    },
     "simple_string": {
       "type": "object",
       "properties": {
