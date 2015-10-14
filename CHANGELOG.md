@@ -2,9 +2,15 @@
 
 ## 0.0.2
 
+### API
+
+* Added `location` field to Area and Site.
+* `/people/:id` returns `site_present`, `events` and `events_nearby` as GeoJSON.
+
+### Models
+
 * Area:
   * `geonames_name` removed (redundant with `name`).
-  * `location` added (API only).
 * Event:
   * `admin_level_1` renamed `admin_level_1_geonames_name`.
   * `admin_level_1_geonames_id` added.
@@ -16,7 +22,6 @@
   * `admin_level_1` renamed `admin_level_1_geonames_name`.
   * `admin_level_1_geonames_id` added.
   * `admin_level_2` removed (redundant with `geonames_name`).
-  * `location` added (API only).
 
 ## 0.0.1
 
