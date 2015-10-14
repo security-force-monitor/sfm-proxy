@@ -19,6 +19,7 @@
         "other_names": [
           "The Planeteers"
         ],
+        "root_id": "98185305-7ac0-4f7d-b354-efb052d1d3f1",
         "root_name": "Nigerian Army",
         "commander_present": {
           "name": "Michael Maris"
@@ -126,6 +127,7 @@
       "other_names": [
         "The Planeteers"
       ],
+      "root_id": "98185305-7ac0-4f7d-b354-efb052d1d3f1",
       "root_name": "Nigerian Army",
       "person_name": "Michael Maris",
       "events_count": 12

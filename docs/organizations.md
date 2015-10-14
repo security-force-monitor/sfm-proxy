@@ -152,6 +152,9 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
     ],
     "confidence": "High"
   },
+  "root_id": {
+    "value": "98185305-7ac0-4f7d-b354-efb052d1d3f1"
+  },
   "root_name": {
     "value": "Military"
   },
