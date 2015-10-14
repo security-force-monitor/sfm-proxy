@@ -182,7 +182,7 @@ get '/countries/:id/search/organizations' do
       'id' => result['_id'],
       'name' => result['name'].try(:[], 'value'),
       'other_names' => result['other_names'].try(:[], 'value'),
-      'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+      'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['_id']).count,
       'classification' => result['classification'].try(:[], 'value'),
       'area_present' => {
         'type' => 'Feature',

@@ -1,7 +1,7 @@
 get '/countries/:id/events' do
   content_type 'application/json'
 
-  results = connection[:events].find({'division_id' => "ocd-division/country:#{params[:id]}"})
+  results = connection[:events].find('division_id' => "ocd-division/country:#{params[:id]}")
 
   etag_and_return(results.map{|result|
     event_feature_formatter(result)
@@ -26,9 +26,9 @@ get '/countries/:id/map' do
   content_type 'application/json'
 
   if !params.key?('at')
-    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+    return [400, JSON.dump('message' => "Missing 'at' parameter")]
   elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
-    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+    return [400, JSON.dump('message' => "Invalid 'at' value")]
   end
 
   organization_criteria = {
@@ -76,7 +76,7 @@ get '/countries/:id/map' do
         'id' => result['_id'],
         'properties' => get_properties_safely(result, ['name', 'other_names', 'root_id', 'root_name']).merge({
           'commander_present' => commander_present(result['_id']),
-          'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+          'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['_id']).count,
         }),
         'geometry' => organization_geometry(result),
       }
