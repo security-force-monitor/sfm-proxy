@@ -152,19 +152,21 @@ get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    site_id = result['site_ids'].max_by do |a|
+    site_id, index = result['site_ids'].to_enum.with_index.max_by do |a,index|
       [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || ''
     end
+
+    site = result['sites'][index]
 
     site_present = {
       'date_first_cited' => site_id['date_first_cited'].try(:[], 'value'),
       'date_last_cited' => site_id['date_last_cited'].try(:[], 'value'),
     }
-    # @todo get from `sites`, not `site_ids`
-    if site_id['name']
-      site_present['location'] = location_formatter(site_id)
-      site_present['geonames_name'] = site_id['geonames_name'].try(:[], 'value')
-      site_present['admin_level_1_geonames_name'] = site_id['admin_level_1_geonames_name'].try(:[], 'value')
+
+    if site['name']
+      site_present.merge!(get_properties_safely(site, ['geonames_name', 'admin_level_1_geonames_name']).merge({
+        'location' => location_formatter(site),
+      }))
     end
 
     geometry = if result['area_ids']
@@ -236,17 +238,16 @@ get '/countries/:id/search/people' do
     end
 
     if memberships[0]['organization']
-      site_id = memberships[0]['organization']['site_ids'].max_by do |a|
-        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
+      site_id, index = memberships[0]['organization']['site_ids'].to_enum.with_index.max_by do |a,index|
+        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || ''
       end
 
-      # @todo get from `sites`, not `site_ids`
-      if site_id['name']
-        membership_present['organization']['site_present'] = {
-          'location' => location_formatter(site_id),
-          'geonames_name' => site_id['geonames_name'].try(:[], 'value'),
-          'admin_level_1_geonames_name' => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
-        }
+      site = memberships[0]['organization']['sites'][index]
+
+      if site['name']
+        membership_present['organization']['site_present'] = get_properties_safely(site, ['geonames_name', 'admin_level_1_geonames_name']).merge({
+          'location' => location_formatter(site),
+        })
       end
     end
 
