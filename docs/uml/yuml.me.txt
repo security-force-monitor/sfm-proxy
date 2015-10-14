@@ -1,28 +1,38 @@
+http://yuml.me/fb5c374d
+
 [Person|name;other_names:array]
 [Organization|name;other_names:array;classification]
 [Post|role;title;rank;chain_of_command]
 [Membership|role;title;rank;date_first_cited;date_last_cited;start_date_description;end_date_description]
-[Site|name;geonames_name;geonames_id;admin_level_1;admin_level_2;geometry]
-[Area|name;other_names:array;geonames_id;classification;geometry]
-[OrganizationComposition|date_first_cited;date_last_cited;classification]
-[AreaAssociation|date_first_cited;date_last_cited]
-[Emplacement|date_first_cited;date_last_cited]
-[Relationship|date_first_cited;date_last_cited]
-[Violation|start_date;end_date;location;admin_level_1;admin_level_2;geonames_name;geonames_id;geometry;classification:array;description;perpetrator_name;perpetrator_organization]
+[Site|name;geonames_name;geonames_id;admin_level_1_geonames_name;admin_level_1_geonames_id;geometry]
+[Area|name;geonames_id;geometry]
+
+[OrganizationOrganization|date_first_cited;date_last_cited;classification]
+[OrganizationArea|date_first_cited;date_last_cited]
+[OrganizationSite|date_first_cited;date_last_cited]
+[PostPost|date_first_cited;date_last_cited]
+[Event|start_date;end_date;location;geonames_name;geonames_id;admin_level_1_geonames_name;admin_level_1_geonames_id;classification:array;description;perpetrator_name;perpetrator_organization;sources]
 
 [Organization]<1-*>[Post]
 [Organization]<1-*>[Membership]
 [Post]<0..1-*>[Membership]
 [Membership]<*-member>[Person]
 [Organization]<member-*>[Membership]
-[OrganizationComposition]<*-parent 1>[Organization]
-[OrganizationComposition]<*-child 1>[Organization]
-[Relationship]<*-parent 1>[Post]
-[Relationship]<*-child 1>[Post]
-[Organization]<1-*>[AreaAssociation]
-[AreaAssociation]<*-1>[Area]
-[Organization]<1-*>[Violation]
+[OrganizationOrganization]<*-parent 1>[Organization]
+[OrganizationOrganization]<*-child 1>[Organization]
+[PostPost]<*-parent 1>[Post]
+[PostPost]<*-child 1>[Post]
+[Organization]<1-*>[OrganizationArea]
+[OrganizationArea]<*-1>[Area]
+[Organization]<1-*>[Event]
 
 [Membership]<*-0..1>[Site]
-[Organization]<1-*>[Emplacement]
-[Emplacement]<*-1>[Site]
+[Organization]<1-*>[OrganizationSite]
+[OrganizationSite]<*-1>[Site]
+
+--- Synonyms
+
+Emplacement: OrganizationSite
+AreaAssociation: OrganizationArea
+OrganizationComposition: OrganizationOrganization
+Relationship: PostPost
