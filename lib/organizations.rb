@@ -129,11 +129,13 @@ get '/organizations/:id/map' do
       'sites' => result['site_ids'].each_with_index.select{|site_id,index|
         result['sites'][index]['name'] && contemporary?(site_id)
       }.map{|site_id,index|
-        feature_formatter(result['sites'][index], result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), { # @todo geo
-          'name' => result['sites'][index]['name'].try(:[], 'value'),
-          'location' => location_formatter(result['sites'][index]),
-          'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
-          'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+        site = result['sites'][index]
+
+        feature_formatter(site, site['geo'].try(:[], 'coordinates').try(:[], 'value'), { # @todo geo
+          'name' => site['name'].try(:[], 'value'),
+          'location' => location_formatter(site),
+          'geonames_name' => site['geonames_name'].try(:[], 'value'),
+          'admin_level_1_geonames_name' => site['admin_level_1_geonames_name'].try(:[], 'value'),
         })
       },
       'events' => events.map{|event|
@@ -236,14 +238,17 @@ get '/organizations/:id' do
         event_formatter(event).except('division_id', 'description', 'perpetrator_organization')
       },
       'parents' => get_relations(result, 'parent', lambda{|result,index|
+        relation = result['parents'][index]
+
         {
-          'other_names' => result['parents'][index]['other_names'].try(:[], 'value'),
-          'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['parents'][index]['id']).count,
-          'commander_present' => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
+          'other_names' => relation['other_names'].try(:[], 'value'),
+          'events_count' => connection[:events].find('perpetrator_organization_id.value' => relation['id']).count,
+          'commander_present' => commanders_and_people(relation['id'])[:commanders][0],
         }
       }),
       'children' => children.map{|child|
         index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == result['_id']}
+        relation_id = child['parent_ids'][index]
 
         {
           'id' => child['_id'],
@@ -251,16 +256,18 @@ get '/organizations/:id' do
           'other_names' => child['other_names'].try(:[], 'value'),
           'events_count' => connection[:events].find('perpetrator_organization_id.value' => child['_id']).count,
           'commander_present' => commanders_and_people(child['_id'])[:commanders][0],
-          'date_first_cited' => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
-          'date_last_cited' => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
-          'sources' => child['parent_ids'][index]['id']['sources'],
-          'confidence' => child['parent_ids'][index]['id']['confidence'],
+          'date_first_cited' => relation_id['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => relation_id['date_last_cited'].try(:[], 'value'),
+          'sources' => relation_id['id']['sources'],
+          'confidence' => relation_id['id']['confidence'],
         }
       },
       'people' => people,
       'memberships' => get_relations(result, 'membership', lambda{|result,index|
+        relation = result['memberships'][index]
+
         {
-          'other_names' => result['memberships'][index]['other_names'].try(:[], 'value'),
+          'other_names' => relation['other_names'].try(:[], 'value'),
         }
       }, 'organization_id'),
       'areas' => get_relations(result, 'area', lambda{|result,index|
@@ -269,10 +276,12 @@ get '/organizations/:id' do
         }
       }),
       'sites' => get_relations(result, 'site', lambda{|result,index|
+        relation = result['sites'][index]
+
         {
-          'location' => location_formatter(result['sites'][index]),
-          'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
-          'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+          'location' => location_formatter(relation),
+          'geonames_name' => relation['geonames_name'].try(:[], 'value'),
+          'admin_level_1_geonames_name' => relation['admin_level_1_geonames_name'].try(:[], 'value'),
         }
       }),
       'events_nearby' => [sample_event],

@@ -173,15 +173,16 @@ helpers do
     end
   end
 
-  def get_relations(result, relation, properties, id_property_name = 'id')
-    relation_ids = "#{relation}_ids"
-    relations = "#{relation}s"
+  def get_relations(result, relation_name, properties, id_property_name = 'id')
+    relation_ids = "#{relation_name}_ids"
+    relations = "#{relation_name}s"
 
     result[relation_ids].try(:each_with_index).try(:map) do |relation_id,index|
-      item = if result[relations][index]['name']
+      relation = result[relations][index]
+      item = if relation['name']
         {
-          'id' => result[relations][index]['id'],
-          'name' => result[relations][index]['name'].try(:[], 'value'),
+          'id' => relation['id'],
+          'name' => relation['name'].try(:[], 'value'),
         }.merge(properties.call(result, index))
       else
         {
