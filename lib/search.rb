@@ -151,7 +151,6 @@ get '/countries/:id/autocomplete/geonames_id' do
   etag_and_return(response)
 end
 
-# @backend Perform search on Drupal.
 get '/countries/:id/search/organizations' do
   content_type 'application/json'
 
@@ -183,7 +182,6 @@ get '/countries/:id/search/organizations' do
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
-      # @backend Add events_count calculated field.
       "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
       "classification" => result['classification'].try(:[], 'value'),
       "area_present" => {
@@ -207,7 +205,6 @@ get '/countries/:id/search/organizations' do
     date_first_cited__lte: ['site_ids.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['site_ids.date_last_cited.value', '$gte'],
     date_last_cited__lte: ['site_ids.date_last_cited.value', '$lte'],
-    # @backend Add events_count calculated field.
     events_count__gte: ['events_count', '$gte'],
     events_count__lte: ['events_count', '$lte'],
   }, {
@@ -220,7 +217,6 @@ get '/countries/:id/search/organizations' do
   }, result_formatter)
 end
 
-# @backend Perform search on Drupal.
 get '/countries/:id/search/people' do
   content_type 'application/json'
 
@@ -267,7 +263,6 @@ get '/countries/:id/search/people' do
       "id" => result['_id'],
       "name" => result['name'].try(:[], 'value'),
       "other_names" => result['other_names'].try(:[], 'value'),
-      # @backend @hardcoded Add events_count calculated field, equal to the events related to an organization during the membership of the person.
       "events_count" => 12,
       "membership_present" => membership_present,
       "membership_former" => membership_former,
@@ -286,7 +281,6 @@ get '/countries/:id/search/people' do
     date_first_cited__lte: ['memberships.date_first_cited.value', '$lte'],
     date_last_cited__gte: ['memberships.date_last_cited.value', '$gte'],
     date_last_cited__lte: ['memberships.date_last_cited.value', '$lte'],
-    # @backend Add events_count calculated field, equal to the events related to an organization during the membership of the person.
     events_count__gte: ['events_count', '$gte'],
     events_count__lte: ['events_count', '$lte'],
   }, {
@@ -298,14 +292,12 @@ get '/countries/:id/search/people' do
   }, result_formatter)
 end
 
-# @backend Perform search on Drupal.
 get '/countries/:id/search/events' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'description').merge({
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo
-      # @backend @hardcoded How expensive is it to do radius search for each result in PostGIS?
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
       "sites_nearby" => [
         {
           "name" => "Atlantis",

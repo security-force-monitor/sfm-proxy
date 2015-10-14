@@ -1,3 +1,4 @@
+# @backend ZIP file generated on-demand.
 get %r{/people/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).zip} do |id|
   204
 end
@@ -5,7 +6,6 @@ get %r{/people/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0
   204
 end
 
-# @backend Load node from Drupal.
 get '/people/:id' do
   content_type 'application/json'
 
@@ -72,9 +72,7 @@ get '/people/:id' do
         "geometry" => organization_geometry(memberships[0]['organization']),
       },
       "site_present" => site,
-      # @backend @hardcoded Add events related to an organization during the membership of the person.
       "events" => [sample_event],
-      # @backend @hardcoded Add events near an organization during the membership of the person.
       "events_nearby" => [sample_event],
     })
   else
