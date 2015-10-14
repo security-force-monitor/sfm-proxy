@@ -56,7 +56,7 @@ helpers do
   def bounding_box
     @bounding_box ||= if params.key?('bbox')
       if !params[:bbox].match(/\A#{NUMERIC},#{NUMERIC},#{NUMERIC},#{NUMERIC}\z/)
-        halt 400, JSON.dump({'message' => "Invalid 'bbox' value"})
+        halt 400, JSON.dump('message' => "Invalid 'bbox' value")
       end
       params[:bbox].split(',').map{|coordinate| Float(coordinate)}
     else
@@ -173,6 +173,30 @@ helpers do
     end
   end
 
+  def get_relations(result, relation, properties, id_property_name = 'id')
+    relation_ids = "#{relation}_ids"
+    relations = "#{relation}s"
+
+    result[relation_ids].try(:each_with_index).try(:map) do |relation_id,index|
+      item = if result[relations][index]['name']
+        {
+          'id' => result[relations][index]['id'],
+          'name' => result[relations][index]['name'].try(:[], 'value'),
+        }.merge(properties.call(result, index))
+      else
+        {
+          'name' => relation_id[id_property_name].try(:[], 'value'),
+        }
+      end
+      item.merge({
+        'date_first_cited' => relation_id['date_first_cited'].try(:[], 'value'),
+        'date_last_cited' => relation_id['date_last_cited'].try(:[], 'value'),
+        'sources' => relation_id[id_property_name]['sources'],
+        'confidence' => relation_id[id_property_name]['confidence'],
+      })
+    end
+  end
+
   def location_formatter(result)
     result['location'].try(:[], 'value') || get_properties_safely(result, ['geonames_name', 'admin_level_1_geonames_name']).values.compact.join(', ')
   end
@@ -211,12 +235,15 @@ helpers do
     }
   end
 
-  def feature_formatter(result)
+  def feature_formatter(result, geometry = nil, properties = nil)
+    properties ||= result.except('_id', 'id')
+    geometry ||= sample_point
+
     {
       'type' => 'Feature',
-      'id' => result.fetch('id'),
-      'properties' => result.except('id'),
-      'geometry' => sample_point,
+      'id' => result.fetch('_id', result.fetch('id')),
+      'properties' => properties,
+      'geometry' => geometry,
     }
   end
 end

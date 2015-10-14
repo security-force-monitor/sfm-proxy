@@ -48,7 +48,7 @@ helpers do
       response << {
         'id' => child['_id'],
         'name' => child['name'].try(:[], 'value'),
-        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+        'events_count' => connection[:events].find('perpetrator_organization_id.value' => child['_id']).count,
         'parent_id' => id,
         'classification' => child['parent_ids'][index]['classification'].try(:[], 'value'),
         'commander' => commanders_and_people(child['_id'])[:commanders][0],
@@ -64,7 +64,7 @@ helpers do
     commanders = []
     people = []
 
-    members = connection[:people].find({'memberships.organization_id.value' => organization_id})
+    members = connection[:people].find('memberships.organization_id.value' => organization_id)
 
     members.each do |member|
       member['memberships'].each do |membership|
@@ -101,44 +101,31 @@ helpers do
   end
 end
 
-# @backend ZIP file generated on-demand.
-get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).zip} do |id|
-  204
-end
-get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).txt} do |id|
-  204
-end
-
 get '/organizations/:id/map' do
   content_type 'application/json'
 
   if !params.key?('at')
-    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+    return [400, JSON.dump('message' => "Missing 'at' parameter")]
   elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
-    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+    return [400, JSON.dump('message' => "Invalid 'at' value")]
   end
 
   result = connection[:organizations].find(_id: params[:id]).first
 
   if result
-    # @note No events have coordinates. Add bbox logic later.
+    # @todo Add bbox logic for event coordinates.
     events = connection[:events].find({
       'start_date.value' => params[:at],
       'perpetrator_organization_id.value' => result['_id'],
     })
 
-    # @backend @hardcoded Fake it until you make it.
+    # @production Fake it until more events are in the database.
     if events.count.zero?
       events = [connection[:events].find.first]
     end
 
     etag_and_return({
-      'area' => {
-        'type' => 'Feature',
-        'id' => result['_id'],
-        'properties' => {},
-        'geometry' => organization_geometry(result),
-      },
+      'area' => feature_formatter(result, organization_geometry(result), {}),
       'sites' => result['site_ids'].each_with_index.select{|site_id,index|
         result['sites'][index]['name'] && contemporary?(site_id)
       }.map{|site_id,index|
@@ -168,9 +155,9 @@ get '/organizations/:id/chart' do
   content_type 'application/json'
 
   if !params.key?('at')
-    return [400, JSON.dump({'message' => "Missing 'at' parameter"})]
+    return [400, JSON.dump('message' => "Missing 'at' parameter")]
   elsif !params[:at].match(/\A\d{4}-\d{2}-\d{2}\z/)
-    return [400, JSON.dump({'message' => "Invalid 'at' value"})]
+    return [400, JSON.dump('message' => "Invalid 'at' value")]
   end
 
   result = connection[:organizations].find(_id: params[:id]).first
@@ -182,29 +169,33 @@ get '/organizations/:id/chart' do
 
     response = walk_down(parent_id)
 
-    if root
-      response.unshift({
-        'id' => root['_id'],
-        'name' => root['name'].try(:[], 'value'),
-        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
-        'parent_id' => nil,
-        'classification' => nil,
-        'commander' => commanders_and_people(root['_id'])[:commanders][0],
-      })
+    name = if root
+      root['name'].try(:[], 'value')
     else
-      response.unshift({
-        'name' => parent_id,
-        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => parent_id}).count,
-        'parent_id' => nil,
-        'classification' => nil,
-        'commander' => commanders_and_people(parent_id)[:commanders][0],
-      })
+      parent_id
     end
+
+    response.unshift({
+      'id' => parent_id,
+      'name' => name,
+      'events_count' => connection[:events].find('perpetrator_organization_id.value' => parent_id).count,
+      'parent_id' => nil,
+      'classification' => nil,
+      'commander' => commanders_and_people(parent_id)[:commanders][0],
+    })
 
     etag_and_return(response)
   else
     404
   end
+end
+
+# @backend ZIP file generated on-demand.
+get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).zip} do |id|
+  204
+end
+get %r{/organizations/([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}).txt} do |id|
+  204
 end
 
 get '/organizations/:id' do
@@ -223,13 +214,13 @@ get '/organizations/:id' do
       [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
     end
 
-    events = connection[:events].find({'perpetrator_organization_id.value' => result['_id']})
-    children = connection[:organizations].find({'parent_ids.id.value' => result['_id']})
+    events = connection[:events].find('perpetrator_organization_id.value' => result['_id'])
+    children = connection[:organizations].find('parent_ids.id.value' => result['_id'])
     commanders_and_people = commanders_and_people(result['_id'])
     commanders = commanders_and_people[:commanders]
     people = commanders_and_people[:people]
 
-    # @backend @hardcoded Fake it until you make it.
+    # @production Fake it until more events are in the database.
     if events.count.zero?
       events = [connection[:events].find.first]
     end
@@ -241,7 +232,7 @@ get '/organizations/:id' do
       'other_names' => result['other_names'],
       'events_count' => events.count,
       'classification' => result['classification'],
-      'root_id' => nil, # @todo
+      'root_id' => result['root_id'],
       'root_name' => result['root_name'],
       'date_first_cited' => site_first && [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| field.try(:[], 'value')},
       'date_last_cited' => site_last && [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| field.try(:[], 'value')},
@@ -250,27 +241,13 @@ get '/organizations/:id' do
       'events' => events.map{|event|
         event_formatter(event).except('division_id', 'description', 'perpetrator_organization')
       },
-      'parents' => result['parent_ids'].try(:each_with_index).try(:map){|parent_id,index|
-        item = if result['parents'][index]['name']
-          {
-            'id' => result['parents'][index]['id'],
-            'name' => result['parents'][index]['name'].try(:[], 'value'),
-            'other_names' => result['parents'][index]['other_names'].try(:[], 'value'),
-            'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
-            'commander_present' => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
-          }
-        else
-          {
-            'name' => parent_id['id'].try(:[], 'value'),
-          }
-        end
-        item.merge({
-          'date_first_cited' => parent_id['date_first_cited'].try(:[], 'value'),
-          'date_last_cited' => parent_id['date_last_cited'].try(:[], 'value'),
-          'sources' => parent_id['id']['sources'],
-          'confidence' => parent_id['id']['confidence'],
-        })
-      },
+      'parents' => get_relations(result, 'parent', lambda{|result,index|
+        {
+          'other_names' => result['parents'][index]['other_names'].try(:[], 'value'),
+          'events_count' => connection[:events].find('perpetrator_organization_id.value' => result['parents'][index]['id']).count,
+          'commander_present' => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
+        }
+      }),
       'children' => children.map{|child|
         index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == result['_id']}
 
@@ -278,7 +255,7 @@ get '/organizations/:id' do
           'id' => child['_id'],
           'name' => child['name'].try(:[], 'value'),
           'other_names' => child['other_names'].try(:[], 'value'),
-          'events_count' => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+          'events_count' => connection[:events].find('perpetrator_organization_id.value' => child['_id']).count,
           'commander_present' => commanders_and_people(child['_id'])[:commanders][0],
           'date_first_cited' => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
           'date_last_cited' => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
@@ -287,64 +264,23 @@ get '/organizations/:id' do
         }
       },
       'people' => people,
-      'memberships' => result['membership_ids'].try(:each_with_index).try(:map){|membership,index|
-        item = if result['memberships'][index]['name']
-          {
-            'id' => result['memberships'][index]['id'],
-            'name' => result['memberships'][index]['name'].try(:[], 'value'),
-            'other_names' => result['memberships'][index]['other_names'].try(:[], 'value'),
-          }
-        else
-          {
-            'name' => membership['organization_id'].try(:[], 'value'),
-          }
-        end
-        item.merge({
-          'date_first_cited' => membership['date_first_cited'].try(:[], 'value'),
-          'date_last_cited' => membership['date_last_cited'].try(:[], 'value'),
-          'sources' => membership['organization_id']['sources'],
-          'confidence' => membership['organization_id']['confidence'],
-        })
-      },
-      'areas' => result['area_ids'].try(:each_with_index).try(:map){|area_id,index|
-        item = if result['areas'][index]['name']
-          {
-            'id' => result['areas'][index]['id'],
-            'name' => result['areas'][index]['name'].try(:[], 'value'),
-          }
-        else
-          {
-            'name' => area_id['id'].try(:[], 'value'),
-          }
-        end
-        item.merge({
-          'date_first_cited' => area_id['date_first_cited'].try(:[], 'value'),
-          'date_last_cited' => area_id['date_last_cited'].try(:[], 'value'),
-          'sources' => area_id['id']['sources'],
-          'confidence' => area_id['id']['confidence'],
-        })
-      },
-      'sites' => result['site_ids'].each_with_index.map{|site_id,index|
-        item = if result['sites'][index]['name']
-          {
-            'id' => result['sites'][index]['id'],
-            'name' => result['sites'][index]['name'].try(:[], 'value'),
-            'location' => location_formatter(result['sites'][index]),
-            'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
-            'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
-          }
-        else
-          {
-            'name' => site_id['id'].try(:[], 'value'),
-          }
-        end
-        item.merge({
-          'date_first_cited' => site_id['date_first_cited'].try(:[], 'value'),
-          'date_last_cited' => site_id['date_last_cited'].try(:[], 'value'),
-          'sources' => site_id['id']['sources'],
-          'confidence' => site_id['id']['confidence'],
-        })
-      },
+      'memberships' => get_relations(result, 'membership', lambda{|result,index|
+        {
+          'other_names' => result['memberships'][index]['other_names'].try(:[], 'value'),
+        }
+      }, 'organization_id'),
+      'areas' => get_relations(result, 'area', lambda{|result,index|
+        {
+          # Nothing to add.
+        }
+      }),
+      'sites' => get_relations(result, 'site', lambda{|result,index|
+        {
+          'location' => location_formatter(result['sites'][index]),
+          'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
+          'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+        }
+      }),
       'events_nearby' => [sample_event],
     })
   else
