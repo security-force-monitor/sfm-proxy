@@ -32,8 +32,6 @@ Import admin level 1 and 2 geometries:
 
 Create the geospatial indices in the MongoDB shell:
 
-    db.events.createIndex({geo: '2dsphere'})
-    db.sites.createIndex({geo: '2dsphere'})
     db.geometries.createIndex({geo: '2dsphere'})
 
 Start a local server:

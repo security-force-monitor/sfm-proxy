@@ -129,6 +129,13 @@ helpers do
     end
   end
 
+  def location_formatter(result)
+    result['location'].try(:[], 'value') || [
+      result['geonames_name'].try(:[], 'value'),
+      result['admin_level_1_geonames_name'].try(:[], 'value'),
+    ].compact.join(', ')
+  end
+
   def event_formatter(result)
     perpetrator_organization = if result['perpetrator_organization']
       {
@@ -147,7 +154,7 @@ helpers do
       "division_id" => result['division_id'],
       "start_date" => result['start_date'].try(:[], 'value'),
       "end_date" => result['end_date'].try(:[], 'value'),
-      "location" => result['location'].try(:[], 'value'),
+      "location" => location_formatter(result),
       "admin_level_1_geonames_name" => result['admin_level_1_geonames_name'].try(:[], 'value'),
       "geonames_name" => result['geonames_name'].try(:[], 'value'),
       "classification" => result['classification'].try(:[], 'value'),
@@ -162,8 +169,8 @@ helpers do
     {
       "type" => "Feature",
       "id" => result['_id'],
-      "properties" => event_formatter(result).except('id', 'division_id', 'location', 'geo', 'description'),
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
+      "properties" => event_formatter(result).except('id', 'division_id', 'geo', 'description'), # @todo
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo
     }
   end
 

@@ -165,8 +165,9 @@ get '/countries/:id/search/organizations' do
       "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
     }
     if site_id['name']
-      site_present['admin_level_1_geonames_name'] = site_id['admin_level_1_geonames_name'].try(:[], 'value')
+      site_present['location'] = location_formatter(site_id)
       site_present['geonames_name'] = site_id['geonames_name'].try(:[], 'value')
+      site_present['admin_level_1_geonames_name'] = site_id['admin_level_1_geonames_name'].try(:[], 'value')
     end
 
     geometry = if result['area_ids']
@@ -253,8 +254,9 @@ get '/countries/:id/search/people' do
 
       if site_id['name']
         membership_present['organization']['site_present'] = {
-          "admin_level_1_geonames_name" => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
+          "location" => location_formatter(site_id),
           "geonames_name" => site_id['geonames_name'].try(:[], 'value'),
+          "admin_level_1_geonames_name" => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
         }
       end
     end
@@ -299,8 +301,8 @@ get '/countries/:id/search/events' do
   content_type 'application/json'
 
   result_formatter = lambda do |result|
-    event_formatter(result).except('division_id', 'location', 'description').merge({
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point,
+    event_formatter(result).except('division_id', 'description').merge({
+      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo
       # @backend @hardcoded How expensive is it to do radius search for each result in PostGIS?
       "sites_nearby" => [
         {

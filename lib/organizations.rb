@@ -147,10 +147,11 @@ get '/organizations/:id/map' do
           "id" => result['sites'][index]['id'],
           "properties" => {
             "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+            "location" => location_formatter(result['sites'][index]),
             "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
+            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
           },
-          "geometry" => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'),
+          "geometry" => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), # @todo
         }
       },
       "events" => events.map{|event|
@@ -164,8 +165,9 @@ get '/organizations/:id/map' do
           "properties" => {
             "start_date" => '2010-01-01',
             "end_date" => nil,
-            "admin_level_1_geonames_name" => 'Abia',
+            "location" => "Abia North, Abia",
             "geonames_name" => 'Abia North',
+            "admin_level_1_geonames_name" => 'Abia',
             "classification" => ['Torture', 'Disappearance'],
             "perpetrator_name" => 'Terry Guerrier',
             "perpetrator_organization" => {
@@ -267,7 +269,7 @@ get '/organizations/:id' do
       "commander_present" => commanders[0],
       "commanders_former" => commanders.drop(1),
       "events" => events.map{|event|
-        event_formatter(event).except('division_id', 'location', 'description', 'perpetrator_organization')
+        event_formatter(event).except('division_id', 'description', 'perpetrator_organization')
       },
       "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent_id,index|
         item = if result['parents'][index]['name']
@@ -350,8 +352,9 @@ get '/organizations/:id' do
           {
             "id" => result['sites'][index]['id'],
             "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+            "location" => location_formatter(result['sites'][index]),
             "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
+            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
           }
         else
           {
@@ -371,8 +374,9 @@ get '/organizations/:id' do
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
           "end_date" => nil,
-          "admin_level_1_geonames_name" => 'Abia',
+          "location" => "Abia North, Abia",
           "geonames_name" => 'Abia North',
+          "admin_level_1_geonames_name" => 'Abia',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {

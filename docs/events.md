@@ -36,6 +36,7 @@
       "properties": {
         "start_date": "2010-01-01",
         "end_date": null,
+        "location": "Abia, Aba North",
         "admin_level_1_geonames_name": "Abia",
         "geonames_name": "Aba North",
         "classification": [
@@ -70,6 +71,7 @@
     "properties": {
       "start_date": "2010-01-01",
       "end_date": null,
+      "location": "Abia, Aba North",
       "admin_level_1_geonames_name": "Abia",
       "geonames_name": "Aba North",
       "classification": [

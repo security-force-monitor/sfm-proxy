@@ -272,11 +272,6 @@ task :import_csv do
               object['name']['value'].sub!(/\s*\(\d+\)\z/, '')
             end
 
-            # All imported coordinates are points.
-            if object['geo']
-              object['geo']['type'] ||= 'Point'
-            end
-
             if type == :organization
               if gid == 0
                 object['root_name'] = {'value' => 'Police'}
