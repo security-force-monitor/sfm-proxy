@@ -438,7 +438,7 @@ task :import_csv do
     collection = connection[collection_name]
     selector = {_id: object.fetch('id')}
     query = collection.find(selector)
-    store = object.except('type') # @backend add 'gid', 'row'
+    store = object.except('type') # @production add 'gid', 'row'
 
     case query.count
     when 0

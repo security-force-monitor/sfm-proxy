@@ -1,9 +1,6 @@
-# @backend Daily or hourly cron job to create and ZIP CSV files for download.
 get %r{/countries/([a-z]{2}).zip} do |id|
   204
 end
-
-# @backend Daily or hourly cron job to create text files for download.
 get %r{/countries/([a-z]{2}).txt} do |id|
   204
 end

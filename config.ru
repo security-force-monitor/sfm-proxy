@@ -66,7 +66,7 @@ helpers do
 
   def geonames_id_to_geo
     @geonames_id_to_geo ||= {}.tap do |hash|
-      # @backend Switch to PostGIS query. Just match on ADM1 for now.
+      # @backend @todo Switch to PostGIS query. Just match on ADM1 for now.
       connection[:geometries].find({
         classification: 'ADM1',
         geo: {

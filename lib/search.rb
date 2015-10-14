@@ -72,7 +72,7 @@ helpers do
       direction = -1
     end
 
-    # @backend Use Search API with ElasticSearch to sort by _score.
+    # @backend Use ElasticSearch to sort by _score.
     # valid << '_score'
     if valid.include?(field)
       query.sort(field => direction)
