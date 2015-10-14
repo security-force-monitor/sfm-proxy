@@ -175,7 +175,8 @@ get '/countries/:id/search/organizations' do
         ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
       end
 
-      geonames_id_to_geo.fetch(area_id_to_geoname_id[area_id['id']['value']], connection[:geometries].find.first['geo']) # @backend @hardcoded
+      # @production Fake it until more geometries are in the database.
+      geonames_id_to_geo.fetch(area_id_to_geoname_id[area_id['id']['value']], sample_area)
     end
 
     {

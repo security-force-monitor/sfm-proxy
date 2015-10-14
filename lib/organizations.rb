@@ -144,7 +144,7 @@ get '/organizations/:id/map' do
       'events' => events.map{|event|
         event_feature_formatter(event)
       },
-      'events_nearby' => [feature_formatter(sample_event)],
+      'events_nearby' => [feature_formatter(sample_event, sample_point)],
     })
   else
     404

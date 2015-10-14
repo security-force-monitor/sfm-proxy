@@ -63,6 +63,10 @@ EOL
     }
   end
 
+  def sample_area
+    connection[:geometries].find.first['geo']
+  end
+
   def sample_organization
     {
       'id' => '68e90978-fa3f-42f3-9d56-4218c4f3f785',

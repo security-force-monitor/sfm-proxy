@@ -128,7 +128,7 @@ helpers do
       if area_id
         geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
       else
-        connection[:geometries].find.first['geo'] # @backend @hardcoded
+        sample_area # @production Fake it until more geometries are in the database.
       end
     end
   end
@@ -235,9 +235,8 @@ helpers do
     }
   end
 
-  def feature_formatter(result, geometry = nil, properties = nil)
+  def feature_formatter(result, geometry, properties = nil)
     properties ||= result.except('_id', 'id')
-    geometry ||= sample_point
 
     {
       'type' => 'Feature',
