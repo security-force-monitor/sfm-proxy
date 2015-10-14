@@ -153,7 +153,7 @@ get '/countries/:id/search/organizations' do
 
   result_formatter = lambda do |result|
     site_id = result['site_ids'].max_by do |a|
-      ([a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || '')
+      [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || ''
     end
 
     site_present = {

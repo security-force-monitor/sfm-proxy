@@ -122,9 +122,9 @@ helpers do
 
   def organization_geometry(result)
     if result['area_ids']
-      area_id = result['area_ids'].find{|area_id|
+      area_id = result['area_ids'].find do |area_id|
         area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
-      }
+      end
       if area_id
         geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
       else
