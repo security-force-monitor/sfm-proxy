@@ -75,8 +75,8 @@ get '/people/:id' do
       'memberships' => memberships,
       'area_present' => feature_formatter(memberships[0]['organization'], organization_geometry(memberships[0]['organization']), {}),
       'site_present' => site,
-      'events' => [sample_event],
-      'events_nearby' => [sample_event],
+      'events' => [feature_formatter(sample_event, sample_point)],
+      'events_nearby' => [feature_formatter(sample_event, sample_point)],
     })
   else
     404

@@ -99,45 +99,62 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
   "site_present": {
     "type": "Feature",
     "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
-    "name": "Command Center",
-    "location": "Abia North, Abia",
-    "geonames_name": "Abia North",
-    "admin_level_1_geonames_name": "Abia",
-    "sources": [
-      "..."
-    ],
-    "confidence": "Medium"
+    "properties": {
+      "name": "Command Center",
+      "location": "Aba North, Abia",
+      "geonames_name": "Aba North",
+      "admin_level_1_geonames_name": "Abia",
+      "sources": [
+        "..."
+      ],
+      "confidence": "Medium"
+    },
+    "geometry": GeoJSON
   },
   "events": [
     {
+      "type": "Feature",
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
-      "start_date": "2012-01-01",
-      "end_date": null,
-      "location": "Abia North, Abia",
-      "geonames_name": "Abia North",
-      "admin_level_1_geonames_name": "Abia",
-      "classification": ["Killing"],
-      "perpetrator_name": "Marvin Steele",
-      "perpetrator_organization": {
-        "id": "123e4567-e89b-12d3-a456-426655440000",
-        "name": "Brigade 2",
+      "properties": {
+        "start_date": "2012-01-01",
+        "end_date": null,
+        "location": "Aba North, Abia",
+        "geonames_name": "Aba North",
+        "admin_level_1_geonames_name": "Abia",
+        "classification": ["Killing"],
+        "perpetrator_name": "Marvin Steele",
+        "perpetrator_organization": {
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "name": "Brigade 2",
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
       }
     },
     ...
   ],
   "events_nearby": [
     {
+      "type": "Feature",
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
-      "start_date": "2012-01-01",
-      "end_date": null,
-      "location": "Abia North, Abia",
-      "geonames_name": "Abia North",
-      "admin_level_1_geonames_name": "Abia",
-      "classification": ["Killing"],
-      "perpetrator_name": "Marvin Steele",
-      "perpetrator_organization": {
-        "id": "123e4567-e89b-12d3-a456-426655440000",
-        "name": "Brigade 2",
+      "properties": {
+        "start_date": "2012-01-01",
+        "end_date": null,
+        "location": "Aba North, Abia",
+        "geonames_name": "Aba North",
+        "admin_level_1_geonames_name": "Abia",
+        "classification": ["Killing"],
+        "perpetrator_name": "Marvin Steele",
+        "perpetrator_organization": {
+          "id": "123e4567-e89b-12d3-a456-426655440000",
+          "name": "Brigade 2",
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.0, 90.0]
       }
     },
     ...

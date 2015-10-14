@@ -83,8 +83,8 @@ Facets:
       "site_present": {
         "date_first_cited": "2000-01-01",
         "date_last_cited": "2015-01-01",
-        "location": "Abia North, Abia",
-        "geonames_name": "Abia North",
+        "location": "Aba North, Abia",
+        "geonames_name": "Aba North",
         "admin_level_1_geonames_name": "Abia"
       },
       "commander_present": {
@@ -153,8 +153,8 @@ Facets:
         "title": "Captain of the Watch",
         "rank": "Captain",
         "site_present": {
-          "location": "Abia North, Abia",
-          "geonames_name": "Abia North",
+          "location": "Aba North, Abia",
+          "geonames_name": "Aba North",
           "admin_level_1_geonames_name": "Abia"
         }
       },
