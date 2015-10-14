@@ -44,18 +44,27 @@ get '/people/:id' do
         'name' => memberships[0]['site_id']['value']
       }
     elsif memberships[0]['organization']
-      { # @backend @hardcoded
+      site_id, index = memberships[0]['organization']['site_ids'].to_enum.with_index.max_by do |a,index|
+        [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || ''
+      end
+
+      site = memberships[0]['organization']['sites'][index]
+
+      site_present = {
         'type' => 'Feature',
-        'id' => '5947d0de-626d-495f-9c31-eb2ca5afdb6b',
-        'name' => 'Command Center',
-        'location' => 'Abia North, Abia',
-        'geonames_name' => 'Abia North',
-        'admin_level_1_geonames_name' => 'Abia',
-        'sources' => [
-          '...'
-        ],
-        'confidence' => 'Medium',
+        'id' => site_id['id']['value'],
+        'properties' => {
+          'sources' => site_id['id']['sources'],
+          'confidence' => site_id['id']['confidence'],
+        },
+        'geometry' => {}, # @todo
       }
+
+      if site['name']
+        site_present['properties'].merge!(get_properties_safely(site, ['name', 'geonames_name', 'admin_level_1_geonames_name']).merge({
+          'location' => location_formatter(site),
+        }))
+      end
     end
 
     etag_and_return({
