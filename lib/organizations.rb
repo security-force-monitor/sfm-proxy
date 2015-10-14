@@ -329,7 +329,7 @@ get '/organizations/:id' do
           "confidence" => membership['organization_id']['confidence'],
         })
       },
-      "areas" => result['area_ids'].try(:each_with_index).try(:map){|area,index|
+      "areas" => result['area_ids'].try(:each_with_index).try(:map){|area_id,index|
         item = if result['areas'][index]['name']
           {
             "id" => result['areas'][index]['id'],
@@ -337,14 +337,14 @@ get '/organizations/:id' do
           }
         else
           {
-            "name" => area['id'].try(:[], 'value'),
+            "name" => area_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => area['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => area['date_last_cited'].try(:[], 'value'),
-          "sources" => area['id']['sources'],
-          "confidence" => area['id']['confidence'],
+          "date_first_cited" => area_id['date_first_cited'].try(:[], 'value'),
+          "date_last_cited" => area_id['date_last_cited'].try(:[], 'value'),
+          "sources" => area_id['id']['sources'],
+          "confidence" => area_id['id']['confidence'],
         })
       },
       "sites" => result['site_ids'].each_with_index.map{|site_id,index|
