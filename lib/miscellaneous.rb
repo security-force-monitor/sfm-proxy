@@ -43,24 +43,15 @@ get '/countries/:id/geometries' do
 
   response = connection[:geometries].find(criteria).map do |result|
     {
-      "type" => "Feature",
-      "id" => result['_id'],
-      "properties" => {
-        "name" => result['name'],
-        "classification" => result['classification'],
+      'type' => 'Feature',
+      'id' => result['_id'],
+      'properties' => {
+        'name' => result['name'],
+        'classification' => result['classification'],
       },
-      "geometry" => result['geo'],
+      'geometry' => result['geo'],
     }
   end
 
   etag_and_return(response)
-end
-
-# @see https://github.com/britg/sinatra-cross_origin#responding-to-options
-options '*' do
-  response.headers['Allow'] = 'HEAD,GET,PUT,POST,DELETE,OPTIONS'
-
-  response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
-
-  200
 end

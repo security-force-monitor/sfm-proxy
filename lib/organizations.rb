@@ -158,26 +158,7 @@ get '/organizations/:id/map' do
         event_feature_formatter(event)
       },
       # @backend @hardcoded Use PostGIS to determine events within a 2km radius of all sites over all time.
-      "events_nearby" => [
-        {
-          "type" => "Feature",
-          "id" => '656e71bc-ef2d-4483-8099-a8d701490670',
-          "properties" => {
-            "start_date" => '2010-01-01',
-            "end_date" => nil,
-            "location" => "Abia North, Abia",
-            "geonames_name" => 'Abia North',
-            "admin_level_1_geonames_name" => 'Abia',
-            "classification" => ['Torture', 'Disappearance'],
-            "perpetrator_name" => 'Terry Guerrier',
-            "perpetrator_organization" => {
-              "id" => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
-              "name" => 'Brigade 2',
-            }
-          },
-          "geometry" => sample_point,
-        }
-      ]
+      "events_nearby" => [sample_feature(sample_event)],
     })
   else
     404
@@ -263,6 +244,7 @@ get '/organizations/:id' do
       # @backend Add events_count calculated field.
       "events_count" => events.count,
       "classification" => result['classification'],
+      "root_id" => nil, # @todo
       "root_name" => result['root_name'],
       "date_first_cited" => site_first && [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| field.try(:[], 'value')},
       "date_last_cited" => site_last && [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| field.try(:[], 'value')},
@@ -369,22 +351,7 @@ get '/organizations/:id' do
         })
       },
       # @backend @hardcoded Use PostGIS to determine events within a 2km radius of all sites over all time.
-      "events_nearby" => [
-        {
-          "id" => '656e71bc-ef2d-4483-8099-a8d701490670',
-          "start_date" => '2010-01-01',
-          "end_date" => nil,
-          "location" => "Abia North, Abia",
-          "geonames_name" => 'Abia North',
-          "admin_level_1_geonames_name" => 'Abia',
-          "classification" => ['Torture', 'Disappearance'],
-          "perpetrator_name" => 'Terry Guerrier',
-          "perpetrator_organization" => {
-            "id" => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
-            "name" => 'Brigade 2',
-          }
-        }
-      ]
+      "events_nearby" => [sample_event],
     })
   else
     404

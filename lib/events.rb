@@ -1,5 +1,3 @@
-NUMERIC = /-?\d+(?:\.\d+)?/
-
 # @backend Load nodes from Drupal.
 get '/countries/:id/events' do
   content_type 'application/json'
@@ -20,20 +18,7 @@ get '/events/:id' do
   if result
     etag_and_return(event_formatter(result).merge({
       # @backend @hardcoded Use PostGIS to determine areas and sites within a 2km radius of event.
-      "organizations_nearby" => [
-        {
-          "id" => "68e90978-fa3f-42f3-9d56-4218c4f3f785",
-          "name" => "Brigade 2",
-          "other_names" => [
-            "The Planeteers",
-          ],
-          # @backend Add root_id denormalized field.
-          "root_name" => "Nigerian Army",
-          "person_name" => "Michael Maris",
-          # @backend Add events_count calculated field.
-          "events_count" => 12,
-        },
-      ],
+      "organizations_nearby" => [sample_organization],
     }))
   else
     404
@@ -88,28 +73,18 @@ get '/countries/:id/map' do
 
   etag_and_return({
     "organizations" => organizations.map{|result|
-      geometry = if result['area_ids']
-        area_id = result['area_ids'].find{|area_id|
-          area_id_to_geoname_id.key?(area_id['id'].try(:[], 'value')) && contemporary?(area_id)
-        }
-        if area_id
-          geonames_id_to_geo.fetch(area_id_to_geoname_id.fetch(area_id['id']['value']))
-        else
-          connection[:geometries].find.first['geo'] # @backend @hardcoded
-        end
-      end
-
       {
         "type" => "Feature",
         "id" => result['_id'],
         "properties" => {
-          "name" => result['name'].try(:[], 'value'),
-          "other_names" => result['other_names'].try(:[], 'value'),
-          "root_name" => result['root_name'].try(:[], 'value'),
+          "name"              => result['name'].try(:[], 'value'),
+          "other_names"       => result['other_names'].try(:[], 'value'),
+          "root_id"           => nil, # @todo
+          "root_name"         => result['root_name'].try(:[], 'value'),
           "commander_present" => commander_present(result['_id']),
-          "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+          "events_count"      => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
         },
-        "geometry" => geometry,
+        "geometry" => organization_geometry(result),
       }
     },
     "events" => events.map{|result|

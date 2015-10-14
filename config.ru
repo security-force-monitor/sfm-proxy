@@ -14,8 +14,19 @@ require 'sinatra/cross_origin'
 
 Mongo::Logger.logger.level = Logger::WARN
 
+NUMERIC = /-?\d+(?:\.\d+)?/
+
 configure do
   enable :cross_origin
+end
+
+# @see https://github.com/britg/sinatra-cross_origin#responding-to-options
+options '*' do
+  response.headers['Allow'] = 'HEAD,GET,PUT,POST,DELETE,OPTIONS'
+
+  response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
+
+  200
 end
 
 helpers do
@@ -49,7 +60,7 @@ helpers do
       end
       params[:bbox].split(',').map{|coordinate| Float(coordinate)}
     else
-      [14.5771, 4.2405, 2.6917, 13.8659] # @backend @hardcoded Nigeria west-south, east-north
+      sample_bounding_box # @backend Switch to the country's bounding box.
     end
   end
 
@@ -187,19 +198,9 @@ helpers do
       "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo
     }
   end
-
-  def sample_point
-    # @note No events have coordinates. Remove this dummy code later.
-    longitude_range = Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
-    latitude_range = Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
-
-    {
-      "type" => "Point",
-      "coordinates" => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
-    }
-  end
 end
 
+require_relative 'lib/helpers/sample'
 require_relative 'lib/events'
 require_relative 'lib/countries'
 require_relative 'lib/miscellaneous'

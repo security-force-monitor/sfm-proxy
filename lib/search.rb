@@ -164,6 +164,7 @@ get '/countries/:id/search/organizations' do
       "date_first_cited" => site_id['date_first_cited'].try(:[], 'value'),
       "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
     }
+    # @todo get from `sites`, not `site_ids`
     if site_id['name']
       site_present['location'] = location_formatter(site_id)
       site_present['geonames_name'] = site_id['geonames_name'].try(:[], 'value')
@@ -252,6 +253,7 @@ get '/countries/:id/search/people' do
         [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max
       end
 
+      # @todo get from `sites`, not `site_ids`
       if site_id['name']
         membership_present['organization']['site_present'] = {
           "location" => location_formatter(site_id),
