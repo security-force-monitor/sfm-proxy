@@ -49,8 +49,8 @@ get '/people/:id' do
         "type" => "Feature",
         "id" => "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
         "name" => "Command Center",
-        "admin_level_1" => "Abia",
-        "admin_level_2" => "Abia North",
+        "admin_level_1_geonames_name" => "Abia",
+        "geonames_name" => "Abia North",
         "sources" => [
           "..."
         ],
@@ -77,8 +77,8 @@ get '/people/:id' do
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
           "end_date" => nil,
-          "admin_level_1" => 'Abia',
-          "admin_level_2" => 'Abia North',
+          "admin_level_1_geonames_name" => 'Abia',
+          "geonames_name" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {
@@ -93,8 +93,8 @@ get '/people/:id' do
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
           "end_date" => nil,
-          "admin_level_1" => 'Abia',
-          "admin_level_2" => 'Abia North',
+          "admin_level_1_geonames_name" => 'Abia',
+          "geonames_name" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {

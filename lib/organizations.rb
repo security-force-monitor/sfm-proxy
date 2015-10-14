@@ -147,8 +147,8 @@ get '/organizations/:id/map' do
           "id" => result['sites'][index]['id'],
           "properties" => {
             "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "admin_level_1" => result['sites'][index]['admin_level_1'].try(:[], 'value'),
-            "admin_level_2" => result['sites'][index]['admin_level_2'].try(:[], 'value'),
+            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+            "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
           },
           "geometry" => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'),
         }
@@ -164,8 +164,8 @@ get '/organizations/:id/map' do
           "properties" => {
             "start_date" => '2010-01-01',
             "end_date" => nil,
-            "admin_level_1" => 'Abia',
-            "admin_level_2" => 'Abia North',
+            "admin_level_1_geonames_name" => 'Abia',
+            "geonames_name" => 'Abia North',
             "classification" => ['Torture', 'Disappearance'],
             "perpetrator_name" => 'Terry Guerrier',
             "perpetrator_organization" => {
@@ -350,8 +350,8 @@ get '/organizations/:id' do
           {
             "id" => result['sites'][index]['id'],
             "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "admin_level_1" => result['sites'][index]['admin_level_1'].try(:[], 'value'),
-            "admin_level_2" => result['sites'][index]['admin_level_2'].try(:[], 'value'),
+            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+            "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
           }
         else
           {
@@ -371,8 +371,8 @@ get '/organizations/:id' do
           "id" => 'eba734d7-8078-4af5-ae8f-838c0d47fdc0',
           "start_date" => '2010-01-01',
           "end_date" => nil,
-          "admin_level_1" => 'Abia',
-          "admin_level_2" => 'Abia North',
+          "admin_level_1_geonames_name" => 'Abia',
+          "geonames_name" => 'Abia North',
           "classification" => ['Torture', 'Disappearance'],
           "perpetrator_name" => 'Terry Guerrier',
           "perpetrator_organization" => {

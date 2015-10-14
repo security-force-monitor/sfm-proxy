@@ -100,8 +100,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
     "type": "Feature",
     "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
     "name": "Command Center",
-    "admin_level_1": "Abia",
-    "admin_level_2": "Abia North",
+    "admin_level_1_geonames_name": "Abia",
+    "geonames_name": "Abia North",
     "sources": [
       "..."
     ],
@@ -112,8 +112,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
       "start_date": "2012-01-01",
       "end_date": null,
-      "admin_level_1": "Abia",
-      "admin_level_2": "Abia North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Abia North",
       "classification": ["Killing"],
       "perpetrator_name": "Marvin Steele",
       "perpetrator_organization": {
@@ -128,8 +128,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
       "start_date": "2012-01-01",
       "end_date": null,
-      "admin_level_1": "Abia",
-      "admin_level_2": "Abia North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Abia North",
       "classification": ["Killing"],
       "perpetrator_name": "Marvin Steele",
       "perpetrator_organization": {

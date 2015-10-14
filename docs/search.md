@@ -83,8 +83,8 @@ Facets:
       "site_present": {
         "date_first_cited": "2000-01-01",
         "date_last_cited": "2015-01-01",
-        "admin_level_1": "Abia",
-        "admin_level_2": "Abia North"
+        "admin_level_1_geonames_name": "Abia",
+        "geonames_name": "Abia North"
       },
       "commander_present": {
         "name": "Michael Maris"
@@ -152,8 +152,8 @@ Facets:
         "title": "Captain of the Watch",
         "rank": "Captain",
         "site_present": {
-          "admin_level_1": "Abia",
-          "admin_level_2": "Abia North"
+          "admin_level_1_geonames_name": "Abia",
+          "geonames_name": "Abia North"
         }
       },
       "membership_former": {

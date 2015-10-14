@@ -21,8 +21,8 @@
       "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
       "properties": {
         "name": "Command Center",
-        "admin_level_1": "Abia",
-        "admin_level_2": "Abia North"
+        "admin_level_1_geonames_name": "Abia",
+        "geonames_name": "Abia North"
       },
       "geometry": {
         "type": "Point",
@@ -38,8 +38,8 @@
       "properties": {
         "start_date": "2010-01-01",
         "end_date": null,
-        "admin_level_1": "Abia",
-        "admin_level_2": "Abia North",
+        "admin_level_1_geonames_name": "Abia",
+        "geonames_name": "Abia North",
         "classification": [
           "Torture",
           "Disappearance"
@@ -64,8 +64,8 @@
       "properties": {
         "start_date": "2012-01-01",
         "end_date": null,
-        "admin_level_1": "Abia",
-        "admin_level_2": "Abia North",
+        "admin_level_1_geonames_name": "Abia",
+        "geonames_name": "Abia North",
         "classification": ["Killing"],
         "perpetrator_name": "Marvin Steele",
         "perpetrator_organization": {
@@ -202,8 +202,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "id": "1f3e4427-ae20-4cc6-abc4-a70b6ed3c7e0",
       "start_date": "2010-01-01",
       "end_date": null,
-      "admin_level_1": "Abia",
-      "admin_level_2": "Abia North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Abia North",
       "classification": [
         "Torture",
         "Disappearance"
@@ -302,8 +302,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
     {
       "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
       "name": "Command Center",
-      "admin_level_1": "Abia",
-      "admin_level_2": "Abia North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Abia North",
       "date_first_cited": "2008-01-01",
       "date_last_cited": "2012-01-01",
       "sources": [
@@ -318,8 +318,8 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
       "id": "a1264d1d-ccd8-4dfb-86f0-ed6bbfb35cfa",
       "start_date": "2012-01-01",
       "end_date": null,
-      "admin_level_1": "Abia",
-      "admin_level_2": "Abia North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Abia North",
       "classification": ["Killing"],
       "perpetrator_name": "Marvin Steele",
       "perpetrator_organization": {

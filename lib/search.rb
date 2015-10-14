@@ -165,8 +165,8 @@ get '/countries/:id/search/organizations' do
       "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
     }
     if site_id['name']
-      site_present['admin_level_1'] = site_id['admin_level_1'].try(:[], 'value')
-      site_present['admin_level_2'] = site_id['admin_level_2'].try(:[], 'value')
+      site_present['admin_level_1_geonames_name'] = site_id['admin_level_1_geonames_name'].try(:[], 'value')
+      site_present['geonames_name'] = site_id['geonames_name'].try(:[], 'value')
     end
 
     geometry = if result['area_ids']
@@ -253,8 +253,8 @@ get '/countries/:id/search/people' do
 
       if site_id['name']
         membership_present['organization']['site_present'] = {
-          "admin_level_1" => site_id['admin_level_1'].try(:[], 'value'),
-          "admin_level_2" => site_id['admin_level_2'].try(:[], 'value'),
+          "admin_level_1_geonames_name" => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
+          "geonames_name" => site_id['geonames_name'].try(:[], 'value'),
         }
       end
     end

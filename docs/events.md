@@ -36,8 +36,8 @@
       "properties": {
         "start_date": "2010-01-01",
         "end_date": null,
-        "admin_level_1": "Abia",
-        "admin_level_2": "Aba North",
+        "admin_level_1_geonames_name": "Abia",
+        "geonames_name": "Aba North",
         "classification": [
           "Torture",
           "Disappearance"
@@ -70,8 +70,8 @@
     "properties": {
       "start_date": "2010-01-01",
       "end_date": null,
-      "admin_level_1": "Abia",
-      "admin_level_2": "Aba North",
+      "admin_level_1_geonames_name": "Abia",
+      "geonames_name": "Aba North",
       "classification": [
         "Torture",
         "Disappearance"
@@ -102,8 +102,8 @@
   "start_date": "2010-01-01",
   "end_date": null,
   "location": "...",
-  "admin_level_1": "Abia",
-  "admin_level_2": "Aba North",
+  "admin_level_1_geonames_name": "Abia",
+  "geonames_name": "Aba North",
   "classification": [
     "Torture",
     "Disappearance"
