@@ -17,11 +17,11 @@ get '/people/:id' do
 
       item['organization'] = if membership['organization']
         {
-          "name" => membership['organization']['name']['value'],
+          'name' => membership['organization']['name']['value'],
         }
       else
         {
-          "name" => membership['organization_id']['value'],
+          'name' => membership['organization_id']['value'],
         }
       end
 
@@ -42,38 +42,38 @@ get '/people/:id' do
 
     site = if memberships[0]['site_id']
       {
-        "name" => memberships[0]['site_id']['value']
+        'name' => memberships[0]['site_id']['value']
       }
     elsif memberships[0]['organization']
       { # @backend @hardcoded
-        "type" => "Feature",
-        "id" => "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
-        "name" => "Command Center",
-        "location" => "Abia North, Abia",
-        "geonames_name" => "Abia North",
-        "admin_level_1_geonames_name" => "Abia",
-        "sources" => [
-          "..."
+        'type' => 'Feature',
+        'id' => '5947d0de-626d-495f-9c31-eb2ca5afdb6b',
+        'name' => 'Command Center',
+        'location' => 'Abia North, Abia',
+        'geonames_name' => 'Abia North',
+        'admin_level_1_geonames_name' => 'Abia',
+        'sources' => [
+          '...'
         ],
-        "confidence" => "Medium",
+        'confidence' => 'Medium',
       }
     end
 
     etag_and_return({
-      "id" => result['_id'],
-      "division_id" => result['division_id'],
-      "name" => result['name'],
-      "other_names" => result['other_names'],
-      "memberships" => memberships,
-      "area_present" => {
-        "type" => "Feature",
-        "id" => memberships[0]['organization']['id'],
-        "properties" => {},
-        "geometry" => organization_geometry(memberships[0]['organization']),
+      'id' => result['_id'],
+      'division_id' => result['division_id'],
+      'name' => result['name'],
+      'other_names' => result['other_names'],
+      'memberships' => memberships,
+      'area_present' => {
+        'type' => 'Feature',
+        'id' => memberships[0]['organization']['id'],
+        'properties' => {},
+        'geometry' => organization_geometry(memberships[0]['organization']),
       },
-      "site_present" => site,
-      "events" => [sample_event],
-      "events_nearby" => [sample_event],
+      'site_present' => site,
+      'events' => [sample_event],
+      'events_nearby' => [sample_event],
     })
   else
     404

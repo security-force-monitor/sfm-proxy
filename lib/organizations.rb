@@ -46,12 +46,12 @@ helpers do
       index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == id}
 
       response << {
-        "id" => child['_id'],
-        "name" => child['name'].try(:[], 'value'),
-        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
-        "parent_id" => id,
-        "classification" => child['parent_ids'][index]['classification'].try(:[], 'value'),
-        "commander" => commanders_and_people(child['_id'])[:commanders][0],
+        'id' => child['_id'],
+        'name' => child['name'].try(:[], 'value'),
+        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+        'parent_id' => id,
+        'classification' => child['parent_ids'][index]['classification'].try(:[], 'value'),
+        'commander' => commanders_and_people(child['_id'])[:commanders][0],
       }
 
       response += walk_down(child['_id'])
@@ -70,15 +70,15 @@ helpers do
       member['memberships'].each do |membership|
         if membership['organization_id']['value'] == organization_id
           item = {
-            "id" => member['_id'],
-            "name" => member['name'].try(:[], 'value'),
-            "other_names" => member['other_names'].try(:[], 'value'),
+            'id' => member['_id'],
+            'name' => member['name'].try(:[], 'value'),
+            'other_names' => member['other_names'].try(:[], 'value'),
             # @backend `events_count` is equal to the events related to an organization during the membership of the person.
-            "events_count" => 12,
-            "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
-            "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
-            "sources" => membership['organization_id']['sources'],
-            "confidence" => membership['organization_id']['confidence'],
+            'events_count' => 12,
+            'date_first_cited' => membership['date_first_cited'].try(:[], 'value'),
+            'date_last_cited' => membership['date_last_cited'].try(:[], 'value'),
+            'sources' => membership['organization_id']['sources'],
+            'confidence' => membership['organization_id']['confidence'],
           }
 
           if membership['role'].try(:[], 'value') == 'Commander'
@@ -133,31 +133,31 @@ get '/organizations/:id/map' do
     end
 
     etag_and_return({
-      "area" => {
-        "type" => "Feature",
-        "id" => result['_id'],
-        "properties" => {},
-        "geometry" => organization_geometry(result),
+      'area' => {
+        'type' => 'Feature',
+        'id' => result['_id'],
+        'properties' => {},
+        'geometry' => organization_geometry(result),
       },
-      "sites" => result['site_ids'].each_with_index.select{|site_id,index|
+      'sites' => result['site_ids'].each_with_index.select{|site_id,index|
         result['sites'][index]['name'] && contemporary?(site_id)
       }.map{|site_id,index|
         {
-          "type" => "Feature",
-          "id" => result['sites'][index]['id'],
-          "properties" => {
-            "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "location" => location_formatter(result['sites'][index]),
-            "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
-            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+          'type' => 'Feature',
+          'id' => result['sites'][index]['id'],
+          'properties' => {
+            'name' => result['sites'][index]['name'].try(:[], 'value'),
+            'location' => location_formatter(result['sites'][index]),
+            'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
+            'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
           },
-          "geometry" => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), # @todo geo
+          'geometry' => result['sites'][index]['geo'].try(:[], 'coordinates').try(:[], 'value'), # @todo geo
         }
       },
-      "events" => events.map{|event|
+      'events' => events.map{|event|
         event_feature_formatter(event)
       },
-      "events_nearby" => [feature_formatter(sample_event)],
+      'events_nearby' => [feature_formatter(sample_event)],
     })
   else
     404
@@ -184,20 +184,20 @@ get '/organizations/:id/chart' do
 
     if root
       response.unshift({
-        "id" => root['_id'],
-        "name" => root['name'].try(:[], 'value'),
-        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
-        "parent_id" => nil,
-        "classification" => nil,
-        "commander" => commanders_and_people(root['_id'])[:commanders][0],
+        'id' => root['_id'],
+        'name' => root['name'].try(:[], 'value'),
+        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => root['_id']}).count,
+        'parent_id' => nil,
+        'classification' => nil,
+        'commander' => commanders_and_people(root['_id'])[:commanders][0],
       })
     else
       response.unshift({
-        "name" => parent_id,
-        "events_count" => connection[:events].find({'perpetrator_organization_id.value' => parent_id}).count,
-        "parent_id" => nil,
-        "classification" => nil,
-        "commander" => commanders_and_people(parent_id)[:commanders][0],
+        'name' => parent_id,
+        'events_count' => connection[:events].find({'perpetrator_organization_id.value' => parent_id}).count,
+        'parent_id' => nil,
+        'classification' => nil,
+        'commander' => commanders_and_people(parent_id)[:commanders][0],
       })
     end
 
@@ -235,117 +235,117 @@ get '/organizations/:id' do
     end
 
     etag_and_return({
-      "id" => result['_id'],
-      "division_id" => result['division_id'],
-      "name" => result['name'],
-      "other_names" => result['other_names'],
-      "events_count" => events.count,
-      "classification" => result['classification'],
-      "root_id" => nil, # @todo
-      "root_name" => result['root_name'],
-      "date_first_cited" => site_first && [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| field.try(:[], 'value')},
-      "date_last_cited" => site_last && [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| field.try(:[], 'value')},
-      "commander_present" => commanders[0],
-      "commanders_former" => commanders.drop(1),
-      "events" => events.map{|event|
+      'id' => result['_id'],
+      'division_id' => result['division_id'],
+      'name' => result['name'],
+      'other_names' => result['other_names'],
+      'events_count' => events.count,
+      'classification' => result['classification'],
+      'root_id' => nil, # @todo
+      'root_name' => result['root_name'],
+      'date_first_cited' => site_first && [site_first['date_first_cited'], site_first['date_last_cited']].find{|field| field.try(:[], 'value')},
+      'date_last_cited' => site_last && [site_last['date_last_cited'], site_last['date_first_cited']].find{|field| field.try(:[], 'value')},
+      'commander_present' => commanders[0],
+      'commanders_former' => commanders.drop(1),
+      'events' => events.map{|event|
         event_formatter(event).except('division_id', 'description', 'perpetrator_organization')
       },
-      "parents" => result['parent_ids'].try(:each_with_index).try(:map){|parent_id,index|
+      'parents' => result['parent_ids'].try(:each_with_index).try(:map){|parent_id,index|
         item = if result['parents'][index]['name']
           {
-            "id" => result['parents'][index]['id'],
-            "name" => result['parents'][index]['name'].try(:[], 'value'),
-            "other_names" => result['parents'][index]['other_names'].try(:[], 'value'),
-            "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
-            "commander_present" => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
+            'id' => result['parents'][index]['id'],
+            'name' => result['parents'][index]['name'].try(:[], 'value'),
+            'other_names' => result['parents'][index]['other_names'].try(:[], 'value'),
+            'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['parents'][index]['id']}).count,
+            'commander_present' => commanders_and_people(result['parents'][index]['id'])[:commanders][0],
           }
         else
           {
-            "name" => parent_id['id'].try(:[], 'value'),
+            'name' => parent_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => parent_id['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => parent_id['date_last_cited'].try(:[], 'value'),
-          "sources" => parent_id['id']['sources'],
-          "confidence" => parent_id['id']['confidence'],
+          'date_first_cited' => parent_id['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => parent_id['date_last_cited'].try(:[], 'value'),
+          'sources' => parent_id['id']['sources'],
+          'confidence' => parent_id['id']['confidence'],
         })
       },
-      "children" => children.map{|child|
+      'children' => children.map{|child|
         index = child['parent_ids'].index{|parent_id| parent_id['id']['value'] == result['_id']}
 
         {
-          "id" => child['_id'],
-          "name" => child['name'].try(:[], 'value'),
-          "other_names" => child['other_names'].try(:[], 'value'),
-          "events_count" => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
-          "commander_present" => commanders_and_people(child['_id'])[:commanders][0],
-          "date_first_cited" => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
-          "sources" => child['parent_ids'][index]['id']['sources'],
-          "confidence" => child['parent_ids'][index]['id']['confidence'],
+          'id' => child['_id'],
+          'name' => child['name'].try(:[], 'value'),
+          'other_names' => child['other_names'].try(:[], 'value'),
+          'events_count' => connection[:events].find({'perpetrator_organization_id.value' => child['_id']}).count,
+          'commander_present' => commanders_and_people(child['_id'])[:commanders][0],
+          'date_first_cited' => child['parent_ids'][index]['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => child['parent_ids'][index]['date_last_cited'].try(:[], 'value'),
+          'sources' => child['parent_ids'][index]['id']['sources'],
+          'confidence' => child['parent_ids'][index]['id']['confidence'],
         }
       },
-      "people" => people,
-      "memberships" => result['membership_ids'].try(:each_with_index).try(:map){|membership,index|
+      'people' => people,
+      'memberships' => result['membership_ids'].try(:each_with_index).try(:map){|membership,index|
         item = if result['memberships'][index]['name']
           {
-            "id" => result['memberships'][index]['id'],
-            "name" => result['memberships'][index]['name'].try(:[], 'value'),
-            "other_names" => result['memberships'][index]['other_names'].try(:[], 'value'),
+            'id' => result['memberships'][index]['id'],
+            'name' => result['memberships'][index]['name'].try(:[], 'value'),
+            'other_names' => result['memberships'][index]['other_names'].try(:[], 'value'),
           }
         else
           {
-            "name" => membership['organization_id'].try(:[], 'value'),
+            'name' => membership['organization_id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => membership['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => membership['date_last_cited'].try(:[], 'value'),
-          "sources" => membership['organization_id']['sources'],
-          "confidence" => membership['organization_id']['confidence'],
+          'date_first_cited' => membership['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => membership['date_last_cited'].try(:[], 'value'),
+          'sources' => membership['organization_id']['sources'],
+          'confidence' => membership['organization_id']['confidence'],
         })
       },
-      "areas" => result['area_ids'].try(:each_with_index).try(:map){|area_id,index|
+      'areas' => result['area_ids'].try(:each_with_index).try(:map){|area_id,index|
         item = if result['areas'][index]['name']
           {
-            "id" => result['areas'][index]['id'],
-            "name" => result['areas'][index]['name'].try(:[], 'value'),
+            'id' => result['areas'][index]['id'],
+            'name' => result['areas'][index]['name'].try(:[], 'value'),
           }
         else
           {
-            "name" => area_id['id'].try(:[], 'value'),
+            'name' => area_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => area_id['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => area_id['date_last_cited'].try(:[], 'value'),
-          "sources" => area_id['id']['sources'],
-          "confidence" => area_id['id']['confidence'],
+          'date_first_cited' => area_id['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => area_id['date_last_cited'].try(:[], 'value'),
+          'sources' => area_id['id']['sources'],
+          'confidence' => area_id['id']['confidence'],
         })
       },
-      "sites" => result['site_ids'].each_with_index.map{|site_id,index|
+      'sites' => result['site_ids'].each_with_index.map{|site_id,index|
         item = if result['sites'][index]['name']
           {
-            "id" => result['sites'][index]['id'],
-            "name" => result['sites'][index]['name'].try(:[], 'value'),
-            "location" => location_formatter(result['sites'][index]),
-            "geonames_name" => result['sites'][index]['geonames_name'].try(:[], 'value'),
-            "admin_level_1_geonames_name" => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
+            'id' => result['sites'][index]['id'],
+            'name' => result['sites'][index]['name'].try(:[], 'value'),
+            'location' => location_formatter(result['sites'][index]),
+            'geonames_name' => result['sites'][index]['geonames_name'].try(:[], 'value'),
+            'admin_level_1_geonames_name' => result['sites'][index]['admin_level_1_geonames_name'].try(:[], 'value'),
           }
         else
           {
-            "name" => site_id['id'].try(:[], 'value'),
+            'name' => site_id['id'].try(:[], 'value'),
           }
         end
         item.merge({
-          "date_first_cited" => site_id['date_first_cited'].try(:[], 'value'),
-          "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
-          "sources" => site_id['id']['sources'],
-          "confidence" => site_id['id']['confidence'],
+          'date_first_cited' => site_id['date_first_cited'].try(:[], 'value'),
+          'date_last_cited' => site_id['date_last_cited'].try(:[], 'value'),
+          'sources' => site_id['id']['sources'],
+          'confidence' => site_id['id']['confidence'],
         })
       },
-      "events_nearby" => [sample_event],
+      'events_nearby' => [sample_event],
     })
   else
     404

@@ -50,9 +50,9 @@ helpers do
     end
 
     etag_and_return({
-      "count" => query.count,
-      "facets" => facets,
-      "results" => results,
+      'count' => query.count,
+      'facets' => facets,
+      'results' => results,
     })
   end
 
@@ -141,10 +141,10 @@ get '/countries/:id/autocomplete/geonames_id' do
 
   response = connection[:geometries].find(criteria).projection('_id' => 1, 'name' => 1, 'classification' => 1, 'coordinates' => 1).map do |result|
     {
-      "id" => result['_id'],
-      "name" => result['name'],
-      "classification" => result['classification'],
-      "coordinates" => result['coordinates'],
+      'id' => result['_id'],
+      'name' => result['name'],
+      'classification' => result['classification'],
+      'coordinates' => result['coordinates'],
     }
   end
 
@@ -160,8 +160,8 @@ get '/countries/:id/search/organizations' do
     end
 
     site_present = {
-      "date_first_cited" => site_id['date_first_cited'].try(:[], 'value'),
-      "date_last_cited" => site_id['date_last_cited'].try(:[], 'value'),
+      'date_first_cited' => site_id['date_first_cited'].try(:[], 'value'),
+      'date_last_cited' => site_id['date_last_cited'].try(:[], 'value'),
     }
     # @todo get from `sites`, not `site_ids`
     if site_id['name']
@@ -179,19 +179,19 @@ get '/countries/:id/search/organizations' do
     end
 
     {
-      "id" => result['_id'],
-      "name" => result['name'].try(:[], 'value'),
-      "other_names" => result['other_names'].try(:[], 'value'),
-      "events_count" => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
-      "classification" => result['classification'].try(:[], 'value'),
-      "area_present" => {
-        "type" => "Feature",
-        "id" => result['_id'],
-        "properties" => {},
-        "geometry" => geometry,
+      'id' => result['_id'],
+      'name' => result['name'].try(:[], 'value'),
+      'other_names' => result['other_names'].try(:[], 'value'),
+      'events_count' => connection[:events].find({'perpetrator_organization_id.value' => result['_id']}).count,
+      'classification' => result['classification'].try(:[], 'value'),
+      'area_present' => {
+        'type' => 'Feature',
+        'id' => result['_id'],
+        'properties' => {},
+        'geometry' => geometry,
       },
-      "site_present" => site_present,
-      "commander_present" => commander_present(result['_id']),
+      'site_present' => site_present,
+      'commander_present' => commander_present(result['_id']),
     }
   end
 
@@ -228,19 +228,19 @@ get '/countries/:id/search/people' do
     membership_present, membership_former = memberships.map do |membership|
       organization = if membership['organization']
         {
-          "name" => membership['organization']['name'].try(:[], 'value'),
+          'name' => membership['organization']['name'].try(:[], 'value'),
         }
       else
         {
-          "name" => membership['organization_id'].try(:[], 'value'),
+          'name' => membership['organization_id'].try(:[], 'value'),
         }
       end
 
       {
-        "organization" => organization,
-        "role" => membership['role'].try(:[], 'value'),
-        "title" => membership['role'].try(:[], 'value'),
-        "rank" => membership['role'].try(:[], 'value'),
+        'organization' => organization,
+        'role' => membership['role'].try(:[], 'value'),
+        'title' => membership['role'].try(:[], 'value'),
+        'rank' => membership['role'].try(:[], 'value'),
       }
     end
 
@@ -252,20 +252,20 @@ get '/countries/:id/search/people' do
       # @todo get from `sites`, not `site_ids`
       if site_id['name']
         membership_present['organization']['site_present'] = {
-          "location" => location_formatter(site_id),
-          "geonames_name" => site_id['geonames_name'].try(:[], 'value'),
-          "admin_level_1_geonames_name" => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
+          'location' => location_formatter(site_id),
+          'geonames_name' => site_id['geonames_name'].try(:[], 'value'),
+          'admin_level_1_geonames_name' => site_id['admin_level_1_geonames_name'].try(:[], 'value'),
         }
       end
     end
 
     {
-      "id" => result['_id'],
-      "name" => result['name'].try(:[], 'value'),
-      "other_names" => result['other_names'].try(:[], 'value'),
-      "events_count" => 12,
-      "membership_present" => membership_present,
-      "membership_former" => membership_former,
+      'id' => result['_id'],
+      'name' => result['name'].try(:[], 'value'),
+      'other_names' => result['other_names'].try(:[], 'value'),
+      'events_count' => 12,
+      'membership_present' => membership_present,
+      'membership_former' => membership_former,
     }
   end
 
@@ -297,10 +297,10 @@ get '/countries/:id/search/events' do
 
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'description').merge({
-      "geometry" => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
-      "sites_nearby" => [
+      'geometry' => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
+      'sites_nearby' => [
         {
-          "name" => "Atlantis",
+          'name' => 'Atlantis',
         },
       ],
     })
