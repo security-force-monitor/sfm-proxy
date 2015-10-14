@@ -95,6 +95,20 @@ helpers do
     end
   end
 
+  def site_id_to_geoname_id
+    @site_id_to_geoname_id ||= {}.tap do |hash|
+      connection[:sites].find({
+        'division_id' => "ocd-division/country:#{params[:id]}",
+        'geonames_id.value' => {'$in' => geonames_id_to_geo.keys},
+      }).projection({
+        '_id' => 1,
+        'geonames_id.value' => 1,
+      }).each do |site|
+        hash[site['_id']] = site['geonames_id']['value']
+      end
+    end
+  end
+
   def organization_geometry(result)
     if result['area_ids']
       area_id = result['area_ids'].find{|area_id|
