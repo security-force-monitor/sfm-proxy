@@ -77,6 +77,7 @@ HEADERS_MAP = {
     'Date of last citation for area of responsibility' => :areas__0__date_last_cited__value__d,
     'Source: Date of last citation for area of responsibility' => :areas__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for area of responsibility' => :areas__0__date_last_cited__confidence,
+    'Assume Area of Operations to Current Date? Y/N' => :areas__0__date_first_cited__open_ended__b,
 
     'Other affiliation (like joint task force)' => :memberships__0__organization_id__value,
     'Source: Other affiliation (like joint task force)' => :memberships__0__organization_id__sources__n,
@@ -105,12 +106,12 @@ HEADERS_MAP = {
     'Date of first citation' => :sites__0__date_first_cited__value__d,
     'Source: Date of first citation' => :sites__0__date_first_cited__sources__n,
     'Confidence: Date of first citation' => :sites__0__date_first_cited__confidence,
-    'Is this the founding date? (Y/N)' => nil,
+    'Is this the founding date? (Y/N)' => nil, # Not relevant, as this date was re-associated to the site.
 
     'Date of last citation' => :sites__0__date_last_cited__value__d,
     'Source: Date of last citation' => :sites__0__date_last_cited__sources__n,
     'Confidence: Date of last citation' => :sites__0__date_last_cited__confidence,
-    'Is this the dissolution date? (Y/N)' => nil,
+    'Is this the dissolution date? (Y/N)' => nil, # Not relevant, as this date was re-associated to the site.
 
     'Notes' => :notes__value,
     'Corrections' => nil,
