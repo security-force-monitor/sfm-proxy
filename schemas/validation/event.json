@@ -89,18 +89,11 @@
     "perpetrator_organization_id": {
       "$ref": "#/definitions/simple_string"
     },
+    "perpetrator_organization_classification": {
+      "$ref": "#/definitions/simple_string_array"
+    },
     "sources": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
+      "$ref": "#/definitions/simple_string_array"
     }
   },
 
@@ -151,6 +144,20 @@
 
       "additionalProperties": false,
       "required": ["value"]
+    },
+    "simple_string_array": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+        },
+
+        "additionalProperties": false,
+        "required": ["value"]
+      }
     }
   }
 }

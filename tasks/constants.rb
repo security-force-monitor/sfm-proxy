@@ -181,6 +181,7 @@ HEADERS_MAP = {
     'Description' => :description__value,
     'Perpetrator name' => :perpetrator_name__value,
     'Perpetrator organization' => :perpetrator_organization_id__value, # event belongs_to organization
+    'Perpetrator Classification' => :perpetrator_organization_classification__value__n,
     'Source' => :sources__value__n,
   }
 }
