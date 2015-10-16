@@ -178,7 +178,7 @@ helpers do
         'sources' => relation_id[id_property_name]['sources'],
         'confidence' => relation_id[id_property_name]['confidence'],
       })
-    end
+    end || []
   end
 
   def location_formatter(result)
@@ -222,7 +222,7 @@ helpers do
 
     {
       'type' => 'Feature',
-      'id' => result['_id'] || result.fetch('id'),
+      'id' => result['_id'] || result['id'],
       'properties' => properties.except('_id', 'id', 'geo', 'point'),
       'geometry' => geometry,
     }

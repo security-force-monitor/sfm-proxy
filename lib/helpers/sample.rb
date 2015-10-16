@@ -66,7 +66,7 @@ EOL
 
   def sample_organization
     {
-      'id' => '68e90978-fa3f-42f3-9d56-4218c4f3f785',
+      'id' => '68e90978-fa3f-42f3-9d56-4218c4f3f785', # @todo Need to replace on each import.
       'name' => 'Brigade 2',
       'other_names' => [
         'The Planeteers',
@@ -80,7 +80,7 @@ EOL
 
   def sample_event
     {
-      'id' => '656e71bc-ef2d-4483-8099-a8d701490670',
+      'id' => '656e71bc-ef2d-4483-8099-a8d701490670', # @todo Need to replace on each import.
       'start_date' => '2010-01-01',
       'end_date' => nil,
       'location' => 'Aba North, Abia',

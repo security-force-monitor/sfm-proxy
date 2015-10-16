@@ -41,9 +41,9 @@ get '/people/:id' do
 
     site = if memberships[0]['site_id']
       {
-        'name' => memberships[0]['site_id']['value']
+        'name' => memberships[0]['site_id']['value'] # @todo No memberships have sites yet.
       }
-    elsif memberships[0]['organization']
+    elsif memberships[0]['organization'] && memberships[0]['organization']['site_ids']
       site_id, index = memberships[0]['organization']['site_ids'].to_enum.with_index.max_by do |a,index|
         [a['date_first_cited'].try(:[], 'value'), a['date_last_cited'].try(:[], 'value')].reject(&:nil?).max || ''
       end
