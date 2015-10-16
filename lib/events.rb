@@ -62,8 +62,6 @@ get '/countries/:id/map' do
 
   organizations = connection[:organizations].find(organization_criteria)
 
-  # @todo Add bbox logic for event coordinates.
-
   events = connection[:events].find({
     'division_id' => "ocd-division/country:#{params[:id]}",
     'start_date.value' => params[:at],
