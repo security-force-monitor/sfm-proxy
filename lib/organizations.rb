@@ -235,7 +235,7 @@ get '/organizations/:id' do
       'commander_present' => commanders[0],
       'commanders_former' => commanders.drop(1),
       'events' => events.map{|event|
-        event_formatter(event).except('division_id', 'description', 'perpetrator_organization')
+        event_feature_formatter(event)
       },
       'parents' => get_relations(result, 'parent', lambda{|result,index|
         relation = result['parents'][index]
@@ -271,10 +271,8 @@ get '/organizations/:id' do
         }
       }, 'organization_id'),
       'areas' => get_relations(result, 'area', lambda{|result,index|
-        {
-          # Nothing to add.
-        }
-      }),
+        {}
+      }), # @todo add geometry
       'sites' => get_relations(result, 'site', lambda{|result,index|
         relation = result['sites'][index]
 
@@ -283,8 +281,8 @@ get '/organizations/:id' do
           'geonames_name' => relation['geonames_name'].try(:[], 'value'),
           'admin_level_1_geonames_name' => relation['admin_level_1_geonames_name'].try(:[], 'value'),
         }
-      }),
-      'events_nearby' => [sample_event],
+      }), # @todo add geometry
+      'events_nearby' => [feature_formatter(sample_event, sample_point)],
     })
   else
     404
