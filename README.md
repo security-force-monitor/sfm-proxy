@@ -25,14 +25,24 @@ To import faster, skip the validation of records against the JSON Schema:
 
     bundle exec rake import_csv novalidate=true
 
-Import admin level 1 and 2 geometries:
+Import geometries:
 
-    bundle exec rake import_geo admin_level=1 country_code=ng
-    bundle exec rake import_geo admin_level=2 country_code=ng
+    bundle exec rake import_geo country_code=ng
+
+Link areas, events and sites to geometries:
+
+    bundle exec rake link_geometries
 
 Create the geospatial indices in the MongoDB shell:
 
+    db.geometries.createIndex({point: '2dsphere'})
+    db.areas.createIndex({point: '2dsphere'})
+    db.events.createIndex({point: '2dsphere'})
+    db.sites.createIndex({point: '2dsphere'})
     db.geometries.createIndex({geo: '2dsphere'})
+    db.areas.createIndex({geo: '2dsphere'})
+
+## Testing
 
 Start a local server:
 
@@ -41,6 +51,8 @@ Start a local server:
 Test the endpoints of a local server:
 
     bundle exec rake
+
+## Maintenance
 
 Create GeoJSON and TopoJSON from [Natural Earth](http://www.naturalearthdata.com/downloads/110m-cultural-vectors/) shapefiles:
 
@@ -74,8 +86,8 @@ In QGIS, simplify the geometries by a factor of 0.01. Then, create GeoJSON:
     heroku addons:create mongolab
     git push heroku master
     heroku run rake import_csv novalidate=true
-    heroku run rake import_geo admin_level=1 country_code=ng
-    heroku run rake import_geo admin_level=2 country_code=ng
+    heroku run rake import_geo country_code=ng
+    bundle exec rake link_geometries
 
 Log into the remote MongoDB database and create the geospatial indices as above.
 
