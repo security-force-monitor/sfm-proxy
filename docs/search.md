@@ -87,11 +87,16 @@ Facets:
         "geometry": GeoJSON
       },
       "site_present": {
-        "date_first_cited": "2000-01-01",
-        "date_last_cited": "2015-01-01",
-        "location": "Aba North, Abia",
-        "geonames_name": "Aba North",
-        "admin_level_1_geonames_name": "Abia"
+        "type": "Feature",
+        "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
+        "properties": {
+          "location": "Aba North, Abia",
+          "geonames_name": "Aba North",
+          "admin_level_1_geonames_name": "Abia",
+          "date_first_cited": "2000-01-01",
+          "date_last_cited": "2015-01-01"
+        },
+        "geometry": GeoJSON
       },
       "commander_present": {
         "name": "Michael Maris"
@@ -159,9 +164,14 @@ Facets:
         "title": "Captain of the Watch",
         "rank": "Captain",
         "site_present": {
-          "location": "Aba North, Abia",
-          "geonames_name": "Aba North",
-          "admin_level_1_geonames_name": "Abia"
+          "type": "Feature",
+          "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
+          "properties": {
+            "location": "Aba North, Abia",
+            "geonames_name": "Aba North",
+            "admin_level_1_geonames_name": "Abia"
+          },
+          "geometry": GeoJSON
         }
       },
       "membership_former": {

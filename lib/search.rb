@@ -151,9 +151,12 @@ get '/countries/:id/search/organizations' do
     }
 
     if site['name']
-      site_present.merge!(get_properties_safely(site, ['geonames_name', 'admin_level_1_geonames_name']).merge({
+      site_present = feature_formatter(site_present.merge(get_properties_safely(site, [
+        'geonames_name',
+        'admin_level_1_geonames_name',
+      ]).merge({
         'location' => location_formatter(site),
-      }))
+      })), site['point'] || sample_point)
     end
 
     geometry = if result['area_ids']
@@ -232,9 +235,12 @@ get '/countries/:id/search/people' do
       site = memberships[0]['organization']['sites'][index]
 
       if site['name']
-        membership_present['organization']['site_present'] = get_properties_safely(site, ['geonames_name', 'admin_level_1_geonames_name']).merge({
+        membership_present['organization']['site_present'] = feature_formatter(get_properties_safely(site, [
+          'geonames_name',
+          'admin_level_1_geonames_name',
+        ]).merge({
           'location' => location_formatter(site),
-        })
+        }), site['point'] || sample_point)
       end
     end
 

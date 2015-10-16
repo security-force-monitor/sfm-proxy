@@ -8,6 +8,8 @@
 * `/people/:id` returns `area_present`, `site_present`, `events` and `events_nearby` as GeoJSON.
 * `/organizations/:id` returns `areas`, `sites`, `events` and `events_nearby` as GeoJSON.
 * `/countries/:id/autocomplete/geonames_id` returns GeoJSON.
+* `/countries/:id/search/organizations` returns `site_present` as GeoJSON.
+* `/countries/:id/search/people` returns `membership_present.organization.site_present` as GeoJSON.
 
 ### Models
 
