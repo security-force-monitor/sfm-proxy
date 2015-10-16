@@ -5,7 +5,9 @@
 ### API
 
 * Added `location` field to Area and Site.
-* `/people/:id` returns `site_present`, `events` and `events_nearby` as GeoJSON.
+* `/people/:id` returns `area_present`, `site_present`, `events` and `events_nearby` as GeoJSON.
+* `/organizations/:id` returns `areas`, `sites`, `events` and `events_nearby` as GeoJSON.
+* `/countries/:id/autocomplete/geonames_id` returns GeoJSON.
 
 ### Models
 

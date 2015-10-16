@@ -22,10 +22,16 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 ```json
 [
   {
+    "type": "Feature",
     "id": 2221333,
-    "name": "River Tunga",
-    "classification": "STM",
-    "coordinates": [9.6772, 6.87725]
+    "properties": {
+      "name": "River Tunga",
+      "classification": "STM"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [9.6772, 6.87725]
+    }
   },
   ...
 ]

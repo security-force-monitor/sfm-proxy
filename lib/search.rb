@@ -140,13 +140,16 @@ get '/countries/:id/autocomplete/geonames_id' do
     '_id' => 1,
     'name' => 1,
     'classification' => 1,
-    'coordinates' => 1,
+    'point' => 1,
   }).map do |result|
     {
+      'type' => 'Feature',
       'id' => result['_id'],
-      'name' => result['name'],
-      'classification' => result['classification'],
-      'coordinates' => result['coordinates'],
+      'properties' => {
+        'name' => result['name'],
+        'classification' => result['classification'],
+      },
+      'geometry' => result['point'],
     }
   end
 
