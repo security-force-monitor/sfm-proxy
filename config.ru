@@ -81,34 +81,21 @@ helpers do
     }
   end
 
-  def geonames_id_to_geo # @todo
+  # Returns the GeoNames IDs within the bounding box. Since we don't have real
+  # relations (and instead have pairs like `area_ids` and `areas`), we need to
+  # query the geometries instead of the areas.
+  def geonames_id_to_geo
     @geonames_id_to_geo ||= {}.tap do |hash|
-      # @backend @todo Switch to PostGIS query. Just match on ADM1 for now.
-      connection[:geometries].find({
-        classification: 'ADM1',
-        geo: {
-          '$geoIntersects' => {
-            '$geometry' => {
-              type: 'Polygon',
-              coordinates: [[
-                [bounding_box[0], bounding_box[1]],
-                [bounding_box[2], bounding_box[1]],
-                [bounding_box[2], bounding_box[3]],
-                [bounding_box[0], bounding_box[3]],
-                [bounding_box[0], bounding_box[1]],
-              ]]
-            }
-          },
-        },
-      }).projection({
+      connection[:geometries].find(geo: bounding_box_criterion).projection({
         '_id' => 1,
         'geo' => 1,
-      }).each do |geometry|
-        hash[geometry['_id']] = geometry['geo']
+      }).each do |document|
+        hash[document['_id']] = document['geo']
       end
     end
   end
 
+  # Returns the areas within the given country and bounding box.
   def area_id_to_geoname_id
     @area_id_to_geoname_id ||= {}.tap do |hash|
       connection[:areas].find({
@@ -117,12 +104,13 @@ helpers do
       }).projection({
         '_id' => 1,
         'geonames_id.value' => 1,
-      }).each do |area|
-        hash[area['_id']] = area['geonames_id']['value']
+      }).each do |document|
+        hash[document['_id']] = document['geonames_id']['value']
       end
     end
   end
 
+  # Returns the organization's current area's geometry.
   def organization_geometry(result)
     if result['area_ids']
       area_id = result['area_ids'].find do |area_id|
