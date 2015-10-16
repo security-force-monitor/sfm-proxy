@@ -84,14 +84,18 @@ task :import_csv do
 
           # Pull new items off the other array.
           other.to_enum.with_index.reverse_each do |b,index|
-            if none?{|a| a[key].fetch('value') == b[key].fetch('value')}
-              push(array.delete_at(index))
+            if b[key].key?('value')
+              if none?{|a| a[key].fetch('value') == b[key].fetch('value')}
+                push(array.delete_at(index))
+              end
             end
           end
 
           # Find any differences with the old items.
           array.map do |b|
-            find{|a| a[key].fetch('value') == b[key].fetch('value')}.diff_and_merge(b)
+            if b[key].key?('value')
+              find{|a| a[key].fetch('value') == b[key].fetch('value')}.diff_and_merge(b)
+            end
           end.reject(&:empty?)
         end
       else
