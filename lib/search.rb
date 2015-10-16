@@ -274,12 +274,8 @@ get '/countries/:id/search/events' do
 
   result_formatter = lambda do |result|
     event_formatter(result).except('division_id', 'description').merge({
-      'geometry' => result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
-      'sites_nearby' => [
-        {
-          'name' => 'Atlantis',
-        },
-      ],
+      'geometry' => result['point'] || sample_point,
+      'sites_nearby' => [{'name' => 'Atlantis'}], # @backend Hardcoded.
     })
   end
 

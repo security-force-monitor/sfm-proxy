@@ -182,7 +182,10 @@ helpers do
   end
 
   def location_formatter(result)
-    result['location'].try(:[], 'value') || get_properties_safely(result, ['geonames_name', 'admin_level_1_geonames_name']).values.compact.join(', ')
+    result['location'].try(:[], 'value') || get_properties_safely(result, [
+      'geonames_name',
+      'admin_level_1_geonames_name',
+    ]).values.compact.join(', ')
   end
 
   def event_formatter(result)
@@ -211,8 +214,7 @@ helpers do
   end
 
   def event_feature_formatter(result)
-    feature_formatter(result, result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
-      event_formatter(result).except('division_id', 'description'))
+    feature_formatter(result, result['point'] || sample_point, event_formatter(result).except('division_id', 'description'))
   end
 
   def feature_formatter(result, geometry, properties = nil)
