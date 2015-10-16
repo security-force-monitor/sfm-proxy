@@ -176,6 +176,8 @@ task :import_geo do
   end
 end
 
+# Note that a limitation of this task is that it only links primary documents,
+# not subdocuments of people and organizations.
 desc 'Add geometries to areas, events, and sites'
 task :link_geometries do
   geonames_id_to_geometry = {}
