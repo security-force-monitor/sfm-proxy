@@ -41,11 +41,13 @@ get '/countries/:id/geometries' do
     }
   end
 
-  response = connection[:geometries].find(criteria).map do |result|
-    feature_formatter(result, result['geo'], {
-      'name' => result['name'],
-      'classification' => result['classification'],
-    })
+  response = connection[:geometries].find(criteria).projection({
+    '_id' => 1,
+    'name' => 1,
+    'classification' => 1,
+    'geo' => 1,
+  }).map do |result|
+    feature_formatter(result, result['geo'])
   end
 
   etag_and_return(response)

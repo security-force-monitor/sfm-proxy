@@ -215,11 +215,12 @@ helpers do
 
   def event_feature_formatter(result)
     feature_formatter(result, result['geo'].try(:[], 'coordinates').try(:[], 'value') || sample_point, # @todo geo
-      event_formatter(result).except('id', 'division_id', 'geo', 'description')) # @todo geo
+      event_formatter(result).except('division_id', 'description'))
   end
 
   def feature_formatter(result, geometry, properties = nil)
-    properties ||= result.except('_id', 'id', 'geo', 'point')
+    properties ||= result
+    properties = properties.except('_id', 'id', 'geo', 'point')
 
     {
       'type' => 'Feature',
