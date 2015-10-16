@@ -64,6 +64,23 @@ helpers do
     end
   end
 
+  def bounding_box_criterion
+    {
+      '$geoIntersects' => {
+        '$geometry' => {
+          type: 'Polygon',
+          coordinates: [[
+            [bounding_box[0], bounding_box[1]],
+            [bounding_box[2], bounding_box[1]],
+            [bounding_box[2], bounding_box[3]],
+            [bounding_box[0], bounding_box[3]],
+            [bounding_box[0], bounding_box[1]],
+          ]]
+        }
+      },
+    }
+  end
+
   def geonames_id_to_geo # @todo
     @geonames_id_to_geo ||= {}.tap do |hash|
       # @backend @todo Switch to PostGIS query. Just match on ADM1 for now.
@@ -135,14 +152,6 @@ helpers do
       get_properties_safely(commander, ['name'])
     else
       nil
-    end
-  end
-
-  def get_source_and_target(value)
-    if Array === value
-      value
-    else
-      [value, value]
     end
   end
 
@@ -228,6 +237,16 @@ helpers do
       'properties' => properties,
       'geometry' => geometry,
     }
+  end
+
+private
+
+  def get_source_and_target(value)
+    if Array === value
+      value
+    else
+      [value, value]
+    end
   end
 end
 

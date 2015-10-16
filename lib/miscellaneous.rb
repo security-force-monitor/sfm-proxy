@@ -25,20 +25,7 @@ get '/countries/:id/geometries' do
   end
 
   if params[:bbox]
-    criteria['geo'] = {
-      '$geoIntersects' => {
-        '$geometry' => {
-          type: 'Polygon',
-          coordinates: [[
-            [bounding_box[0], bounding_box[1]],
-            [bounding_box[2], bounding_box[1]],
-            [bounding_box[2], bounding_box[3]],
-            [bounding_box[0], bounding_box[3]],
-            [bounding_box[0], bounding_box[1]],
-          ]]
-        }
-      },
-    }
+    criteria['geo'] = bounding_box_criterion
   end
 
   response = connection[:geometries].find(criteria).projection({
