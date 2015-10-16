@@ -142,15 +142,7 @@ get '/countries/:id/autocomplete/geonames_id' do
     'classification' => 1,
     'point' => 1,
   }).map do |result|
-    {
-      'type' => 'Feature',
-      'id' => result['_id'],
-      'properties' => {
-        'name' => result['name'],
-        'classification' => result['classification'],
-      },
-      'geometry' => result['point'],
-    }
+    feature_formatter(result, result['point'])
   end
 
   etag_and_return(response)

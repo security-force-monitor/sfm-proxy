@@ -64,7 +64,7 @@ helpers do
     end
   end
 
-  def geonames_id_to_geo
+  def geonames_id_to_geo # @todo
     @geonames_id_to_geo ||= {}.tap do |hash|
       # @backend @todo Switch to PostGIS query. Just match on ADM1 for now.
       connection[:geometries].find({
@@ -102,20 +102,6 @@ helpers do
         'geonames_id.value' => 1,
       }).each do |area|
         hash[area['_id']] = area['geonames_id']['value']
-      end
-    end
-  end
-
-  def site_id_to_geoname_id
-    @site_id_to_geoname_id ||= {}.tap do |hash|
-      connection[:sites].find({
-        'division_id' => "ocd-division/country:#{params[:id]}",
-        'geonames_id.value' => {'$in' => geonames_id_to_geo.keys},
-      }).projection({
-        '_id' => 1,
-        'geonames_id.value' => 1,
-      }).each do |site|
-        hash[site['_id']] = site['geonames_id']['value']
       end
     end
   end
@@ -233,7 +219,7 @@ helpers do
   end
 
   def feature_formatter(result, geometry, properties = nil)
-    properties ||= result.except('_id', 'id')
+    properties ||= result.except('_id', 'id', 'geo', 'point')
 
     {
       'type' => 'Feature',
