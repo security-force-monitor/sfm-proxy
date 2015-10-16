@@ -54,9 +54,6 @@ EOL
   end
 
   def sample_point
-    longitude_range = Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
-    latitude_range = Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
-
     {
       'type' => 'Point',
       'coordinates' => [rand(longitude_range) / 10_000.0, rand(latitude_range) / 10_000.0],
@@ -93,5 +90,15 @@ EOL
       'perpetrator_name' => 'Terry Guerrier',
       'perpetrator_organization' => sample_organization.slice('id', 'name'),
     }
+  end
+
+private
+
+  def longitude_range
+    @longitude_range ||= Integer(bounding_box[2] * 10_000)...Integer(bounding_box[0] * 10_000)
+  end
+
+  def latitude_range
+    @latitude_range ||= Integer(bounding_box[1] * 10_000)...Integer(bounding_box[3] * 10_000)
   end
 end
