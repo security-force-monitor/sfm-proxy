@@ -113,7 +113,6 @@ get '/organizations/:id/map' do
   result = connection[:organizations].find(_id: params[:id]).first
 
   if result
-    # @todo Add bbox logic for event coordinates.
     events = connection[:events].find({
       'start_date.value' => params[:at],
       'perpetrator_organization_id.value' => result['_id'],
@@ -131,7 +130,7 @@ get '/organizations/:id/map' do
       }.map{|site_id,index|
         site = result['sites'][index]
 
-        feature_formatter(site, site['geo'].try(:[], 'coordinates').try(:[], 'value'), { # @todo geo
+        feature_formatter(site, site['point'] || sample_point, {
           'name' => site['name'].try(:[], 'value'),
           'location' => location_formatter(site),
           'geonames_name' => site['geonames_name'].try(:[], 'value'),
@@ -271,8 +270,14 @@ get '/organizations/:id' do
         }
       }, 'organization_id'),
       'areas' => get_relations(result, 'area', lambda{|result,index|
-        {}
-      }), # @todo add geometry
+        relation = result['areas'][index]
+
+        {
+          'point' => relation['point'] || sample_point,
+        }
+      }).map{|result|
+        feature_formatter(result, result['point'])
+      },
       'sites' => get_relations(result, 'site', lambda{|result,index|
         relation = result['sites'][index]
 
@@ -280,8 +285,11 @@ get '/organizations/:id' do
           'location' => location_formatter(relation),
           'geonames_name' => relation['geonames_name'].try(:[], 'value'),
           'admin_level_1_geonames_name' => relation['admin_level_1_geonames_name'].try(:[], 'value'),
+          'point' => relation['point'] || sample_point,
         }
-      }), # @todo add geometry
+      }).map{|result|
+        feature_formatter(result, result['point'])
+      },
       'events_nearby' => [feature_formatter(sample_event, sample_point)],
     })
   else

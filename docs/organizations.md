@@ -301,30 +301,38 @@ Append `.zip` or `.txt` to the path to export as `text/csv` or `text/plain`. *Re
   ],
   "areas": [
     {
+      "type": "Feature",
       "id": "6e8ec539-4d90-41f4-9169-564a40ba5790",
-      "name": "Aba North",
-      "date_first_cited": "2005-01-01",
-      "date_last_cited": "2015-01-01",
-      "sources": [
-        "..."
-      ],
-      "confidence": "High"
+      "properties": {
+        "name": "Aba North",
+        "date_first_cited": "2005-01-01",
+        "date_last_cited": "2015-01-01",
+        "sources": [
+          "..."
+        ],
+        "confidence": "High"
+      },
+      "geometry": GeoJSON
     },
     ...
   ],
   "sites": [
     {
+      "type": "Feature",
       "id": "5947d0de-626d-495f-9c31-eb2ca5afdb6b",
-      "name": "Command Center",
-      "location": "Aba North, Abia",
-      "geonames_name": "Aba North",
-      "admin_level_1_geonames_name": "Abia",
-      "date_first_cited": "2008-01-01",
-      "date_last_cited": "2012-01-01",
-      "sources": [
-        "..."
-      ],
-      "confidence": "Medium"
+      "properties": {
+        "name": "Command Center",
+        "location": "Aba North, Abia",
+        "geonames_name": "Aba North",
+        "admin_level_1_geonames_name": "Abia",
+        "date_first_cited": "2008-01-01",
+        "date_last_cited": "2012-01-01",
+        "sources": [
+          "..."
+        ],
+        "confidence": "Medium"
+      },
+      "geometry": GeoJSON
     },
     ...
   ],

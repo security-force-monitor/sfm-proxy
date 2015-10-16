@@ -219,12 +219,11 @@ helpers do
 
   def feature_formatter(result, geometry, properties = nil)
     properties ||= result
-    properties = properties.except('_id', 'id', 'geo', 'point')
 
     {
       'type' => 'Feature',
       'id' => result.fetch('_id', result.fetch('id')),
-      'properties' => properties,
+      'properties' => properties.except('_id', 'id', 'geo', 'point'),
       'geometry' => geometry,
     }
   end
