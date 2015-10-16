@@ -14,11 +14,12 @@ task :default do
   organization_id = connection[:organizations].find.first['_id']
   person_id = connection[:people].find.first['_id']
 
-  [ '/countries',
+  [
+    '/countries',
     '/countries/ng/autocomplete/geonames_id',
-    '/countries/ng/autocomplete/geonames_id&q=State',
-    '/countries/ng/autocomplete/geonames_id&classification=ADM1',
-    '/countries/ng/autocomplete/geonames_id&bbox=10,5,5,10',
+    '/countries/ng/autocomplete/geonames_id?q=State',
+    '/countries/ng/autocomplete/geonames_id?classification=ADM1',
+    '/countries/ng/autocomplete/geonames_id?bbox=10,5,5,10',
     '/countries/ng/events',
     '/countries/ng/geometries',
     '/countries/ng/map?at=2010-01-01',
@@ -30,7 +31,8 @@ task :default do
     test(path)
   end
 
-  [ '/countries/ng/map',
+  [
+    '/countries/ng/map',
     '/countries/ng/map?at=invalid',
     '/countries/ng/map?at=2010-01-01&bbox=invalid',
     "/organizations/#{organization_id}/map?at=invalid",
@@ -40,7 +42,8 @@ task :default do
     test(path, [400])
   end
 
-  [ '/events/e7f6028a-1117-435a-86f9-c0a59401cd80',
+  [
+    '/events/e7f6028a-1117-435a-86f9-c0a59401cd80',
     '/organizations/e7f6028a-1117-435a-86f9-c0a59401cd80',
     '/people/e7f6028a-1117-435a-86f9-c0a59401cd80',
     '/geometries/xz.geojson',
@@ -49,7 +52,8 @@ task :default do
     test(path, [404])
   end
 
-  [ '/countries/ng',
+  [
+    '/countries/ng',
     '/countries/ng/search/organizations',
     '/countries/ng/search/people',
     '/countries/ng/search/events',

@@ -222,7 +222,7 @@ helpers do
 
     {
       'type' => 'Feature',
-      'id' => result.fetch('_id', result.fetch('id')),
+      'id' => result['_id'] || result.fetch('id'),
       'properties' => properties.except('_id', 'id', 'geo', 'point'),
       'geometry' => geometry,
     }

@@ -154,7 +154,7 @@ get '/countries/:id/search/organizations' do
       site_present = feature_formatter(site_present.merge(get_properties_safely(site, [
         'geonames_name',
         'admin_level_1_geonames_name',
-      ]).merge({
+      ], ['id']).merge({
         'location' => location_formatter(site),
       })), site['point'] || sample_point)
     end
@@ -238,7 +238,7 @@ get '/countries/:id/search/people' do
         membership_present['organization']['site_present'] = feature_formatter(get_properties_safely(site, [
           'geonames_name',
           'admin_level_1_geonames_name',
-        ]).merge({
+        ], ['id']).merge({
           'location' => location_formatter(site),
         }), site['point'] || sample_point)
       end
