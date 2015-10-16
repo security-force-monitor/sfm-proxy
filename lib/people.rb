@@ -57,7 +57,7 @@ get '/people/:id' do
           'sources' => site_id['id']['sources'],
           'confidence' => site_id['id']['confidence'],
         },
-        'geometry' => {}, # @todo
+        'geometry' => site['point'] || sample_point,
       }
 
       if site['name']
