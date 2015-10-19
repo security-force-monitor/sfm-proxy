@@ -272,9 +272,11 @@ task :import_csv do
             end
 
             # Parenthesized numbers just disambiguate records with the same name.
-            unless type == :event
-              object['name']['value'].sub!(/\s*\(\d+\)\z/, '')
-            end
+            # @todo Remove parenthesized numbers after import. Removing during
+            # import creates resolution issues.
+            # unless type == :event
+            #   object['name']['value'].sub!(/\s*\(\d+\)\z/, '')
+            # end
 
             if type == :organization
               if gid == 0
