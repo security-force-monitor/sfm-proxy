@@ -106,8 +106,7 @@
     "id",
     "start_date",
     "classification",
-    "description",
-    "perpetrator_organization_id"
+    "description"
   ],
 
   "definitions": {
