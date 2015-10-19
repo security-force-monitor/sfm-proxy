@@ -84,7 +84,7 @@ task :import_csv do
 
           # Pull new items off the other array.
           other.to_enum.with_index.reverse_each do |b,index|
-            if b[key].key?('value')
+            if b[key] && b[key].key?('value')
               if none?{|a| a[key].fetch('value') == b[key].fetch('value')}
                 push(array.delete_at(index))
               end
@@ -93,10 +93,10 @@ task :import_csv do
 
           # Find any differences with the old items.
           array.map do |b|
-            if b[key].key?('value')
+            if b[key] && b[key].key?('value')
               find{|a| a[key].fetch('value') == b[key].fetch('value')}.diff_and_merge(b)
             end
-          end.reject(&:empty?)
+          end.compact.reject(&:empty?)
         end
       else
         [self, other]
@@ -299,8 +299,8 @@ task :import_csv do
                 if !differences.empty?
                   LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} is inconsistent\n#{differences.pretty_inspect}")
                 end
-              rescue NoMethodError
-                LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} can't calculate difference with:\n#{object.pretty_inspect}")
+              rescue NoMethodError => e
+                LOGGER.warn("gid #{gid} row #{row_number}: #{type.to_s.capitalize} #{key.inspect} can't calculate difference (#{e}):\n#{object.pretty_inspect}")
               end
             end
           else
