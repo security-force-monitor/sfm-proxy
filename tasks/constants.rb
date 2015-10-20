@@ -77,7 +77,7 @@ HEADERS_MAP = {
     'Date of last citation for area of responsibility' => :areas__0__date_last_cited__value__d,
     'Source: Date of last citation for area of responsibility' => :areas__0__date_last_cited__sources__n,
     'Confidence: Date of last citation for area of responsibility' => :areas__0__date_last_cited__confidence,
-    'Assume Area of Operations to Current Date? (Y/N)' => :areas__0__date_last_cited__open_ended__b,
+    'Assume Area of Operations to Current Date? (Y/N)' => :areas__0__open_ended__value__b,
 
     'Other affiliation (like joint task force)' => :memberships__0__organization_id__value,
     'Source: Other affiliation (like joint task force)' => :memberships__0__organization_id__sources__n,

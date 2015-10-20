@@ -23,7 +23,7 @@ task :import_csv do
       if key?(node)
         fetch(node).each(&block)
       else
-        LOGGER.warn("can't resolve #{node}")
+        LOGGER.warn("can't resolve #{node.inspect}")
       end
     end
   end
@@ -197,7 +197,7 @@ task :import_csv do
     event: [939834263],
   }.each do |type,gids|
     gids.each do |gid|
-      objects[type] = {}
+      objects[type] ||= {}
       names[gid] ||= {}
 
       # Memoize the response body.
@@ -464,6 +464,7 @@ task :import_csv do
     tsort = graph.tsort
   rescue TSort::Cyclic => e
     LOGGER.error(e.message)
+    # Joint Task Forces are a common reason for cycles.
     e.message.scan(/"(#{e.message[/\borganization:Joint Task Force, /]}.+?)"/).flatten.each do |id|
       graph.delete(id)
     end

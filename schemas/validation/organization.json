@@ -108,7 +108,18 @@
             "$ref": "#/definitions/complex_date"
           },
           "date_last_cited": {
-            "$ref": "#/definitions/complex_date_with_open_ended"
+            "$ref": "#/definitions/complex_date"
+          },
+          "open_ended": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            },
+
+            "additionalProperties": false,
+            "required": ["value"]
           }
         },
 
@@ -175,27 +186,6 @@
         },
         "confidence": {
           "$ref": "#/definitions/confidence"
-        }
-      },
-
-      "additionalProperties": false,
-      "required": ["value"]
-    },
-    "complex_date_with_open_ended": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string",
-          "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
-        },
-        "sources": {
-          "$ref": "#/definitions/sources"
-        },
-        "confidence": {
-          "$ref": "#/definitions/confidence"
-        },
-        "open_ended": {
-          "type": "boolean"
         }
       },
 
