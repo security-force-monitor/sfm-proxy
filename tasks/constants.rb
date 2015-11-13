@@ -19,8 +19,8 @@ HEADERS_MAP = {
   area: {
     'ID' => :id,
 
-    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :name__value,
-    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => :geonames_id__value__i,
+    'Area of Operations Geoname' => :name__value,
+    'Area of Operations GeonameID' => :geonames_id__value__i,
   },
   organization: {
     'ID' => :id,
@@ -65,18 +65,18 @@ HEADERS_MAP = {
     'Source: ADMIN1' => nil, # Site
     'Confidence: ADMIN1' => nil, # Site
 
-    'Area of Responsibility (Area of Operations, Jurisdiction) Geoname' => :areas__0__id__value,
-    'Area of Responsibility (Area of Operations, Jurisdiction) GeonameID' => nil, # Area
-    'Source: Area of Responsibility' => :areas__0__id__sources__n,
-    'Confidence: Area of Responsibility' => :areas__0__id__confidence,
+    'Area of Operations Geoname' => :areas__0__id__value,
+    'Area of Operations GeonameID' => nil, # Area
+    'Source: Area of Operations' => :areas__0__id__sources__n,
+    'Confidence: Area of Operations' => :areas__0__id__confidence,
 
-    'Date of first citation for area of responsibility' => :areas__0__date_first_cited__value__d,
-    'Source: Date of first citation for area of responsibility' => :areas__0__date_first_cited__sources__n,
-    'Confidence: Date of first citation for area of responsibility' => :areas__0__date_first_cited__confidence,
+    'Date of first citation for area of operations' => :areas__0__date_first_cited__value__d,
+    'Source: Date of first citation for area of operations' => :areas__0__date_first_cited__sources__n,
+    'Confidence: Date of first citation for area of operations' => :areas__0__date_first_cited__confidence,
 
-    'Date of last citation for area of responsibility' => :areas__0__date_last_cited__value__d,
-    'Source: Date of last citation for area of responsibility' => :areas__0__date_last_cited__sources__n,
-    'Confidence: Date of last citation for area of responsibility' => :areas__0__date_last_cited__confidence,
+    'Date of last citation for area of operations' => :areas__0__date_last_cited__value__d,
+    'Source: Date of last citation for area of operations' => :areas__0__date_last_cited__sources__n,
+    'Confidence: Date of last citation for area of operations' => :areas__0__date_last_cited__confidence,
     'Assume Area of Operations to Current Date? (Y/N)' => :areas__0__open_ended__value__b,
 
     'Other affiliation (like joint task force)' => :memberships__0__organization_id__value,
