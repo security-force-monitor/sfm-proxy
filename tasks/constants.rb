@@ -28,6 +28,7 @@ HEADERS_MAP = {
     'Parent organization' => :parents__0__id__value,
     'Source: Parent organization' => :parents__0__id__sources__n,
     'Confidence: Parent organization' => :parents__0__id__confidence,
+    'Assume Parent Organization and Relationship to Current Date? (Y/N)' => :parents__0__open_ended__value__b,
 
     'Administrative, Command, or Informal parent relationship' => :parents__0__classification__value,
     'Source: Administrative, Command, or Informal parent relationship' => :parents__0__classification__sources__n,
@@ -112,6 +113,8 @@ HEADERS_MAP = {
     'Source: Date of last citation' => :sites__0__date_last_cited__sources__n,
     'Confidence: Date of last citation' => :sites__0__date_last_cited__confidence,
     'Is this the dissolution date? (Y/N)' => nil, # Not relevant, as this date was re-associated to the site.
+
+    'Assume Site (City or smallest administrative unit GeoName and/or AMIN1) to Current Date? (Y/N)' => :sites__0__open_ended__value__b,
 
     'Notes' => :notes__value,
     'Corrections' => nil,
