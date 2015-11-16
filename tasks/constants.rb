@@ -107,7 +107,7 @@ HEADERS_MAP = {
     'Date of first citation' => :sites__0__date_first_cited__value__d,
     'Source: Date of first citation' => :sites__0__date_first_cited__sources__n,
     'Confidence: Date of first citation' => :sites__0__date_first_cited__confidence,
-    'Is this the founding date? (Y/N)' => nil, # Not relevant, as this date was re-associated to the site.
+    'Is this the founding date? (Y/N)' => :sites__0__open_started__value__b,
 
     'Date of last citation' => :sites__0__date_last_cited__value__d,
     'Source: Date of last citation' => :sites__0__date_last_cited__sources__n,
