@@ -11,7 +11,7 @@
     "id": "ng",
     "properties": {
       "name": "Nigeria",
-    }
+    },
     "bbox": [
       {
         "lon": "WEST",
