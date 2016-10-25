@@ -6,7 +6,7 @@
 * [Event map and detail](/docs/events.md)
 * [Organization map, chart and detail](/docs/organizations.md)
 * [Person chart and detail](/docs/people.md)
-* [Search organizations, peopl and events](/docs/search.md)
+* [Search organizations, people and events](/docs/search.md)
 * [Base layers and sessions](/docs/miscellaneous.md)
 
 ## Tasks
