@@ -40,7 +40,7 @@
         "location": "Aba North, Abia",
         "geonames_name": "Aba North",
         "admin_level_1_geonames_name": "Abia",
-        "classification": [
+        "violation_types": [
           "Torture",
           "Disappearance"
         ],
@@ -75,7 +75,7 @@
       "location": "Aba North, Abia",
       "geonames_name": "Aba North",
       "admin_level_1_geonames_name": "Abia",
-      "classification": [
+      "violation_types": [
         "Torture",
         "Disappearance"
       ],
@@ -107,7 +107,7 @@
   "location": "...",
   "geonames_name": "Aba North",
   "admin_level_1_geonames_name": "Abia",
-  "classification": [
+  "violation_types": [
     "Torture",
     "Disappearance"
   ],
