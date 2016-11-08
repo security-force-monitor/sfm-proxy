@@ -38,8 +38,8 @@
         "start_date": "2010-01-01",
         "end_date": null,
         "location": "Aba North, Abia",
-        "geonames_name": "Aba North",
-        "admin_level_1_geonames_name": "Abia",
+        "osm_name": "Aba North",
+        "admin_level_1_osm_name": "Abia",
         "violation_types": [
           "Torture",
           "Disappearance"
@@ -73,8 +73,8 @@
       "start_date": "2010-01-01",
       "end_date": null,
       "location": "Aba North, Abia",
-      "geonames_name": "Aba North",
-      "admin_level_1_geonames_name": "Abia",
+      "osm_name": "Aba North",
+      "admin_level_1_osm_name": "Abia",
       "violation_types": [
         "Torture",
         "Disappearance"
@@ -105,8 +105,8 @@
   "start_date": "2010-01-01",
   "end_date": null,
   "location": "...",
-  "geonames_name": "Aba North",
-  "admin_level_1_geonames_name": "Abia",
+  "osm_name": "Aba North",
+  "admin_level_1_osm_name": "Abia",
   "violation_types": [
     "Torture",
     "Disappearance"
