@@ -10,7 +10,7 @@ Optionally pass the query parameter `tolerance` as a floating point between 0 an
 
 `/countries/:id/geometries` returns geometries. Parameters:
 
-* `classification`: a GeoNames [feature code](http://www.geonames.org/export/codes.html).
+* `classification`: An [OpenStreetMap administrative level](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level).
 * `bbox`: comma-separated south-west and north-east coordinates.
 * `tolerance`: Floating point between 0 and 1 that determines simplicity of returned geometries.
 
