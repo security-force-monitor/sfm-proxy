@@ -93,29 +93,109 @@
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
 
 ```json
-[
-  {
-    "id": "42bb1cff-eed5-4458-a9b4-b00bad09f615",
-    "name": "Brigade 1",
-    "events_count": 12,
-    "parent_id": "010bfd80-4eed-4843-807c-20bd34eaf7aa",
-    "classification": "Brigade",
-    "commander": {
-      "id": "92a458f4-ecc1-441f-8ab7-e68b24cd5695",
-      "name": "Neil Cable",
-      "other_names": [
-        "Black Ranger"
-      ],
-      "events_count": 1,
-      "date_first_cited": "2014-08-01",
-      "date_last_cited": "2014-12-01",
-      "sources": [
-        "..."
-      ],
-      "confidence": "High"
-    }
-  }
-]
+{
+    "id": "bb69380f-bb62-4748-8447-44531439d9e7",
+    "name": "Unknown Zonal Police Command",
+    "other_names": [
+        null
+    ],
+    "classifications": [
+        "Police"
+    ],
+    "events_count": 0,
+    "site_current": {... GeoJSON point ...},
+    "area_current": {... GeoJSON polygon ...},
+    "current_commander": {
+        "events_count": 0,
+        "first_cited": "2015-05-29",
+        "id": "830d2b8a-8066-448c-b6ae-fb9274572c9e",
+        "name": "Muhammadu Buhari",
+        "last_cited": "2016-11-01"
+    },
+    "children": [
+        {
+            "id": "e418e778-9778-4913-a77e-5155145970f0",
+            "name": "Anambra State Police Command",
+            "other_names": [ ],
+            "parent_id": "bb69380f-bb62-4748-8447-44531439d9e7",
+            "current_commander": { },
+            "classifications": [
+                "Police"
+            ],
+            "division_id": "ocd-division/country:ng"
+        },
+        {
+            "id": "5656b250-4563-4103-80ce-311e6d851c0e",
+            "name": "Awka Police Area Command",
+            "other_names": [
+                "Area Command Awka",
+                "Awka Area Command",
+                "Area Command Police Station in Awka"
+            ],
+            "parent_id": "e418e778-9778-4913-a77e-5155145970f0",
+            "current_commander": { },
+            "classifications": [
+                "Police"
+            ],
+            "division_id": "ocd-division/country:ng"
+        },
+        ...
+    ],
+    "parents": [
+        {
+            "id": "ea61d68c-d283-4780-94a9-e5582259b553",
+            "name": "Force Headquarters",
+            "other_names": [
+                "Police Force Headquarters",
+                "Louis Edet House"
+            ],
+            "current_commander": { },
+            "classifications": [
+                "Police"
+            ],
+            "child_id": "bb69380f-bb62-4748-8447-44531439d9e7",
+            "division_id": "ocd-division/country:ng"
+        },
+        {
+            "id": "e86459b0-f91a-421b-ba1e-0ce075f3286a",
+            "name": "Nigeria Police Force",
+            "other_names": [
+                "NPF",
+                "Police"
+            ],
+            "current_commander": { },
+            "classifications": [
+                "Police"
+            ],
+            "child_id": "ea61d68c-d283-4780-94a9-e5582259b553",
+            "division_id": "ocd-division/country:ng"
+        },
+        {
+            "id": "830d2b8a-8066-448c-b6ae-fb9274572c9e",
+            "name": "President of the Federal Republic of Nigeria",
+            "other_names": [
+                "President"
+            ],
+            "current_commander": {
+                "events_count": 0,
+                "first_cited": "2015-05-29",
+                "id": "830d2b8a-8066-448c-b6ae-fb9274572c9e",
+                "name": "Muhammadu Buhari",
+                "last_cited": "2016-11-01"
+            },
+            "classifications": [
+                "Air Force",
+                "Navy",
+                "Political",
+                "Police",
+                "Army",
+                "Military"
+            ],
+            "child_id": "e86459b0-f91a-421b-ba1e-0ce075f3286a",
+            "division_id": "ocd-division/country:ng"
+        }
+    ]
+}
 ```
 
 ## Detail
