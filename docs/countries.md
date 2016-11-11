@@ -3,6 +3,7 @@
 ## List
 
 `/countries/` returns a list of countries as GeoJSON features.
+Optionally send a `tolerance` query parameter as a float between 0 and 1 to set the level of simplification for the returned geometries. Defaults to 0.001
 
 ```json
 [
