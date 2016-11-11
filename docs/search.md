@@ -14,9 +14,9 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 
 ## Autocomplete
 
-`/countries/:id/autocomplete/geonames_id` returns GeoNames and GeoNames IDs. Parameters:
+`/countries/:id/autocomplete/osm` returns OpenStreetMaps features. Parameters:
 
-* `classification`: a GeoNames [feature code](http://www.geonames.org/export/codes.html).
+* `classification`: a OpenStreetMap [admin_level](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level).
 * `bbox`: comma-separated south-west and north-east coordinates.
 
 ```json
