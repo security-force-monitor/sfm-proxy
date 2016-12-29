@@ -49,6 +49,7 @@ Append `.zip` or `.txt` to the search path to export as `text/csv` or `text/plai
 * `date_last_cited__lte`: maximum date last cited.
 * `events_count__gte`: minimum events count. *Not yet supported.*
 * `events_count__lte`: maximum events count. *Not yet supported.*
+* `tolerance`: floating point between 0 and 1 representing how much to simplify returned geometries
 
 Sort orders:
 
