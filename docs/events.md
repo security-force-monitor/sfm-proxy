@@ -99,6 +99,10 @@
 
 `/events/:id` returns an event.
 
+Optional parameters:
+
+* `tolerance`: floating point between 0 and 1 representing how much to simplify returned geometries
+
 ```json
 {
   "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
