@@ -7,6 +7,7 @@
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
 * `bbox`: comma-separated south-west and north-east coordinates.
 * `classification__in`: comma-separated list.
+* `tolerance`: floating point between 0 and 1 representing how much to simplify returned geometries
 
 ```json
 {
