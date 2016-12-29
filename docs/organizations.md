@@ -6,6 +6,7 @@
 
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
 * `bbox`: comma-separated south-west and north-east coordinates.
+* `tolerance`: floating point between 0 and 1 representing how much to simplify returned geometries
 
 ```json
 {
@@ -91,6 +92,7 @@
 `/organizations/:id/chart?` returns the organization's parents and children to render in a chart. Parameters:
 
 * `at`: **Required.** ISO 8601 format `YYYY-MM-DD`.
+* `tolerance`: floating point between 0 and 1 representing how much to simplify returned geometries
 
 ```json
 {
